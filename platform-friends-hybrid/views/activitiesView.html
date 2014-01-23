@@ -1,0 +1,29 @@
+<div data-role="view" id="view-all-activities" data-layout="default" class="activities-view" data-model="app.Activities">
+    <header data-role="header">
+        <div data-role="navbar">
+            Activities
+            <a class="nav-button nav-button-back hide-text" data-align="left" data-role="backbutton" data-click="app.Activities.logout">Log out</a>
+            <a class="nav-button nav-button-add hide-text" data-align="right" data-role="button" href="views/addActivityView.html">Add</a>
+        </div>
+    </header>
+
+    <ul id="activities-listview" data-style="inset" data-role="listview" data-template="activityTemplate"
+        data-bind="source: activities"></ul>
+    <p id="no-activities-span" hidden="hidden" class="no-items-msg">
+        <b>You have no posts yet.</b><br /><br />Tap on the plus sign and share what's on your mind.
+    </p>
+</div>
+
+<!-- Activities ListView Template -->
+<script type="text/x-kendo-template" id="activityTemplate">
+    <div data-role="touch" data-bind="events: { tap: activitySelected }" class="cf">
+        <div class="user-avatar">
+            <img data-bind="attr:{src: User().PictureUrl}" alt="styles/images/avatar.png" />
+        </div>
+        <div class="activity-content">
+            <h2 class="person-name">${User().DisplayName}</h2>
+            <time class="time-span">${CreatedAtFormatted()}</time>
+            <a class="user-share-txt">${Text}</a>
+        </div>
+    </div>
+</script>
