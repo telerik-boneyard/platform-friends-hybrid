@@ -1,4 +1,6 @@
-Hybrid **Friends sample app** is PhoneGap application showing the basic features of Everlive like authentication and CRUD operations.  
+Friends Sample App for PhoneGap/Cordova
+=============================
+This repository contains the [Friends sample app](http://docs.telerik.com/platform/backend-services/samples/friends/friends-sample) for PhoneGap/Cordova. The Friends app is a sample mobile app showcasing the integration of Telerik Platform services into a hybrid mobile appllication. To download the source code, just click on the "Download ZIP" button.
 
 ## Showcased features and SDKs
 
