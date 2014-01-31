@@ -1,11 +1,11 @@
 <div data-role="view" id="view-all-activities" data-layout="default" class="activities-view" data-model="app.Activities">
-    <header data-role="header">
+    <div data-role="header">
         <div data-role="navbar">
             Activities
             <a class="nav-button nav-button-back hide-text" data-align="left" data-role="backbutton" data-click="app.Activities.logout">Log out</a>
             <a class="nav-button nav-button-add hide-text" data-align="right" data-role="button" href="views/addActivityView.html">Add</a>
         </div>
-    </header>
+    </div>
 
     <ul id="activities-listview" data-style="inset" data-role="listview" data-template="activityTemplate"
         data-bind="source: activities"></ul>
@@ -22,7 +22,7 @@
         </div>
         <div class="activity-content">
             <h2 class="person-name">${User().DisplayName}</h2>
-            <time class="time-span">${CreatedAtFormatted()}</time>
+            <span class="time-span">${CreatedAtFormatted()}</span>
             <a class="user-share-txt">${Text}</a>
         </div>
     </div>
