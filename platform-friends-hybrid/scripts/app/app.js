@@ -24,12 +24,27 @@ var app = (function (win) {
         return true;
     });
     
+    // Global confirm dialog
+    var showConfirm = function(message, title, callback) {
+        
+        navigator.notification.confirm(message, callback || function () {
+        }, title, ['OK', 'Cancel']);
+    };
+    
     var isApiKeySet = (appSettings.everlive.apiKey !== '$EVERLIVE_API_KEY$');
     
     if (!isApiKeySet) {
         alert('Everlive API Key is not set.');
         return;
     }
+    
+    var fixViewResize = function () {
+        if (device.platform === 'iOS') {
+            setTimeout(function() {
+                $(document.body).height(window.innerHeight);
+            }, 10);
+        }
+    };
 
     // Handle device back button tap
     var onBackKeyDown = function(e) {
@@ -50,13 +65,16 @@ var app = (function (win) {
                 AppHelper.logout().then(exit, exit);
             }
 
-        }, 'Exit', 'Ok,Cancel');
+        }, 'Exit', ['OK', 'Cancel']);
     };
 
     var onDeviceReady = function() {
 
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
+        
+        navigator.splashscreen.hide();
+        fixViewResize();
         
         if (analytics.isAnalytics()) {
             analytics.Start();
@@ -65,6 +83,8 @@ var app = (function (win) {
 
     // Handle "deviceready" event
     document.addEventListener('deviceready', onDeviceReady, false);
+    // Handle "orientationchange" event
+    document.addEventListener('orientationchange', fixViewResize);
 
     // Initialize Everlive SDK
     var el = new Everlive({
@@ -119,13 +139,12 @@ var app = (function (win) {
         }
     };
     
-    var os = kendo.support.mobileOS,  
-    statusBarStyle = os.ios && os.flatVersion >= 700 ? 'black-translucent' : 'black';
+    var os = kendo.support.mobileOS,
+        statusBarStyle = os.ios && os.flatVersion >= 700 ? 'black-translucent' : 'black';
 
     // Initialize KendoUI mobile application
     var mobileApp = new kendo.mobile.Application(document.body, {
         transition: 'slide',
-        layout: 'mobile-tabstrip',
         statusBarStyle: statusBarStyle,
         skin: 'flat'
     });
@@ -138,6 +157,7 @@ var app = (function (win) {
     return {
         showAlert: showAlert,
         showError: showError,
+        showConfirm: showConfirm,
         mobileApp: mobileApp,
         helper: AppHelper,
         everlive: el,

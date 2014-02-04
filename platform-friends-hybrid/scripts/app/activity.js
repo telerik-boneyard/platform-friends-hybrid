@@ -19,24 +19,34 @@ app.Activity = (function () {
             kendo.bind(e.view.element, activity, kendo.mobile.ui);
         };
         
+        var hide = function () {
+            var picture = document.getElementById('picture');
+            picture.src = '';
+        };
+        
         var removeActivity = function () {
             
             var activities = app.Activities.activities;
             var activity = activities.getByUid(activityUid);
-            var answer = confirm(appSettings.messages.removeActivityConfirm);
             
-            if (answer) {
-                // Remove current activity from Activities
-                activities.remove(activity);
-                activities.one('sync', function () {
-                    app.mobileApp.navigate('#:back');
-                });
-                activities.sync();
-            }
+            app.showConfirm(
+                appSettings.messages.removeActivityConfirm,
+                'Delete Activity',
+                function (confirmed) {
+                    if (confirmed === true || confirmed === 1) {
+                        activities.remove(activity);
+                        activities.one('sync', function () {
+                            app.mobileApp.navigate('#:back');
+                        });
+                        activities.sync();
+                    }
+                }
+            );
         };
         
         return {
             show: show,
+            hide: hide,
             remove: removeActivity
         };
         

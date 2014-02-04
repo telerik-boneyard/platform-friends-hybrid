@@ -1,4 +1,4 @@
-<div data-role="view" id="single-activity" data-layout="default" class="activity-view" data-show="app.Activity.show">
+<div data-role="view" id="single-activity" data-layout="default" class="activity-view" data-show="app.Activity.show" data-hide="app.Activity.hide">
     <div data-role="header">
         <div data-role="navbar">
             Activity
@@ -17,7 +17,7 @@
             <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="100%"/>
         </div>
     </div>
-
+    
     <div data-role="footer">
         <a data-role="button" data-bind="visible: isVisible" data-click="app.Activity.remove" class="btn btn-delete">Delete</a>
     </div>

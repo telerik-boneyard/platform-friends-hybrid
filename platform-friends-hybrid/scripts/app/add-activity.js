@@ -14,7 +14,7 @@ app.AddActivity = (function () {
         
         var init = function () {
             
-            validator = $('#enterStatus').kendoValidator().data("kendoValidator");
+            validator = $('#enterStatus').kendoValidator().data('kendoValidator');
             $newStatus = $('#newStatus');
         };
         
