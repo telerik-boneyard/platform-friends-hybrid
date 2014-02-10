@@ -1,0 +1,19 @@
+<div data-role="view" id="share" data-layout="default" data-transition="overlay:down" class="add-comment-view"
+    data-init="app.AddComment.init" data-show="app.AddComment.show" data-model="app.AddComment">
+    <div data-role="header">
+        <div data-role="navbar">
+            Comment
+            <a class="nav-button nav-button-cancel" data-align="left" data-role="backbutton">Cancel</a>
+            <a class="nav-button nav-button-post" data-align="right" data-role="button" data-bind="click: saveComment">Post</a>
+        </div>
+    </div>
+    <div id="enterComment" class="share-form-wrp" data-role="listview" data-style="inset">
+        <div class="user-avatar">
+            <img data-bind="attr:{src: me.get('data').PictureUrl}" alt="styles/images/avatar.png" />
+        </div>
+        <h2 class="person-name" data-bind="text: me.get('data').DisplayName">Me</h2>
+        <div class="user-share">
+            <textarea id="newComment" placeholder="What's on your mind?" required validationMessage="Comment text is required!"></textarea>
+        </div>
+    </div>
+</div>

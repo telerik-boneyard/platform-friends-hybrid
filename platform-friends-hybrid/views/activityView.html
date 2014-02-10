@@ -1,8 +1,9 @@
-<div data-role="view" id="single-activity" data-layout="default" class="activity-view" data-show="app.Activity.show" data-hide="app.Activity.hide">
+<div data-role="view" id="single-activity" data-layout="default" class="activity-view" data-init="app.Activity.init" data-show="app.Activity.show">
     <div data-role="header">
         <div data-role="navbar">
             Activity
             <a class="nav-button nav-button-back hide-text" data-align="left" data-role="backbutton">Back</a>
+            <a class="nav-button nav-button-post" data-align="right" data-role="button" href="views/addCommentView.html">Comment</a>
         </div>
     </div>
 
@@ -15,6 +16,9 @@
             <span id="activityDate" class="time-span" data-bind="text: CreatedAtFormatted"></span>
             <span id="activityText" data-bind="text: Text" class="user-share-txt"></span>
             <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="100%"/>
+            <div class="comments-wrp">
+                <ul id="comments-listview"></ul>
+            </div>
         </div>
     </div>
     
@@ -22,3 +26,12 @@
         <a data-role="button" data-bind="visible: isVisible" data-click="app.Activity.remove" class="btn btn-delete">Delete</a>
     </div>
 </div>
+
+<!-- Comments Template -->
+<script type="text/x-kendo-template" id="commentsTemplate">
+    <div class="comment-content">
+        <h2 class="person-name">${User()}</h2>
+        <span class="time-span">${CreatedAtFormatted()}</span>
+        <a class="user-share-txt">${Comment}</a>
+    </div>
+</script>
