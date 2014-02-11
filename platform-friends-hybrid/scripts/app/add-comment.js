@@ -31,7 +31,7 @@ app.AddComment = (function () {
             if (validator.validate()) {
                 
                 // Adding new comment to Comments model
-                var comments = app.Activity.comments;
+                var comments = app.Comments.comments;
                 var comment = comments.add();
                 
                 comment.Comment = $newComment.val();
