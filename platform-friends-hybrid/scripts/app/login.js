@@ -8,9 +8,9 @@ app.Login = (function () {
     'use strict';
 
     var loginViewModel = (function () {
-        
+
         var isInMistSimulator = (location.host.indexOf('icenium.com') > -1);
-        
+
         var $loginUsername;
         var $loginPassword;
         var isFacebookLogin = (appSettings.facebook.appId !== '$FACEBOOK_APP_ID$' && appSettings.facebook.redirectUri !== '$FACEBOOK_REDIRECT_URI$');
@@ -18,11 +18,11 @@ app.Login = (function () {
         var isLiveIdLogin = (appSettings.liveId.clientId !== '$LIVEID_CLIENT_ID$' && appSettings.liveId.redirectUri !== '$LIVEID_CLIENT_ID$');
         var isAdfsLogin = (appSettings.adfs.adfsRealm !== '$ADFS_REALM$' && appSettings.adfs.adfsEndpoint !== '$ADFS_ENDPOINT$');
         var isAnalytics = analytics.isAnalytics();
-        
+
         var init = function () {
             $loginUsername = $('#loginUsername');
             $loginPassword = $('#loginPassword');
-            
+
             if (!isFacebookLogin) {
                 $('#loginWithFacebook').addClass('disabled');
                 console.log('Facebook App ID and/or Redirect URI not set. You cannot use Facebook login.');
@@ -43,18 +43,18 @@ app.Login = (function () {
                 console.log('EQATEC product key is not set. You cannot use EQATEC Analytics service.');
             }
         };
-        
+
         var show = function () {
             $loginUsername.val('');
             $loginPassword.val('');
         };
-        
+
         var getYear = function () {
             var currentTime = new Date();
             return currentTime.getFullYear();
         };
 
-        // Authenticate to use Everlive as a particular user
+        // Authenticate to use Backend Services as a particular user
         var login = function () {
 
             var username = $loginUsername.val();
@@ -67,7 +67,7 @@ app.Login = (function () {
                 if (isAnalytics) {
                     analytics.TrackFeature('Login.Regular');
                 }
-                
+
                 return app.Users.load();
             })
             .then(function () {
@@ -83,7 +83,7 @@ app.Login = (function () {
 
         // Authenticate using Facebook credentials
         var loginWithFacebook = function() {
-            
+
             if (!isFacebookLogin) {
                 return;
             }
@@ -104,7 +104,7 @@ app.Login = (function () {
             };
             var facebook = new IdentityProvider(facebookConfig);
             app.mobileApp.showLoading();
-            
+
             facebook.getAccessToken(function(token) {
                 app.everlive.Users.loginWithFacebook(token)
                 .then(function () {
@@ -128,9 +128,9 @@ app.Login = (function () {
                 });
             });
         };
-        
+
         var loginWithGoogle = function () {
-            
+
             if (!isGoogleLogin) {
                 return;
             }
@@ -151,7 +151,7 @@ app.Login = (function () {
             };
             var google = new IdentityProvider(googleConfig);
             app.mobileApp.showLoading();
-            
+
             google.getAccessToken(function(token) {
                 app.everlive.Users.loginWithGoogle(token)
                 .then(function () {
@@ -175,9 +175,9 @@ app.Login = (function () {
                 });
             });
         };
-        
+
         var loginWithLiveID = function () {
-            
+
             if (!isLiveIdLogin) {
                 return;
             }
@@ -198,7 +198,7 @@ app.Login = (function () {
             };
             var liveId = new IdentityProvider(liveIdConfig);
             app.mobileApp.showLoading();
-            
+
             liveId.getAccessToken(function(token) {
                 app.everlive.Users.loginWithLiveID(token)
                 .then(function () {
@@ -222,9 +222,9 @@ app.Login = (function () {
                 });
             });
         };
-        
+
         var loginWithADSF = function () {
-            
+
             if (!isAdfsLogin) {
                 return;
             }
@@ -241,7 +241,7 @@ app.Login = (function () {
             };
             var adfs = new IdentityProvider(adfsConfig);
             app.mobileApp.showLoading();
-            
+
             adfs.getAccessToken(function(token) {
                 app.everlive.Users.loginWithADFS(token)
                 .then(function () {
@@ -265,7 +265,7 @@ app.Login = (function () {
                 });
             });
         };
-        
+
         var showMistAlert = function () {
             alert(appSettings.messages.mistSimulatorAlert);
         };

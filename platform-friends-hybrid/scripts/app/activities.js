@@ -67,7 +67,7 @@ app.Activities = (function () {
             }
         };
 
-        // Activities data source. The Everlive dialect of the Kendo UI DataSource component
+        // Activities data source. The Backend Services dialect of the Kendo UI DataSource component
         // supports filtering, sorting, paging, and CRUD operations.
         var activitiesDataSource = new kendo.data.DataSource({
             type: 'everlive',
@@ -75,7 +75,7 @@ app.Activities = (function () {
                 model: activityModel
             },
             transport: {
-                // Required by Everlive
+                // Required by Backend Services
                 typeName: 'Activities'
             },
             change: function (e) {
