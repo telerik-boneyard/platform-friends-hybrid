@@ -9,7 +9,7 @@ var app = (function (win) {
     };
 
     var showError = function(message) {
-        
+
         showAlert(message, 'Error occured');
     };
 
@@ -23,21 +23,21 @@ var app = (function (win) {
 
         return true;
     });
-    
+
     // Global confirm dialog
     var showConfirm = function(message, title, callback) {
-        
+
         navigator.notification.confirm(message, callback || function () {
         }, title, ['OK', 'Cancel']);
     };
-    
+
     var isApiKeySet = (appSettings.everlive.apiKey !== '$EVERLIVE_API_KEY$');
-    
+
     if (!isApiKeySet) {
-        alert('Everlive API Key is not set.');
+        alert('Backend Services API Key is not set.');
         return;
     }
-    
+
     var fixViewResize = function () {
         if (device.platform === 'iOS') {
             setTimeout(function() {
@@ -72,10 +72,10 @@ var app = (function (win) {
 
         // Handle "backbutton" event
         document.addEventListener('backbutton', onBackKeyDown, false);
-        
+
         navigator.splashscreen.hide();
         fixViewResize();
-        
+
         if (analytics.isAnalytics()) {
             analytics.Start();
         }
@@ -91,9 +91,9 @@ var app = (function (win) {
         apiKey: appSettings.everlive.apiKey,
         scheme: appSettings.everlive.scheme
     });
-    
+
     var emptyGuid = '00000000-0000-0000-0000-000000000000';
-    
+
     var AppHelper = {
 
         // Return user profile picture url
@@ -118,7 +118,7 @@ var app = (function (win) {
 
         // Date formatter. Return date in d.m.yyyy format
         formatDate: function (dateString) {
-            
+
             var months = [
                 'Jan', 'Feb', 'Mar',
                 'Apr', 'May', 'Jun',
@@ -138,7 +138,7 @@ var app = (function (win) {
             return el.Users.logout();
         }
     };
-    
+
     var os = kendo.support.mobileOS,
         statusBarStyle = os.ios && os.flatVersion >= 700 ? 'black-translucent' : 'black';
 
@@ -148,7 +148,7 @@ var app = (function (win) {
         statusBarStyle: statusBarStyle,
         skin: 'flat'
     });
-    
+
     var getYear = (function () {
         var currentTime = new Date();
         return currentTime.getFullYear();
