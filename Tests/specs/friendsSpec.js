@@ -1,4 +1,23 @@
 spec(function() {
+	/**
+	 * Test Configuration
+	 */
+	var configuration = {
+		// NOTE: Update this to an existing Telerik Backend Services username and password
+		USERNAME: 'seth',
+		PASSWORD: '333333',
+
+		// NOTE: Update this to the iOS URL of the Friends App
+		IOS_URL: 'friends://',
+
+		// NOTE: Update this to the Android package name of the Friends App
+		ANDROID_PACKAGE: 'com.telerik.friends'
+	};
+
+	/**
+	 * Queries
+	 * These are reusable queries for elements in the user interface.
+	 */
 	var queries = {
 		ios: {
 			login: {
@@ -18,29 +37,32 @@ spec(function() {
 		}
 	};
 
+	/**
+	 * Step Repository
+	 * These are reusable steps that perform actions in the application under test.
+	 */
 	var stepRepository = {
 		'Given Friends is running': {
 			'ios': [
-				ios.launch('tsfriendsHybrid://'),
+				ios.launch(configuration.IOS_URL),
 			],
 			'android': [
-				android.launch('com.telerik.friend'),
+				
+				android.launch(configuration.ANDROID_PACKAGE),
 				android.wait(4000)
 			]
 		},
 		'And is logged in': {
 			'ios': [
-				// NOTE: Update the following two lines to use an existing Telerik Backend Services account and password
-				web.setValue(queries.ios.login.usernameField, "USERNAME"),
-				web.setValue(queries.ios.login.passwordField, "PASSWORD"),
+				web.setValue(queries.ios.login.usernameField, configuration.USERNAME),
+				web.setValue(queries.ios.login.passwordField, configuration.PASSWORD),
 				web.executeScript('$(targetElement).data("kendoTouch").trigger("tap");', queries.ios.login.loginButton),
 				web.wait(2000),
 			
 			],
 			'android': [
-				// NOTE: Update the following two lines to use an existing Telerik Backend Services account and password
-				web.setValue(queries.ios.login.usernameField, "USERNAME"),
-				web.setValue(queries.ios.login.passwordField, "PASSWORD"),
+				web.setValue(queries.ios.login.usernameField, configuration.USERNAME),
+				web.setValue(queries.ios.login.passwordField, configuration.PASSWORD),
 				web.executeScript('$(targetElement).data("kendoTouch").trigger("tap");', queries.ios.login.loginButton),
 				web.wait(2000),
 			
@@ -129,7 +151,11 @@ spec(function() {
 		}
 	};
 
-	describe("Hybrid: Verify button automation functions correctly", function() {
+	/**
+	 * Tests
+	 * These are the tests that will be performed against the application.
+	 */
+	describe("Verify activities user interface works as expected", function() {
 		test("Activities screen should display on login", function() {
 			step('Given Friends is running');
 			step('And is logged in');
@@ -152,6 +178,4 @@ spec(function() {
 			step('Then the login screen should be displayed');
 		});
 	}, stepRepository);
-
 });
-
