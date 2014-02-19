@@ -41,11 +41,13 @@ var IdentityProvider = function (config) {
         ref.addEventListener('loadstop', function(event) {
             that.locationChanged(event.url, callback);
         });
-        
-        //The following is required in iPhone as the loadstop event is never fired. 
-        ref.addEventListener('loadstart', function(event) {
-            that.locationChanged(event.url, callback);
-        });
+
+        //The following is required in iPhone as the loadstop event is never fired.
+        if (config.name === 'ADFS') {
+            ref.addEventListener('loadstart', function(event) {
+                that.locationChanged(event.url, callback);
+            });
+        }
     }
 
     this.locationChanged = function(loc, callback) {
