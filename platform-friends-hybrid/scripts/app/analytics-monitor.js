@@ -7,7 +7,7 @@
     var analytics = win.analytics = win.analytics || {};
 
     analytics.isAnalytics = function () {
-        return appSettings.eqatec.productKey !== '$EQATEC_PRODUCT_KEY$';
+        return win.app.isKeySet(appSettings.eqatec.productKey);
     };
 
     analytics.Start = function() {

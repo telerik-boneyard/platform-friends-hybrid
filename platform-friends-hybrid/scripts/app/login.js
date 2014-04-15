@@ -13,10 +13,11 @@ app.Login = (function () {
 
         var $loginUsername;
         var $loginPassword;
-        var isFacebookLogin = (appSettings.facebook.appId !== '$FACEBOOK_APP_ID$' && appSettings.facebook.redirectUri !== '$FACEBOOK_REDIRECT_URI$');
-        var isGoogleLogin = (appSettings.google.clientId !== '$GOOGLE_CLIENT_ID$' && appSettings.google.redirectUri !== '$GOOGLE_REDIRECT_URI$');
-        var isLiveIdLogin = (appSettings.liveId.clientId !== '$LIVEID_CLIENT_ID$' && appSettings.liveId.redirectUri !== '$LIVEID_CLIENT_ID$');
-        var isAdfsLogin = (appSettings.adfs.adfsRealm !== '$ADFS_REALM$' && appSettings.adfs.adfsEndpoint !== '$ADFS_ENDPOINT$');
+
+        var isFacebookLogin = app.isKeySet(appSettings.facebook.appId) && app.isKeySet(appSettings.facebook.redirectUri);
+        var isGoogleLogin = app.isKeySet(appSettings.google.clientId) && app.isKeySet(appSettings.google.redirectUri);
+        var isLiveIdLogin = app.isKeySet(appSettings.liveId.clientId) && app.isKeySet(appSettings.liveId.redirectUri);
+        var isAdfsLogin = app.isKeySet(appSettings.adfs.adfsRealm) && app.isKeySet(appSettings.adfs.adfsEndpoint);
         var isAnalytics = analytics.isAnalytics();
 
         var init = function () {

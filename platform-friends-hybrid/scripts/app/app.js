@@ -31,9 +31,16 @@ var app = (function (win) {
         }, title, ['OK', 'Cancel']);
     };
 
-    var isApiKeySet = (appSettings.everlive.apiKey !== '$EVERLIVE_API_KEY$');
+    var isNullOrEmpty = function (value) {
+        return typeof value === 'undefined' || value === null || value === '';
+    };
 
-    if (!isApiKeySet) {
+    var isKeySet = function (key) {
+        var regEx = /^\$[A-Z_]+\$$/;
+        return !isNullOrEmpty(key) && !regEx.test(key);
+    };
+
+    if (!isKeySet(appSettings.everlive.apiKey)) {
         alert('Backend Services API Key is not set.');
         return;
     }
@@ -158,6 +165,7 @@ var app = (function (win) {
         showAlert: showAlert,
         showError: showError,
         showConfirm: showConfirm,
+        isKeySet: isKeySet,
         mobileApp: mobileApp,
         helper: AppHelper,
         everlive: el,
@@ -165,4 +173,3 @@ var app = (function (win) {
     };
 
 }(window));
-
