@@ -12,7 +12,8 @@ spec(function() {
 
 		// NOTE: Update this to the Android package name of the Friends App
 		ANDROID_PACKAGE: 'com.telerik.friends',
-
+		
+		// NOTE: Update this to the WP8 URI of the Friends App
 		WP8_NAME: 'defaultAppUrl'
 	};
 
