@@ -340,6 +340,22 @@
     background-color: transparent;
 }
 
+/* No API Key screen */
+
+#friendsApp .noapikey-scrn p {
+    line-height: 1.5;
+    color: #e4e4e4;
+}
+
+#friendsApp .noapikey-scrn p strong,
+#friendsApp .noapikey-scrn p span {
+    color: #fff;
+}
+
+#friendsApp .noapikey-scrn p span {
+    font-weight: 600;
+}
+
 /* Signup */
 
 #friendsApp .signup-view .select-wrp {

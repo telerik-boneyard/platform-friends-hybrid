@@ -13,13 +13,19 @@ app.Login = (function () {
 
         var $loginUsername;
         var $loginPassword;
-        var isFacebookLogin = (appSettings.facebook.appId !== '$FACEBOOK_APP_ID$' && appSettings.facebook.redirectUri !== '$FACEBOOK_REDIRECT_URI$');
-        var isGoogleLogin = (appSettings.google.clientId !== '$GOOGLE_CLIENT_ID$' && appSettings.google.redirectUri !== '$GOOGLE_REDIRECT_URI$');
-        var isLiveIdLogin = (appSettings.liveId.clientId !== '$LIVEID_CLIENT_ID$' && appSettings.liveId.redirectUri !== '$LIVEID_CLIENT_ID$');
-        var isAdfsLogin = (appSettings.adfs.adfsRealm !== '$ADFS_REALM$' && appSettings.adfs.adfsEndpoint !== '$ADFS_ENDPOINT$');
+
+        var isFacebookLogin = app.isKeySet(appSettings.facebook.appId) && app.isKeySet(appSettings.facebook.redirectUri);
+        var isGoogleLogin = app.isKeySet(appSettings.google.clientId) && app.isKeySet(appSettings.google.redirectUri);
+        var isLiveIdLogin = app.isKeySet(appSettings.liveId.clientId) && app.isKeySet(appSettings.liveId.redirectUri);
+        var isAdfsLogin = app.isKeySet(appSettings.adfs.adfsRealm) && app.isKeySet(appSettings.adfs.adfsEndpoint);
         var isAnalytics = analytics.isAnalytics();
 
         var init = function () {
+
+            if (!app.isKeySet(appSettings.everlive.apiKey)) {
+                app.mobileApp.navigate('views/noApiKey.html', 'fade');
+            }
+
             $loginUsername = $('#loginUsername');
             $loginPassword = $('#loginPassword');
 
@@ -47,11 +53,6 @@ app.Login = (function () {
         var show = function () {
             $loginUsername.val('');
             $loginPassword.val('');
-        };
-
-        var getYear = function () {
-            var currentTime = new Date();
-            return currentTime.getFullYear();
         };
 
         // Authenticate to use Backend Services as a particular user
@@ -273,7 +274,7 @@ app.Login = (function () {
         return {
             init: init,
             show: show,
-            getYear: getYear,
+            getYear: app.getYear,
             login: login,
             loginWithFacebook: loginWithFacebook,
             loginWithGoogle: loginWithGoogle,
