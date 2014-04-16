@@ -12,7 +12,7 @@ spec(function() {
 
 		// NOTE: Update this to the Android package name of the Friends App
 		ANDROID_PACKAGE: 'com.telerik.friends',
-		
+
 		// NOTE: Update this to the WP8 URI of the Friends App
 		WP8_NAME: 'defaultAppUrl'
 	};
@@ -22,21 +22,19 @@ spec(function() {
 	 * These are reusable queries for elements in the user interface.
 	 */
 	var queries = {
-		ios: {
-			login: {
-				usernameField: { id: 'loginUsername' },
-				passwordField: { id: 'loginPassword' },
-				loginButton: { id: 'login' },
-				loginButtonText: [{ id: 'login' }, { className: 'km-text' }]
-			},
-			activities: {
-				addButton: [{ className: 'km-rightitem' }, { className: 'nav-button' }],
-				logoutButton: [{ id: 'view-all-activities'}, { className: 'km-leftitem' }, { className: 'nav-button' }]
-			},
-			activity: {
-				textArea: { id: 'newStatus' },
-				postButton: [{ id: 'share' }, { className: 'km-rightitem' }, { className: 'nav-button-post' }]
-			}
+		login: {
+			usernameField: { id: 'loginUsername' },
+			passwordField: { id: 'loginPassword' },
+			loginButton: { id: 'login' },
+			loginButtonText: [{ id: 'login' }, { className: 'km-text' }]
+		},
+		activities: {
+			addButton: [{ className: 'km-rightitem' }, { className: 'nav-button' }],
+			logoutButton: [{ id: 'view-all-activities'}, { className: 'km-leftitem' }, { className: 'nav-button' }]
+		},
+		activity: {
+			textArea: { id: 'newStatus' },
+			postButton: [{ id: 'share' }, { className: 'km-rightitem' }, { className: 'nav-button-post' }]
 		}
 	};
 
@@ -63,36 +61,36 @@ spec(function() {
 		},
 		'And is logged in': {
 			'default': [
-				web.setValue(queries.ios.login.usernameField, configuration.USERNAME),
-				web.setValue(queries.ios.login.passwordField, configuration.PASSWORD),
-				web.executeScript('$(targetElement).data("kendoTouch").trigger("tap");', queries.ios.login.loginButton),
+				web.setValue(queries.login.usernameField, configuration.USERNAME),
+				web.setValue(queries.login.passwordField, configuration.PASSWORD),
+				web.executeScript('$(targetElement).data("kendoTouch").trigger("tap");', queries.login.loginButton),
 				web.wait(2000),
 			
 			]
 		},
 		'When add is tapped': {
 			'default': [
-				web.executeScript('$(targetElement).trigger("touchstart").trigger("touchend");', queries.ios.activities.addButton),
+				web.executeScript('$(targetElement).trigger("touchstart").trigger("touchend");', queries.activities.addButton),
 			]
 		},
 
 		'And something on my mind is input': {
 			'default': [
-				web.setValue(queries.ios.activity.textArea, "Hello World."),
+				web.setValue(queries.activity.textArea, "Hello World."),
 				web.wait(2000)
 			]
 		},
 
 		'And post is tapped': {
 			'default': [
-				web.executeScript('$(targetElement).data("kendoMobileButton").trigger("click");', queries.ios.activity.postButton),
+				web.executeScript('$(targetElement).data("kendoMobileButton").trigger("click");', queries.activity.postButton),
 				web.wait(3000)
 			]
 		},
 
 		'And logout is tapped': {
 			'default': [
-				web.executeScript('$(targetElement).trigger("touchstart").trigger("touchend");', queries.ios.activities.logoutButton),
+				web.executeScript('$(targetElement).trigger("touchstart").trigger("touchend");', queries.activities.logoutButton),
 				web.wait(2000)
 			]
 		},
@@ -114,7 +112,7 @@ spec(function() {
 		},
 		'Then the login screen should be displayed': {
 			'default': [
-				web.getHtml(queries.ios.login.loginButtonText, function(result) {
+				web.getHtml(queries.login.loginButtonText, function(result) {
 					assert(result.trim()).equals('Login');
 				})
 			]
