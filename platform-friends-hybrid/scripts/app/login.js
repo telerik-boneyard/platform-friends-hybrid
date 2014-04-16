@@ -21,6 +21,11 @@ app.Login = (function () {
         var isAnalytics = analytics.isAnalytics();
 
         var init = function () {
+
+            if (!app.isKeySet(appSettings.everlive.apiKey)) {
+                app.mobileApp.navigate('views/noApiKey.html', 'fade');
+            }
+
             $loginUsername = $('#loginUsername');
             $loginPassword = $('#loginPassword');
 
@@ -48,11 +53,6 @@ app.Login = (function () {
         var show = function () {
             $loginUsername.val('');
             $loginPassword.val('');
-        };
-
-        var getYear = function () {
-            var currentTime = new Date();
-            return currentTime.getFullYear();
         };
 
         // Authenticate to use Backend Services as a particular user
@@ -274,7 +274,7 @@ app.Login = (function () {
         return {
             init: init,
             show: show,
-            getYear: getYear,
+            getYear: app.getYear,
             login: login,
             loginWithFacebook: loginWithFacebook,
             loginWithGoogle: loginWithGoogle,
