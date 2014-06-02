@@ -13,6 +13,10 @@ var appSettings = {
         productKey: '$EQATEC_PRODUCT_KEY$',  // Put your EQATEC product key here
         version: '1.0.0.0' // Put your application version here
     },
+    
+    feedback: {
+        apiKey: '$APPFEEDBACK_API_KEY$'  // Put your AppFeedback API key here
+    },
 
     facebook: {
         appId: '1408629486049918', // Put your Facebook App ID here
