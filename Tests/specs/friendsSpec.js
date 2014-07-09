@@ -13,8 +13,8 @@ spec(function() {
 		// NOTE: Update this to the Android package name of the Friends App
 		ANDROID_PACKAGE: 'com.telerik.friends',
 
-		// NOTE: Update this to the WP8 URI of the Friends App
-		WP8_NAME: 'defaultAppUrl'
+		// NOTE: Update this to the wp8 URI of the Friends App
+		WP8_URI: 'friends'
 	};
 
 	/**
@@ -46,31 +46,27 @@ spec(function() {
 		'Given Friends is running': {
 			'ios': [
 				ios.launch(configuration.IOS_URL),
-				ios.wait(4000)
 			],
-			'android': [
-				
+			'android': [	
 				android.launch(configuration.ANDROID_PACKAGE),
 				android.wait(4000)
 			],
 			'wp8': [
-				
-				wp8.launch(configuration.WP8_NAME),
-				wp8.wait(4000)
+				wp8.launch(configuration.WP8_URI)
 			]
 		},
 		'And is logged in': {
 			'default': [
 				web.setValue(queries.login.usernameField, configuration.USERNAME),
 				web.setValue(queries.login.passwordField, configuration.PASSWORD),
-				web.executeScript('$(targetElement).data("kendoTouch").trigger("tap");', queries.login.loginButton),
+				web.tap(queries.login.loginButton),
 				web.wait(2000),
 			
 			]
 		},
 		'When add is tapped': {
 			'default': [
-				web.executeScript('$(targetElement).trigger("touchstart").trigger("touchend");', queries.activities.addButton),
+				web.tap(queries.activities.addButton),
 			]
 		},
 
@@ -83,14 +79,14 @@ spec(function() {
 
 		'And post is tapped': {
 			'default': [
-				web.executeScript('$(targetElement).data("kendoMobileButton").trigger("click");', queries.activity.postButton),
+				web.tap(queries.activity.postButton),
 				web.wait(3000)
 			]
 		},
 
 		'And logout is tapped': {
 			'default': [
-				web.executeScript('$(targetElement).trigger("touchstart").trigger("touchend");', queries.activities.logoutButton),
+				web.tap(queries.activities.logoutButton),
 				web.wait(2000)
 			]
 		},
