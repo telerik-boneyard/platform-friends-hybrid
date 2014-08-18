@@ -36,14 +36,6 @@ var app = (function (win) {
         return !isNullOrEmpty(key) && !regEx.test(key);
     };
 
-    var fixViewResize = function () {
-        if (device.platform === 'iOS') {
-            setTimeout(function() {
-                $(document.body).height(window.innerHeight);
-            }, 10);
-        }
-    };
-
     // Handle device back button tap
     var onBackKeyDown = function(e) {
         e.preventDefault();
@@ -68,7 +60,6 @@ var app = (function (win) {
         document.addEventListener('backbutton', onBackKeyDown, false);
 
         navigator.splashscreen.hide();
-        fixViewResize();
 
         if (analytics.isAnalytics()) {
             analytics.Start();
@@ -89,9 +80,7 @@ var app = (function (win) {
 
     // Handle "deviceready" event
     document.addEventListener('deviceready', onDeviceReady, false);
-    // Handle "orientationchange" event
-    document.addEventListener('orientationchange', fixViewResize);
-
+ 
     // Initialize Everlive SDK
     var el = new Everlive({
                               apiKey: appSettings.everlive.apiKey,
