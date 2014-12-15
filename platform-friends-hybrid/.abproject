@@ -44,7 +44,6 @@
     "org.apache.cordova.splashscreen",
     "com.telerik.plugin.eqatecanalytics",
     "com.telerik.feedback",
-    "com.telerik.mobiletesting",
     "org.apache.cordova.vibration"
   ],
   "DeviceOrientations": [
@@ -76,5 +75,10 @@
   ],
   "WP8Capabilities": [],
   "WP8Requirements": [],
-  "Framework": "Cordova"
+  "Framework": "Cordova",
+  "CordovaPluginVariables": {
+    "com.telerik.mobiletesting": {
+      "IOS_APP_URL": ""
+    }
+  }
 }
