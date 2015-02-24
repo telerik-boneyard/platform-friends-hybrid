@@ -35,15 +35,16 @@ var IdentityProvider = function (config) {
                             + '&scope=' + config.scope;
         }
 
-        //CALL IN APP BROWSER WITH THE LINK
+        // open the InAppBrowser with the link 
         ref = window.open(authorize_url, '_blank', 'location=no');
 
         ref.addEventListener('loadstop', function(event) {
             that.locationChanged(event.url, callback);
         });
 
-        //The following is required in iPhone as the loadstop event is never fired.
-        if (config.name === 'ADFS') {
+        // The following is required in iPhone as the loadstop event is never fired.
+        // The check for Google is required to parse the access token of the redirect Uri 
+        if (config.name === 'ADFS' || config.name === 'Google') {
             ref.addEventListener('loadstart', function(event) {
                 that.locationChanged(event.url, callback);
             });
