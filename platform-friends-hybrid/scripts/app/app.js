@@ -117,6 +117,11 @@ var app = (function (win) {
         // Current user logout
         logout: function () {
             return el.Users.logout();
+        },
+        
+        autoSizeTextarea: function () {
+            var rows = $(this).val().split('\n');
+            $(this).prop('rows', rows.length + 1);
         }
     };
 

@@ -11,6 +11,7 @@ app.Signup = (function () {
         var dataSource;
         var $signUpForm;
         var $formFields;
+        var $signupInfo;
         var $signupBtnWrp;
         var validator;
 
@@ -45,6 +46,7 @@ app.Signup = (function () {
 
             $signUpForm = $('#signUp');
             $formFields = $signUpForm.find('input, textarea, select');
+            $signupInfo = $('#signupInfo');
             $signupBtnWrp = $('#signupBtnWrp');
             validator = $signUpForm.kendoValidator({ validateOnBlur: false }).data('kendoValidator');
 
@@ -55,10 +57,13 @@ app.Signup = (function () {
                     $signupBtnWrp.addClass('disabled');
                 }
             });
+
+            $signupInfo.on('keydown', app.helper.autoSizeTextarea);
         }
 
         // Executed after show of the Signup view
         var show = function () {
+            $signupInfo.prop('rows', 1);
 
             dataSource = kendo.observable({
                 Username: '',

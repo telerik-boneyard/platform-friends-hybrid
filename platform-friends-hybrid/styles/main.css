@@ -213,7 +213,7 @@ input[type='week'] {
   min-height: 3.15em;
 }
 
-#friendsApp.km-flat.km-on-ios.km-black-translucent-status-bar .km-header .km-navbar {
+#friendsApp.km-flat .km-header .km-navbar {
   border-bottom: 1px solid #c9c9c9;
 }
 
@@ -310,8 +310,9 @@ input[type='week'] {
 
 /* Signup */
 
-#friendsApp textarea {
+#friendsApp.km-flat textarea {
   float: none;
+  height: auto;
   margin: 0;
   resize: none;
 }
@@ -532,13 +533,6 @@ input[type='week'] {
   -webkit-transform: translate(-50%, -50%);
       -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
-}
-
-#friendsApp .user-share textarea {
-  float: none;
-  height: 13.5em;
-  min-height: 3em;
-  margin: 0;
 }
 
 #friendsApp .add-activity-view .km-leftitem,
