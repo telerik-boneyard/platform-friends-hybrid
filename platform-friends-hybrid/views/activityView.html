@@ -1,37 +1,42 @@
 <div data-role="view" id="single-activity" data-layout="default" class="activity-view" data-init="app.Activity.init" data-show="app.Activity.show">
-    <div data-role="header">
-        <div data-role="navbar">
-            Activity
-            <a class="nav-button nav-button-back hide-text" data-align="left" data-role="backbutton">Back</a>
-            <a class="nav-button nav-button-post" data-align="right" data-role="button" href="views/addCommentView.html">Comment</a>
-        </div>
-    </div>
+    <div data-role="header"></div>
 
-    <div id="status-container" class="user-status-wrp cf" data-role="listview" data-style="inset">
-        <div class="user-avatar">
-            <img data-bind="attr:{src: User().PictureUrl}" alt="styles/images/avatar.png" />
+    <div id="status-container" class="user-status-wrp cf">
+        <div data-role="navbar">
+            <a class="nav-button" data-align="left" data-role="backbutton"><i class="fa fa-arrow-left fa-lg"></i></a>
+            <a class="nav-button" data-align="right" data-role="button" href="views/addCommentView.html"><i class="fa fa-comment fa-lg"></i></a>
+            <a class="nav-button" data-align="right" data-role="button" data-bind="visible: isVisible" data-click="app.Activity.remove"><i class="fa fa-trash-o fa-lg"></i></a>
         </div>
-        <div class="activity-content">
-            <h2 id="personName" class="person-name" data-bind='text: User().DisplayName'></h2>
-            <span id="activityDate" class="time-span" data-bind="text: CreatedAtFormatted"></span>
-            <span id="activityText" data-bind="text: Text" class="user-share-txt"></span>
+
+        <div class="picture-wrp">
             <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="100%"/>
-            <div class="comments-wrp">
-                <ul id="comments-listview"></ul>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <img data-bind="attr:{src: User().PictureUrl}" alt="#: User().DisplayName #" />
+                </div>
+                <h2 id="personName" class="person-name" data-bind='text: User().DisplayName'></h2>
+                <span id="activityDate" class="time-span" data-bind="text: CreatedAtFormatted"></span>
             </div>
         </div>
-    </div>
-    
-    <div data-role="footer">
-        <a data-role="button" data-bind="visible: isVisible" data-click="app.Activity.remove" class="btn btn-delete">Delete</a>
+        
+        <div class="content">
+            <div class="activity-content">
+                <span id="activityText" data-bind="text: Text" class="user-share-txt"></span>
+                <div class="comments-wrp">
+                    <ul id="comments-listview"></ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Comments Template -->
 <script type="text/x-kendo-template" id="commentsTemplate">
+    <div class="user-avatar">
+        <img src="#: User().PictureUrl #" alt="#: User().DisplayName #" />
+    </div>
     <div class="comment-content">
-        <h2 class="person-name">${User()}</h2>
-        <span class="time-span">${CreatedAtFormatted()}</span>
-        <a class="user-share-txt">${Comment}</a>
+        <h2 class="person-name">#: User().DisplayName #</h2>
+        <a class="user-share-txt">#: Comment #</a>
     </div>
 </script>

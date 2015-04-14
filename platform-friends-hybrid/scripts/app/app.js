@@ -130,10 +130,6 @@ var app = (function (win) {
                                                      skin: 'flat'
                                                  });
 
-    var getYear = (function () {
-        return new Date().getFullYear();
-    }());
-
     return {
         showAlert: showAlert,
         showError: showError,
@@ -141,7 +137,6 @@ var app = (function (win) {
         isKeySet: isKeySet,
         mobileApp: mobileApp,
         helper: AppHelper,
-        everlive: el,
-        getYear: getYear
+        everlive: el
     };
 }(window));

@@ -60,6 +60,8 @@ app.Login = (function () {
 
             var username = $loginUsername.val();
             var password = $loginPassword.val();
+            
+            app.mobileApp.showLoading();
 
             // Authenticate using the username and password
             app.everlive.Users.login(username, password)
@@ -68,7 +70,8 @@ app.Login = (function () {
                 if (isAnalytics) {
                     analytics.TrackFeature('Login.Regular');
                 }
-
+                
+                app.mobileApp.hideLoading();
                 return app.Users.load();
             })
             .then(function () {
@@ -77,6 +80,7 @@ app.Login = (function () {
             })
             .then(null,
                   function (err) {
+                      app.mobileApp.hideLoading();
                       app.showError(err.message);
                   }
             );

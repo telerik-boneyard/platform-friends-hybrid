@@ -16,7 +16,7 @@ app.Activity = (function () {
             activity,
             $activityPicture;
         
-        var init = function () {
+        var init = function (e) {
             $commentsContainer = $('#comments-listview');
             $activityPicture = $('#picture');
         };
@@ -69,7 +69,7 @@ app.Activity = (function () {
             remove: removeActivity,
             activity: function () {
                 return activity;
-            },
+            }
         };
         
     }());

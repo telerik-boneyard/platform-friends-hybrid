@@ -5,12 +5,12 @@
 var appSettings = {
 
     everlive: {
-        apiKey: '$EVERLIVE_API_KEY$', // Put your Backend Services API key here
+        apiKey: 'Y84L0irUx51o4egf', // Put your Backend Services API key here
         scheme: 'http'
     },
 
     eqatec: {
-        productKey: '$EQATEC_PRODUCT_KEY$',  // Put your EQATEC product key here
+        productKey: '7e5b6a4f3447422899a1cb3529189783',  // Put your EQATEC product key here
         version: '1.0.0.0' // Put your application version here
     },
     
@@ -40,6 +40,6 @@ var appSettings = {
 
     messages: {
         mistSimulatorAlert: 'The social login doesn\'t work in the In-Browser Client, you need to deploy the app to a device, or run it in the simulator of the Windows Client or Visual Studio.',
-        removeActivityConfirm: 'Are you sure you want to delete this Activity?'
+        removeActivityConfirm: 'This activity will be deleted. This action can not be undone.'
     }
 };
