@@ -310,7 +310,7 @@ input[type='week'] {
 
 /* Signup */
 
-#friendsApp .txtarea-wrp textarea {
+#friendsApp textarea {
   float: none;
   margin: 0;
   resize: none;
