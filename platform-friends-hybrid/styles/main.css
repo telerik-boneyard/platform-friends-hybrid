@@ -188,6 +188,32 @@ input[type='week'] {
   background-color: transparent;
 }
 
+#friendsApp .nav-button-icon {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+#friendsApp .nav-button-back {
+  background-image: url(images/icon-arrow.png);
+}
+
+#friendsApp .nav-button-back-d {
+  background-image: url(images/icon-arrow_dark.png);
+}
+
+#friendsApp .nav-button-comment {
+  background-image: url(images/icon-comment.png);
+}
+
+#friendsApp .nav-button-delete {
+  background-image: url(images/icon-delete.png);
+}
+
 #friendsApp .nav-button.km-state-active {
   color: #000;
 }
@@ -275,7 +301,25 @@ input[type='week'] {
 #friendsApp .welcome-scrn .group-wrp .oauth .btn {
   height: 45px;
   padding-top: 1.1em;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
   overflow: hidden;
+}
+
+#friendsApp .welcome-scrn .group-wrp .oauth .btn-facebook {
+  background-image: url(images/logo-facebook.png);
+}
+
+#friendsApp .welcome-scrn .group-wrp .oauth .btn-google {
+  background-image: url(images/logo-google.png);
+}
+
+#friendsApp .welcome-scrn .group-wrp .oauth .btn-windows {
+  background-image: url(images/logo-windows.png);
+}
+
+#friendsApp .welcome-scrn .group-wrp .oauth .btn-adfs {
+  background-image: url(images/logo-adfs.png);
 }
 
 #friendsApp .welcome-scrn .group-wrp .oauth .btn span,
@@ -570,5 +614,42 @@ input[type='week'] {
   #friendsApp .app-name {
     background-image: url(images/logo-friends@2x.png);
     background-size: 127px 119px;
+  }
+
+  #friendsApp .nav-button,
+  #friendsApp .welcome-scrn .group-wrp .oauth .btn {
+    background-size: 40px 40px;
+  }
+
+  #friendsApp .nav-button-back {
+    background-image: url(images/icon-arrow@2x.png);
+  }
+
+  #friendsApp .nav-button-back-d {
+    background-image: url(images/icon-arrow_dark@2x.png);
+  }
+
+  #friendsApp .nav-button-comment {
+    background-image: url(images/icon-comment@2x.png);
+  }
+
+  #friendsApp .nav-button-delete {
+    background-image: url(images/icon-delete@2x.png);
+  }
+
+  #friendsApp .welcome-scrn .group-wrp .oauth .btn-facebook {
+    background-image: url(images/logo-facebook@2x.png);
+  }
+
+  #friendsApp .welcome-scrn .group-wrp .oauth .btn-google {
+    background-image: url(images/logo-google@2x.png);
+  }
+
+  #friendsApp .welcome-scrn .group-wrp .oauth .btn-windows {
+    background-image: url(images/logo-windows@2x.png);
+  }
+
+  #friendsApp .welcome-scrn .group-wrp .oauth .btn-adfs {
+    background-image: url(images/logo-adfs@2x.png);
   }
 }
