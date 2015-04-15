@@ -44,6 +44,7 @@
     "org.apache.cordova.splashscreen",
     "com.telerik.plugin.eqatecanalytics",
     "com.telerik.feedback",
+    "com.telerik.mobiletesting",
     "org.apache.cordova.vibration"
   ],
   "DeviceOrientations": [
