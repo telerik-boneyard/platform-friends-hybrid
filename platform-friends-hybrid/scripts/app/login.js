@@ -125,7 +125,7 @@ app.Login = (function () {
                 })
                 .then(null, function (err) {
                     app.mobileApp.hideLoading();
-                    if (err.code == 214) {
+                    if (err.code === 214) {
                         app.showError('The specified identity provider is not enabled in the backend portal.');
                     } else {
                         app.showError(err.message);
@@ -172,7 +172,7 @@ app.Login = (function () {
                 })
                 .then(null, function (err) {
                     app.mobileApp.hideLoading();
-                    if (err.code == 214) {
+                    if (err.code === 214) {
                         app.showError('The specified identity provider is not enabled in the backend portal.');
                     } else {
                         app.showError(err.message);
@@ -219,7 +219,7 @@ app.Login = (function () {
                 })
                 .then(null, function (err) {
                     app.mobileApp.hideLoading();
-                    if (err.code == 214) {
+                    if (err.code === 214) {
                         app.showError('The specified identity provider is not enabled in the backend portal.');
                     } else {
                         app.showError(err.message);
@@ -262,7 +262,7 @@ app.Login = (function () {
                 })
                 .then(null, function (err) {
                     app.mobileApp.hideLoading();
-                    if (err.code == 214) {
+                    if (err.code === 214) {
                         app.showError('The specified identity provider is not enabled in the backend portal.');
                     } else {
                         app.showError(err.message);

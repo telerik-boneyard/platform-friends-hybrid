@@ -86,7 +86,7 @@ app.Signup = (function () {
 
         var onSelectChange = function (sel) {
             var selected = sel.options[sel.selectedIndex].value;
-            sel.style.color = (selected == 0) ? '#b6c5c6' : '#34495e';
+            sel.style.color = (selected === 0) ? '#b6c5c6' : '#34495e';
         }
 
         return {
