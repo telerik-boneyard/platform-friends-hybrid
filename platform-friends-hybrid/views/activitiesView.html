@@ -10,7 +10,7 @@
     <ul id="activities-listview" data-style="inset" data-role="listview" data-template="activityTemplate"
         data-bind="source: activities"></ul>
     <p id="no-activities-span" hidden="hidden" class="no-items-msg">
-        <b>You have no posts yet.</b><br /><br />Tap on the plus sign and share what's on your mind.
+        <b>You have no posts yet.</b><br><br>Tap on the plus sign and share what's on your mind.
     </p>
 </div>
 
@@ -18,12 +18,12 @@
 <script type="text/x-kendo-template" id="activityTemplate">
     <div data-role="touch" data-bind="events: { tap: activitySelected }" class="cf">
         <div class="user-avatar">
-            <img data-bind="attr:{src: User().PictureUrl}" alt="#: User().DisplayName #" />
+            <img data-bind="attr:{src: User().PictureUrl}" alt="#: User().DisplayName #">
         </div>
         <div class="activity-content">
             <h2 class="person-name">#: User().DisplayName #</h2>
             <div data-bind="visible: Picture">
-                <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="100%"/>
+                <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="100%">
             </div>
             <a class="user-share-txt">#: Text #</a>
             <span class="time-span">#: CreatedAtFormatted() #</span>

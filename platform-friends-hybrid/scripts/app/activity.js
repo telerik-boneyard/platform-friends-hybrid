@@ -16,7 +16,7 @@ app.Activity = (function () {
             activity,
             $activityPicture;
         
-        var init = function (e) {
+        var init = function () {
             $commentsContainer = $('#comments-listview');
             $activityPicture = $('#picture');
         };
