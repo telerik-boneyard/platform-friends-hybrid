@@ -1,7 +1,7 @@
 {
   "ProjectGuid": "003f5d01-c32e-4f2f-8a44-f2e7b1f00008",
   "ProjectTypeGuids": "{070BCB52-5A75-4F8C-A973-144AF0EAFCC9}",
-  "AppIdentifier": "com.telerik.everlivefriendshybrid",
+  "AppIdentifier": "com.telerik.PushNotificationApp",
   "ProjectName": "platform-friends-hybrid",
   "AndroidPermissions": [
     "android.permission.ACCESS_COARSE_LOCATION",
@@ -76,12 +76,8 @@
   "WP8Capabilities": [],
   "WP8Requirements": [],
   "Framework": "Cordova",
-  "CordovaPluginVariables": {
-    "com.telerik.mobiletesting": {
-      "IOS_APP_URL": ""
-    }
-  },
   "projectVersion": "1",
   "WP8WindowsPublisherName": "CN=Telerik",
-  "WP8PackageIdentityName": "1234Telerik.com.telerik.everlivefriendshybrid"
+  "WP8PackageIdentityName": "1234Telerik.com.telerik.everlivefriendshybrid",
+  "WPSdk": "8.0"
 }
