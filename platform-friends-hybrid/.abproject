@@ -44,6 +44,7 @@
     "org.apache.cordova.splashscreen",
     "com.telerik.plugin.eqatecanalytics",
     "com.telerik.feedback",
+    "com.telerik.mobiletesting",
     "org.apache.cordova.vibration"
   ],
   "DeviceOrientations": [
@@ -52,7 +53,7 @@
   ],
   "iOSStatusBarStyle": "Default",
   "AndroidHardwareAcceleration": "false",
-  "FrameworkVersion": "3.5.0",
+  "FrameworkVersion": "3.7.0",
   "BundleVersion": "1.0",
   "iOSDisplayName": "",
   "iOSDeviceFamily": [
