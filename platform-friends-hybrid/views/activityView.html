@@ -3,9 +3,9 @@
 
     <div id="status-container" class="user-status-wrp cf">
         <div data-role="navbar">
-            <a class="nav-button" data-align="left" data-role="backbutton"><i class="fa fa-arrow-left fa-lg"></i></a>
-            <a class="nav-button" data-align="right" data-role="button" href="views/addCommentView.html"><i class="fa fa-comment fa-lg"></i></a>
-            <a class="nav-button" data-align="right" data-role="button" data-bind="visible: isVisible" data-click="app.Activity.remove"><i class="fa fa-trash-o fa-lg"></i></a>
+            <a class="nav-button nav-button-icon nav-button-back hide-text" data-align="left" data-role="backbutton">Back</a>
+            <a class="nav-button nav-button-icon nav-button-comment hide-text" data-align="right" data-role="button" href="views/addCommentView.html">Add Comment</a>
+            <a class="nav-button nav-button-icon nav-button-delete hide-text" data-align="right" data-role="button" data-bind="visible: isVisible" data-click="app.Activity.remove">Delete</a>
         </div>
 
         <div class="picture-wrp">

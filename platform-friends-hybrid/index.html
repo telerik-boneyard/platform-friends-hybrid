@@ -23,7 +23,6 @@
         <script src="scripts/app/add-comment.js"></script>
 
         <link href="//fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
-        <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet">
         <link href="styles/main.css" rel="stylesheet">
     </head>
@@ -49,16 +48,16 @@
                 </li>
                 <li class="oauth cf">
                     <span id="loginWithFacebook" class="oauth-item" data-role="touch" data-bind="events: { tap: loginWithFacebook }">
-                        <a data-role="button" class="btn"><i class="fa fa-facebook fa-lg"></i></a>
+                        <a data-role="button" class="btn btn-facebook hide-text">Facebook</a>
                     </span>
                     <span id="loginWithGoogle" class="oauth-item" data-role="touch" data-bind="events: { tap: loginWithGoogle }">
-                        <a data-role="button" class="btn"><i class="fa fa-google-plus fa-lg"></i></a>
+                        <a data-role="button" class="btn btn-google hide-text">Google</a>
                     </span>
                     <span id="loginWithLiveID" class="oauth-item" data-role="touch" data-bind="events: { tap: loginWithLiveID }">
-                        <a data-role="button" class="btn"><i class="fa fa-windows fa-lg"></i></a>
+                        <a data-role="button" class="btn btn-windows hide-text">LiveID</a>
                     </span>
                     <span id="loginWithADSF" class="oauth-item" data-role="touch" data-bind="events: { tap: loginWithADSF }">
-                        <a data-role="button" class="btn"><i class="fa fa-users fa-lg"></i></a>
+                        <a data-role="button" class="btn btn-adfs hide-text">ADFS</a>
                     </span>
                 </li>
                 <li class="signup">
