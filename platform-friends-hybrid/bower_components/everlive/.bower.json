@@ -1,0 +1,22 @@
+{
+  "name": "everlive",
+  "version": "1.2.14",
+  "main": "min/everlive.all.min.js",
+  "ignore": [
+    "bower.json",
+    "readme",
+    "license",
+    "README.md"
+  ],
+  "homepage": "https://github.com/telerik/backend-services-js-sdk",
+  "_release": "1.2.14",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.2.14",
+    "commit": "a89116c3eec9b4d897e10deaf8b70244240d60d2"
+  },
+  "_source": "git://github.com/telerik/backend-services-js-sdk.git",
+  "_target": "~1.2.14",
+  "_originalSource": "everlive",
+  "_direct": true
+}
