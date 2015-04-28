@@ -143,8 +143,21 @@ input[type='week'] {
   font-size: 1rem;
 }
 
+#friendsApp.km-flat.km-on-wp .km-list input[type='text']:not(.k-input),
+#friendsApp.km-flat.km-on-wp .km-list input[type='password'],
+#friendsApp.km-flat.km-on-wp .km-list input[type='email'],
+#friendsApp.km-flat.km-on-wp .km-list input[type='date'],
+#friendsApp.km-flat.km-on-wp textarea,
+#friendsApp.km-flat.km-on-wp select {
+  padding: 0 .4em;
+}
+
 #friendsApp.km-flat select {
   padding: .4em .2em;
+}
+
+#friendsApp.km-flat.km-on-wp select {
+  padding: 0 .2em;
 }
 
 /* Buttons */
@@ -596,6 +609,13 @@ input[type='week'] {
   margin: 1rem 0 0;
   padding: 0;
   color: #e84c3d;
+}
+
+#friendsApp.km-flat.km-on-wp .activities-view,
+#friendsApp.km-flat.km-on-wp .activity-view,
+#friendsApp.km-flat.km-on-wp .add-activity-view,
+#friendsApp.km-flat.km-on-wp .add-comment-view {
+    margin-top: 30px;
 }
 
 /* Retina Images */
