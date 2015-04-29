@@ -44,6 +44,7 @@
     "org.apache.cordova.splashscreen",
     "com.telerik.plugin.eqatecanalytics",
     "com.telerik.feedback",
+    "com.telerik.mobiletesting",
     "org.apache.cordova.vibration"
   ],
   "DeviceOrientations": [
@@ -52,7 +53,7 @@
   ],
   "iOSStatusBarStyle": "Default",
   "AndroidHardwareAcceleration": "false",
-  "FrameworkVersion": "3.5.0",
+  "FrameworkVersion": "3.7.0",
   "BundleVersion": "1.0",
   "iOSDisplayName": "",
   "iOSDeviceFamily": [
@@ -76,9 +77,8 @@
   "WP8Capabilities": [],
   "WP8Requirements": [],
   "Framework": "Cordova",
-  "CordovaPluginVariables": {
-    "com.telerik.mobiletesting": {
-      "IOS_APP_URL": ""
-    }
-  }
+  "projectVersion": "1",
+  "WP8WindowsPublisherName": "CN=Telerik",
+  "WP8PackageIdentityName": "1234Telerik.com.telerik.everlivefriendshybrid",
+  "WPSdk": "8.0"
 }

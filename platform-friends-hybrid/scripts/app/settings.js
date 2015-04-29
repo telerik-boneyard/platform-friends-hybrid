@@ -40,6 +40,6 @@ var appSettings = {
 
     messages: {
         mistSimulatorAlert: 'The social login doesn\'t work in the In-Browser Client, you need to deploy the app to a device, or run it in the simulator of the Windows Client or Visual Studio.',
-        removeActivityConfirm: 'Are you sure you want to delete this Activity?'
+        removeActivityConfirm: 'This activity will be deleted. This action can not be undone.'
     }
 };

@@ -16,6 +16,8 @@ app.AddActivity = (function () {
             
             validator = $('#enterStatus').kendoValidator().data('kendoValidator');
             $newStatus = $('#newStatus');
+
+            $newStatus.on('keydown', app.helper.autoSizeTextarea);
         };
         
         var show = function () {
@@ -23,6 +25,7 @@ app.AddActivity = (function () {
             // Clear field on view show
             $newStatus.val('');
             validator.hideMessages();
+            $newStatus.prop('rows', 1);
         };
         
         var saveActivity = function () {

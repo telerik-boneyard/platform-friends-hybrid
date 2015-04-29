@@ -69,7 +69,7 @@ app.Activity = (function () {
             remove: removeActivity,
             activity: function () {
                 return activity;
-            },
+            }
         };
         
     }());

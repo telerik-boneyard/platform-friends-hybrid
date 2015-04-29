@@ -60,6 +60,8 @@ app.Login = (function () {
 
             var username = $loginUsername.val();
             var password = $loginPassword.val();
+            
+            app.mobileApp.showLoading();
 
             // Authenticate using the username and password
             app.everlive.Users.login(username, password)
@@ -68,7 +70,8 @@ app.Login = (function () {
                 if (isAnalytics) {
                     analytics.TrackFeature('Login.Regular');
                 }
-
+                
+                app.mobileApp.hideLoading();
                 return app.Users.load();
             })
             .then(function () {
@@ -77,6 +80,7 @@ app.Login = (function () {
             })
             .then(null,
                   function (err) {
+                      app.mobileApp.hideLoading();
                       app.showError(err.message);
                   }
             );
@@ -121,7 +125,7 @@ app.Login = (function () {
                 })
                 .then(null, function (err) {
                     app.mobileApp.hideLoading();
-                    if (err.code == 214) {
+                    if (err.code === 214) {
                         app.showError('The specified identity provider is not enabled in the backend portal.');
                     } else {
                         app.showError(err.message);
@@ -168,7 +172,7 @@ app.Login = (function () {
                 })
                 .then(null, function (err) {
                     app.mobileApp.hideLoading();
-                    if (err.code == 214) {
+                    if (err.code === 214) {
                         app.showError('The specified identity provider is not enabled in the backend portal.');
                     } else {
                         app.showError(err.message);
@@ -215,7 +219,7 @@ app.Login = (function () {
                 })
                 .then(null, function (err) {
                     app.mobileApp.hideLoading();
-                    if (err.code == 214) {
+                    if (err.code === 214) {
                         app.showError('The specified identity provider is not enabled in the backend portal.');
                     } else {
                         app.showError(err.message);
@@ -258,7 +262,7 @@ app.Login = (function () {
                 })
                 .then(null, function (err) {
                     app.mobileApp.hideLoading();
-                    if (err.code == 214) {
+                    if (err.code === 214) {
                         app.showError('The specified identity provider is not enabled in the backend portal.');
                     } else {
                         app.showError(err.message);

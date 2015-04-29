@@ -16,6 +16,8 @@ app.AddComment = (function () {
             
             validator = $('#enterComment').kendoValidator().data('kendoValidator');
             $newComment = $('#newComment');
+
+            $newComment.on('keydown', app.helper.autoSizeTextarea);
         };
         
         var show = function () {
@@ -23,6 +25,7 @@ app.AddComment = (function () {
             // Clear field on view show
             $newComment.val('');
             validator.hideMessages();
+            $newComment.prop('rows', 1);
         };
         
         var saveComment = function () {

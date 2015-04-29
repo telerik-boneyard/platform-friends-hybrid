@@ -1,10 +1,6 @@
 // Type definitions for Kendo UI
 
 declare module kendo {
-    function bind(selector: string, viewModel: any, namespace?: any): void;
-    function bind(element: JQuery, viewModel: any, namespace?: any): void;
-    function bind(element: Element, viewModel: any, namespace?: any): void;
-    function culture(value: string): void;
     function culture(): {
         name: string;
         calendar: {
@@ -171,39 +167,24 @@ declare module kendo {
         };
     }};
 
-    function destroy(selector: string): void;
-    function destroy(element: Element): void;
-    function destroy(element: JQuery): void;
     function format(format: string, ...values: any[]): string;
 
     function fx(selector: string): effects.Element;
     function fx(element: Element): effects.Element;
     function fx(element: JQuery): effects.Element;
 
-    function htmlEncode(value: string): string;
     function init(selector: string, ...namespaces: any[]): void;
     function init(element: JQuery, ...namespaces: any[]): void;
     function init(element: Element, ...namespaces: any[]): void;
+
     function observable(data: any): kendo.data.ObservableObject;
     function observableHierarchy(array: any[]): kendo.data.ObservableArray;
-    function parseDate(value: any, format?: string, culture?: string): Date;
-    function parseFloat(value: any, culture?: string): number;
-    function parseInt(value: any, culture?: string): number;
+
     function render(template:(data: any) => string, data: any[]): string;
-    function resize(selector: string): void;
-    function resize(element: JQuery): void;
-    function resize(element: Element): void;
-    function stringify(value: Object): string;
     function template(template: string, options?: TemplateOptions): (data: any) => string;
-    function touchScroller(selector: string): void;
-    function touchScroller(element: Element): void;
-    function touchScroller(element: JQuery): void;
-    function toString(value: number, format: string): string;
-    function toString(value: Date, format: string): string;
-    function unbind(selector: string): void;
-    function unbind(element: JQuery): void;
-    function unbind(element: Element): void;
+
     function guid(): string;
+
     function widgetInstance(element: JQuery, suite: typeof kendo.ui): kendo.ui.Widget;
     function widgetInstance(element: JQuery, suite: typeof kendo.mobile.ui): kendo.ui.Widget;
 
@@ -541,6 +522,7 @@ declare module kendo.data {
         };
         constructor(data?: any);
         init(data?: any):void;
+        accept(data?: any): void;
         dirty: boolean;
         id: any;
         editable(field: string): boolean;
@@ -851,7 +833,35 @@ declare module kendo.data {
 
     interface DataSourceTransport {
         parameterMap?(data: DataSourceTransportParameterMapData, type: string): any;
+        create?: DataSourceTransportCreate;
+        destroy?: DataSourceTransportDestroy;
+        push?: Function;
+        read?: DataSourceTransportRead;
+        signalr?: DataSourceTransportSignalr;
+        update?: DataSourceTransportUpdate;
     }
+
+    interface DataSourceTransportSignalrClient {
+        create?: string;
+        destroy?: string;
+        read?: string;
+        update?: string;
+    }
+
+    interface DataSourceTransportSignalrServer {
+        create?: string;
+        destroy?: string;
+        read?: string;
+        update?: string;
+    }
+
+    interface DataSourceTransportSignalr {
+        client?: DataSourceTransportSignalrClient;
+        hub?: any;
+        promise?: any;
+        server?: DataSourceTransportSignalrServer;
+    }
+
 
     interface DataSourceParameterMapDataAggregate {
         field?: string;
@@ -939,27 +949,29 @@ declare module kendo.data {
         constructor(array?: any[]);
         init(array?: any[]): void;
         [index: number]: any;
-        length: number;
+
+        empty(): void;
+        every(callback: (item: Object, index: number, source: ObservableArray) => boolean): boolean;
+        filter(callback: (item: Object, index: number, source: ObservableArray) => boolean): any[];
+        find(callback: (item: Object, index: number, source: ObservableArray) => boolean): any;
+        forEach(callback: (item: Object, index: number, source: ObservableArray) => void ): void;
+        indexOf(item: any): number;
         join(separator: string): string;
+        length: number;
+        map(callback: (item: Object, index: number, source: ObservableArray) => any): any[];
         parent(): ObservableObject;
         pop(): ObservableObject;
         push(...items: any[]): number;
+        remove(item: Object): void;
+        shift(): any;
         slice(begin: number, end?: number): any[];
+        some(callback: (item: Object, index: number, source: ObservableArray) => boolean): boolean;
         splice(start: number): any[];
         splice(start: number, deleteCount: number, ...items: any[]): any[];
-        shift(): any;
         toJSON(): any[];
         unshift(...items: any[]): number;
-        wrapAll(source: Object, target: Object): any;
         wrap(object: Object, parent: Object): any;
-        indexOf(item: any): number;
-        forEach(callback: (item: Object, index: number, source: ObservableArray) => void ): void;
-        map(callback: (item: Object, index: number, source: ObservableArray) => any): any[];
-        filter(callback: (item: Object, index: number, source: ObservableArray) => boolean): any[];
-        find(callback: (item: Object, index: number, source: ObservableArray) => boolean): any;
-        every(callback: (item: Object, index: number, source: ObservableArray) => boolean): boolean;
-        some(callback: (item: Object, index: number, source: ObservableArray) => boolean): boolean;
-        remove(item: Object): void;
+        wrapAll(source: Object, target: Object): any;
     }
 
     interface ObservableArrayEvent {
@@ -983,7 +995,7 @@ declare module kendo.data {
         cancelChanges(model?: kendo.data.Model): void;
         data(): kendo.data.ObservableArray;
         data(value: any): void;
-        fetch(callback?: Function): void;
+        fetch(callback?: Function): JQueryPromise<any>;
         filter(filters: DataSourceFilterItem): void;
         filter(filters: DataSourceFilterItem[]): void;
         filter(filters: DataSourceFilters): void;
@@ -1004,13 +1016,13 @@ declare module kendo.data {
         page(page: number): void;
         pageSize(): number;
         pageSize(size: number): void;
-        query(options?: any): void;
-        read(data?: any): void;
-        remove(model: kendo.data.Model): void;
+        query(options?: any): JQueryPromise<any>;
+        read(data?: any): JQueryPromise<any>;
+        remove(model: kendo.data.ObservableObject): void;
         sort(sort: DataSourceSortItem): void;
         sort(sort: DataSourceSortItem[]): void;
         sort(): DataSourceSortItem[];
-        sync(): void;
+        sync(): JQueryPromise<any>;
         total(): number;
         totalPages(): number;
         view(): kendo.data.ObservableArray;
@@ -1095,13 +1107,6 @@ declare module kendo.data {
         dataType?: string;
         type?: string;
         url?: any;
-    }
-
-    interface DataSourceTransport {
-        create?: any;
-        destroy?: any;
-        read?: any;
-        update?: any;
     }
 
     interface DataSourceTransportWithObjectOperations extends DataSourceTransport {
@@ -1202,6 +1207,7 @@ declare module kendo.data {
     }
 
     interface DataSourceRequestStartEvent extends DataSourceEvent {
+        type?: string;
     }
 
     interface DataSourceRequestEndEvent extends DataSourceEvent {
@@ -1669,6 +1675,10 @@ The current instance elements are not altered.
         @returns A string representation of the matrix, e.g. "1, 0, 0, 1, 0, 0".
         */
         toString(digits: number, separator: string): string;
+        static rotate(angle: number, x: number, y: number): kendo.geometry.Matrix;
+        static scale(scaleX: number, scaleY: number): kendo.geometry.Matrix;
+        static translate(x: number, y: number): kendo.geometry.Matrix;
+        static unit(): kendo.geometry.Matrix;
         /**
                 The a (1, 1) member of the matrix.
                 */
@@ -1856,6 +1866,13 @@ The callee coordinates will remain unchanged.
         @returns The current point instance.
         */
         translateWith(vector: any): kendo.geometry.Point;
+        static create(x: number, y: number): kendo.geometry.Point;
+        static create(x: any, y: number): kendo.geometry.Point;
+        static create(x: kendo.geometry.Point, y: number): kendo.geometry.Point;
+        static min(): kendo.geometry.Point;
+        static max(): kendo.geometry.Point;
+        static minPoint(): kendo.geometry.Point;
+        static maxPoint(): kendo.geometry.Point;
         /**
                 The x coordinate of the point.
                 */
@@ -1983,6 +2000,8 @@ This is also the rectangle origin
         @returns The rectangle width.
         */
         width(): number;
+        static fromPoints(pointA: kendo.geometry.Point, pointB: kendo.geometry.Point): kendo.geometry.Rect;
+        static union(rectA: kendo.geometry.Rect, rectB: kendo.geometry.Rect): kendo.geometry.Rect;
         /**
                 The origin (top-left corner) of the rectangle.
                 */
@@ -2044,6 +2063,9 @@ This is also the rectangle origin
         @returns The current Size instance.
         */
         setHeight(value: number): kendo.geometry.Size;
+        static create(width: number, height: number): kendo.geometry.Size;
+        static create(width: any, height: number): kendo.geometry.Size;
+        static create(width: kendo.geometry.Size, height: number): kendo.geometry.Size;
         /**
                 The horizontal size.
                 */
@@ -2099,11 +2121,20 @@ The underlying transformation matrix is updated in-place.
         @param angle - The angle of rotation in decimal degrees.
 Measured in clockwise direction with 0 pointing "right".
 Negative values or values greater than 360 will be normalized.
-        @param x - The center of rotation on the X axis.
-        @param y - The center of rotation on the Y axis.
+        @param center - The center of rotation.
         @returns The current transformation instance.
         */
-        rotate(angle: number, x: number, y: number): kendo.geometry.Transformation;
+        rotate(angle: number, center: any): kendo.geometry.Transformation;
+        /**
+        Sets rotation with the specified parameters.
+        @method
+        @param angle - The angle of rotation in decimal degrees.
+Measured in clockwise direction with 0 pointing "right".
+Negative values or values greater than 360 will be normalized.
+        @param center - The center of rotation.
+        @returns The current transformation instance.
+        */
+        rotate(angle: number, center: kendo.geometry.Point): kendo.geometry.Transformation;
         /**
         Sets scale with the specified parameters.
         @method
@@ -2158,6 +2189,13 @@ Inherited from Element.clip
         @param clip - The element clipping path.
         */
         clip(clip: kendo.drawing.Path): void;
+        /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
         /**
         Gets or sets the arc geometry.
         @method
@@ -2300,6 +2338,13 @@ Inherited from Element.clip
         */
         clip(clip: kendo.drawing.Path): void;
         /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
+        /**
         Gets or sets the circle geometry.
         @method
         @returns The current circle geometry.
@@ -2438,6 +2483,12 @@ Inherited from Element.visible
         */
         clip(clip: kendo.drawing.Path): void;
         /**
+        Returns the bounding box of the element with clipping and transformations applied.This is the rectangle that will fit around the actual rendered element.
+        @method
+        @returns The bounding box of the element with clipping and transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
+        /**
         Gets or sets the element opacity.
         @method
         @returns The current element opacity.
@@ -2552,6 +2603,13 @@ Inherited from Element.clip
         */
         clip(clip: kendo.drawing.Path): void;
         /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
+        /**
         Gets or sets the group opacity.
 Inherited from Element.opacityThe opacity of any child groups and elements will be multiplied by this value.
         @method
@@ -2610,6 +2668,11 @@ Inherited from Element.opacityThe opacity of any child groups and elements will 
         */
         opacity?: number;
         /**
+        Page options to apply during PDF export.
+        @member {kendo.drawing.PDFOptions}
+        */
+        pdf?: kendo.drawing.PDFOptions;
+        /**
         The transformation to apply to this group and its children.
 Inherited from Element.transform
         @member {kendo.geometry.Transformation}
@@ -2653,6 +2716,13 @@ Inherited from Element.clip
         @param clip - The element clipping path.
         */
         clip(clip: kendo.drawing.Path): void;
+        /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
         /**
         Gets or sets the element opacity.
 Inherited from Element.opacity
@@ -2755,6 +2825,73 @@ Inherited from Element.visible
     }
 
 
+    class Layout extends kendo.drawing.Group {
+        constructor(options?: LayoutOptions);
+        options: LayoutOptions;
+        /**
+        Gets or sets the layout rectangle.
+        @method
+        @returns The current rectangle.
+        */
+        rect(): kendo.geometry.Rect;
+        /**
+        Gets or sets the layout rectangle.
+        @method
+        @param rect - The layout rectangle.
+        */
+        rect(rect: kendo.geometry.Rect): void;
+        /**
+        Arranges the elements based on the current options.
+        @method
+        */
+        reflow(): void;
+    }
+
+    interface LayoutOptions {
+        name?: string;
+        /**
+        Specifies the alignment of the content.
+        @member {string}
+        */
+        alignContent?: string;
+        /**
+        Specifies the alignment of the items based.
+        @member {string}
+        */
+        alignItems?: string;
+        /**
+        Specifies how should the content be justified.
+        @member {string}
+        */
+        justifyContent?: string;
+        /**
+        Specifies the distance between the lines for wrapped layout.
+        @member {number}
+        */
+        lineSpacing?: number;
+        /**
+        Specifies the distance between the elements.
+        @member {number}
+        */
+        spacing?: number;
+        /**
+        Specifies layout orientation. The supported values are:
+        @member {string}
+        */
+        orientation?: string;
+        /**
+        Specifies the behavior when the elements size exceeds the rectangle size. If set to true, the elements will be moved to the next "line". If set to false, the layout will be scaled so that the elements fit in the rectangle.
+        @member {boolean}
+        */
+        wrap?: boolean;
+    }
+    interface LayoutEvent {
+        sender: Layout;
+        isDefaultPrevented(): boolean;
+        preventDefault: Function;
+    }
+
+
     class MultiPath extends kendo.drawing.Element {
         constructor(options?: MultiPathOptions);
         options: MultiPathOptions;
@@ -2779,6 +2916,13 @@ Inherited from Element.clip
         @param clip - The element clipping path.
         */
         clip(clip: kendo.drawing.Path): void;
+        /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
         /**
         Closes the current sub-path by linking its current end point with its start point.
         @method
@@ -3076,6 +3220,13 @@ Inherited from Element.clip
         */
         clip(clip: kendo.drawing.Path): void;
         /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
+        /**
         Closes the path by linking the current end point with the start point.
         @method
         @returns The current instance to allow chaining.
@@ -3220,6 +3371,9 @@ Inherited from Element.visible
         @param visible - A flag indicating if the element should be visible.
         */
         visible(visible: boolean): void;
+        static fromPoints(points: any): kendo.drawing.Path;
+        static fromRect(rect: kendo.geometry.Rect): kendo.drawing.Path;
+        static parse(svgPath: string, options?: any): kendo.drawing.Path;
         /**
                 A collection of the path segments.
                 */
@@ -3372,6 +3526,33 @@ Inherited from Element.visible
     class Surface extends kendo.Observable {
         constructor(options?: SurfaceOptions);
         options: SurfaceOptions;
+        /**
+        Clears the drawing surface.
+        @method
+        */
+        clear(): void;
+        /**
+        Draws the element and its children on the surface.
+Existing elements will remain visible.
+        @method
+        @param element - The element to draw.
+        */
+        draw(element: kendo.drawing.Element): void;
+        /**
+        Returns the target drawing element of a DOM event.
+        @method
+        @param e - The original DOM or jQuery event object.
+        @returns The target drawing element, if any.
+        */
+        eventTarget(e: any): kendo.drawing.Element;
+        /**
+        Resizes the surface to match the size of the container.
+        @method
+        @param force - Whether to proceed with resizing even if the container dimensions have not changed.
+        */
+        resize(force?: boolean): void;
+        static create(element: JQuery, options?: any): kendo.drawing.Surface;
+        static create(element: Element, options?: any): kendo.drawing.Surface;
     }
 
     interface SurfaceOptions {
@@ -3481,6 +3662,13 @@ Inherited from Element.clip
         @param clip - The element clipping path.
         */
         clip(clip: kendo.drawing.Path): void;
+        /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
         /**
         Gets or sets the text content.
         @method
@@ -3637,6 +3825,372 @@ declare module kendo {
         preventDefault: Function;
     }
 
+
+    module drawing {
+        function /**
+        Aligns drawing elements x axis position to a given rectangle.
+        @method
+        @param elements - An array with the drawing elements that should be aligned.
+        @param rect - The rectangle in which the elements should be aligned.
+        @param alignment - Specifies how should the elements be aligned. The supported values are:
+        */
+        align(elements: any, rect: kendo.geometry.Rect, alignment: string): void;
+        function /**
+        Converts the given DOM element to a Drawing API scene.The operation is asynchronous and returns a promise.The promise will be resolved with the root Group of the scene.
+        @method
+        @param element - The root DOM element to draw.
+        @returns A promise that will be resolved with the root Group of the scene.
+        */
+        drawDOM(element: HTMLElement): JQueryPromise<any>;
+        function /**
+        Exports a group of drawing elements as an image.The export operation is asynchronous and returns a promise.The promise will be resolved with a PNG image encoded as a Data URI.
+        @method
+        @param group - The root group containing all elements to export.
+        @param options - Parameters for the exported image.
+        @returns A promise that will be resolved with a PNG image encoded as a Data URI.
+        */
+        exportImage(group: kendo.drawing.Group, options: any): JQueryPromise<any>;
+        function /**
+        Exports a group of drawing elements as a PDF file.The export operation is asynchronous and returns a promise.The promise will be resolved with a PDF file encoded as a Data URI.
+        @method
+        @param group - The root group containing all elements to export.
+        @param options - Parameters for the exported PDF file.
+        @returns A promise that will be resolved with a PDF file encoded as a Data URI.
+        */
+        exportPDF(group: kendo.drawing.Group, options: kendo.drawing.PDFOptions): JQueryPromise<any>;
+        function /**
+        Exports a group of drawing elements as an SVG document.The export operation is asynchronous and returns a promise.The promise will be resolved with a SVG document encoded as a Data URI.
+        @method
+        @param group - The root group containing all elements to export.
+        @param options - Export options.
+        @returns A promise that will be resolved with a SVG document encoded as a Data URI.
+        */
+        exportSVG(group: kendo.drawing.Group, options: any): JQueryPromise<any>;
+        function /**
+        Scales uniformly an element so that it fits in a given rectangle. No scaling will be applied if the element is already small enough to fit in the rectangle.
+        @method
+        @param element - The drawing element that should be fitted.
+        @param rect - The rectangle in which the elements should be fitted.
+        */
+        fit(element: kendo.drawing.Element, rect: kendo.geometry.Rect): void;
+        function /**
+        Stacks drawing elements horizontally.
+        @method
+        @param elements - An array with the drawing elements that should be stacked.
+        */
+        stack(elements: any): void;
+        function /**
+        Aligns drawing elements y axis position to a given rectangle.
+        @method
+        @param elements - An array with the drawing elements that should be aligned.
+        @param rect - The rectangle in which the elements should be aligned.
+        @param alignment - Specifies how should the elements be aligned. The supported values are:
+        */
+        vAlign(elements: any, rect: kendo.geometry.Rect, alignment: string): void;
+        function /**
+        Stacks drawing elements vertically.
+        @method
+        @param elements - An array with the drawing elements that should be stacked.
+        */
+        vStack(elements: any): void;
+        function /**
+        Stacks drawing elements vertically. Multiple stacks will be used if the elements height exceeds the given rectangle height.
+        @method
+        @param elements - An array with the drawing elements that should be wrapped.
+        @param rect - The rectangle in which the elements should be wrapped.
+        @returns An array with the stacks. Each stack is an Array holding the stack drawing elements.
+        */
+        vWrap(elements: any, rect: kendo.geometry.Rect): any;
+        function /**
+        Stacks drawing elements horizontally. Multiple stacks will be used if the elements width exceeds the given rectangle width.
+        @method
+        @param elements - An array with the drawing elements that should be wrapped.
+        @param rect - The rectangle in which the elements should be wrapped.
+        @returns An array with the stacks. Each stack is an Array holding the stack drawing elements.
+        */
+        wrap(elements: any, rect: kendo.geometry.Rect): any;
+    }
+
+    module effects {
+        function /**
+        Calculates the offset and dimensions of the given element
+        @method
+        @param element - The element to calculate dimensions for.
+        @returns An object with top, left, width and height fields in pixels.
+        */
+        box(element: HTMLElement): any;
+        function /**
+        Determines the fill scale factor based on two elements' boxes.
+        @method
+        @param firstElement - The first element.
+        @param secondElement - The second element.
+        @returns The fill scale for the two elements.
+        */
+        fillScale(firstElement: HTMLElement, secondElement: HTMLElement): number;
+        function /**
+        Determines the fit scale factor based on two elements' boxes.
+        @method
+        @param firstElement - The first element.
+        @param secondElement - The second element.
+        @returns The fit scale for the two elements.
+        */
+        fitScale(firstElement: HTMLElement, secondElement: HTMLElement): number;
+        function /**
+        Determines the transform origin point based on two elements' boxes. The method is primarily used in zoom/transfer effects.
+        @method
+        @param firstElement - The first element.
+        @param secondElement - The second element.
+        @returns An object with x and y fields that represent the transform origin point.
+        */
+        transformOrigin(firstElement: HTMLElement, secondElement: HTMLElement): any;
+    }
+
+        function /**
+        Binds a HTML View to a View-Model.Model View ViewModel (MVVM) is a design pattern which helps developers separate the Model from the View. The View-Model part of MVVM is responsible for
+exposing the data objects from the Model in such a way that those objects are easily consumed in the View.
+        @method
+        @param element - The root element(s) from which the binding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        @param viewModel - The View-Model which the elements are bound to. Wrapped as an instance of kendo.data.ObservableObject if not already.
+        @param namespace - Optional namespace to look in when instantiating Kendo UI widgets. The valid namespaces are kendo.ui, kendo.dataviz.ui and kendo.mobile.ui. If omitted
+kendo.ui will be used. Multiple namespaces can be passed.
+        */
+        bind(element: string, viewModel: any, namespace?: any): void;
+        function /**
+        Binds a HTML View to a View-Model.Model View ViewModel (MVVM) is a design pattern which helps developers separate the Model from the View. The View-Model part of MVVM is responsible for
+exposing the data objects from the Model in such a way that those objects are easily consumed in the View.
+        @method
+        @param element - The root element(s) from which the binding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        @param viewModel - The View-Model which the elements are bound to. Wrapped as an instance of kendo.data.ObservableObject if not already.
+        @param namespace - Optional namespace to look in when instantiating Kendo UI widgets. The valid namespaces are kendo.ui, kendo.dataviz.ui and kendo.mobile.ui. If omitted
+kendo.ui will be used. Multiple namespaces can be passed.
+        */
+        bind(element: string, viewModel: kendo.data.ObservableObject, namespace?: any): void;
+        function /**
+        Binds a HTML View to a View-Model.Model View ViewModel (MVVM) is a design pattern which helps developers separate the Model from the View. The View-Model part of MVVM is responsible for
+exposing the data objects from the Model in such a way that those objects are easily consumed in the View.
+        @method
+        @param element - The root element(s) from which the binding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        @param viewModel - The View-Model which the elements are bound to. Wrapped as an instance of kendo.data.ObservableObject if not already.
+        @param namespace - Optional namespace to look in when instantiating Kendo UI widgets. The valid namespaces are kendo.ui, kendo.dataviz.ui and kendo.mobile.ui. If omitted
+kendo.ui will be used. Multiple namespaces can be passed.
+        */
+        bind(element: JQuery, viewModel: any, namespace?: any): void;
+        function /**
+        Binds a HTML View to a View-Model.Model View ViewModel (MVVM) is a design pattern which helps developers separate the Model from the View. The View-Model part of MVVM is responsible for
+exposing the data objects from the Model in such a way that those objects are easily consumed in the View.
+        @method
+        @param element - The root element(s) from which the binding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        @param viewModel - The View-Model which the elements are bound to. Wrapped as an instance of kendo.data.ObservableObject if not already.
+        @param namespace - Optional namespace to look in when instantiating Kendo UI widgets. The valid namespaces are kendo.ui, kendo.dataviz.ui and kendo.mobile.ui. If omitted
+kendo.ui will be used. Multiple namespaces can be passed.
+        */
+        bind(element: JQuery, viewModel: kendo.data.ObservableObject, namespace?: any): void;
+        function /**
+        Binds a HTML View to a View-Model.Model View ViewModel (MVVM) is a design pattern which helps developers separate the Model from the View. The View-Model part of MVVM is responsible for
+exposing the data objects from the Model in such a way that those objects are easily consumed in the View.
+        @method
+        @param element - The root element(s) from which the binding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        @param viewModel - The View-Model which the elements are bound to. Wrapped as an instance of kendo.data.ObservableObject if not already.
+        @param namespace - Optional namespace to look in when instantiating Kendo UI widgets. The valid namespaces are kendo.ui, kendo.dataviz.ui and kendo.mobile.ui. If omitted
+kendo.ui will be used. Multiple namespaces can be passed.
+        */
+        bind(element: Element, viewModel: any, namespace?: any): void;
+        function /**
+        Binds a HTML View to a View-Model.Model View ViewModel (MVVM) is a design pattern which helps developers separate the Model from the View. The View-Model part of MVVM is responsible for
+exposing the data objects from the Model in such a way that those objects are easily consumed in the View.
+        @method
+        @param element - The root element(s) from which the binding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        @param viewModel - The View-Model which the elements are bound to. Wrapped as an instance of kendo.data.ObservableObject if not already.
+        @param namespace - Optional namespace to look in when instantiating Kendo UI widgets. The valid namespaces are kendo.ui, kendo.dataviz.ui and kendo.mobile.ui. If omitted
+kendo.ui will be used. Multiple namespaces can be passed.
+        */
+        bind(element: Element, viewModel: kendo.data.ObservableObject, namespace?: any): void;
+        function /**
+        Creates an ObservableArray instance that is bound to a HierarchicalDataSource. Required to bind a HierarchicalDataSource-enabled widget (such as the Kendo UI TreeView) to a view-model.
+        @method
+        @param array - The array that will be converted to an ObservableArray.
+        */
+        observableHierarchy(array: any): void;
+        function /**
+        Sets or gets the current culture. Uses the passed culture name to select a culture from the culture scripts that you have included and then sets the current culture.
+If there is no corresponding culture then the method will try to find culture which is equal to the country part of the culture name.
+If no culture is found the default one is used.
+        @method
+        @param culture - The culture to set.
+        */
+        culture(culture: string): void;
+        function /**
+        Finds all Kendo widgets that are children of the specified element and calls their destroy method.
+        @method
+        @param element - 
+        */
+        destroy(element: string): void;
+        function /**
+        Finds all Kendo widgets that are children of the specified element and calls their destroy method.
+        @method
+        @param element - 
+        */
+        destroy(element: JQuery): void;
+        function /**
+        Finds all Kendo widgets that are children of the specified element and calls their destroy method.
+        @method
+        @param element - 
+        */
+        destroy(element: Element): void;
+        function /**
+        Encodes HTML characters to entities.
+        @method
+        @param value - The string that needs to be HTML encoded.
+        @returns The encoded string.
+        */
+        htmlEncode(value: string): string;
+        function /**
+        Parses as a formatted string as a Date.
+        @method
+        @param value - The string which should be parsed as Date.
+        @param formats - The format(s) that will be used to parse the date. By default all standard date formats of the current culture are used.
+        @param culture - The culture used to parse the number. The current culture is used by default.
+        @returns the parsed date. Returns null if the value cannot be parsed as a valid Date.
+        */
+        parseDate(value: string, formats?: string, culture?: string): Date;
+        function /**
+        Parses as a formatted string as a Date.
+        @method
+        @param value - The string which should be parsed as Date.
+        @param formats - The format(s) that will be used to parse the date. By default all standard date formats of the current culture are used.
+        @param culture - The culture used to parse the number. The current culture is used by default.
+        @returns the parsed date. Returns null if the value cannot be parsed as a valid Date.
+        */
+        parseDate(value: string, formats?: any, culture?: string): Date;
+        function /**
+        Parses a string as a floating point number.
+        @method
+        @param value - The string which should be parsed as a Number.
+        @param culture - The culture used to parse the number. The current culture is used by default.
+        @returns the parsed number. Returns null if the value cannot be parsed as a valid Number.
+        */
+        parseFloat(value: string, culture?: string): number;
+        function /**
+        Parses as a string as an integer.
+        @method
+        @param value - The string which should be parsed as Number.
+        @param culture - The culture used to parse the number. The current culture is used by default.
+        @returns the parsed number. Returns null if the value cannot be parsed as a valid Number.
+        */
+        parseInt(value: string, culture?: string): number;
+        function /**
+        Parse a color string to a Color object.  If the input is not valid throws an Error, unless the noerror argument is given.
+        @method
+        @param color - A string in one of the following (case-insensitive) CSS notations:Particularly if this argument is null or the string "transparent" then this function will return null.
+        @param noerror - If you pass true then this function will return undefined rather than throwing an error on invalid input.
+        @returns A Color object.
+        */
+        parseColor(color: string, noerror: boolean): kendo.Color;
+        function /**
+        Finds all Kendo widgets that are children of the specified element and calls their resize method.
+        @method
+        @param element - 
+        @param force - Determines whether the resizing routine should be executed even if the respective widget's outer dimensions have not changed. The parameter will be passed to the widget's resize method.
+        */
+        resize(element: string, force: boolean): void;
+        function /**
+        Finds all Kendo widgets that are children of the specified element and calls their resize method.
+        @method
+        @param element - 
+        @param force - Determines whether the resizing routine should be executed even if the respective widget's outer dimensions have not changed. The parameter will be passed to the widget's resize method.
+        */
+        resize(element: JQuery, force: boolean): void;
+        function /**
+        Finds all Kendo widgets that are children of the specified element and calls their resize method.
+        @method
+        @param element - 
+        @param force - Determines whether the resizing routine should be executed even if the respective widget's outer dimensions have not changed. The parameter will be passed to the widget's resize method.
+        */
+        resize(element: Element, force: boolean): void;
+        function /**
+        Saves a file with the specified name and content.
+A server "echo" proxy might be required, depending on browser capabilities.
+        @method
+        @param options - Configuration options for the save operation.
+        */
+        saveAs(options: any): void;
+        function /**
+        Converts a JavaScript object to JSON. Uses JSON.stringify in browsers that support it.
+        @method
+        @param value - The value to convert to a JSON string.
+        @returns The JSON representation of the value.
+        */
+        stringify(value: any): string;
+        function /**
+        Limits the number of calls to a function to one for a specified amount of time.
+        @method
+        @param fn - The function to be throttled.
+        @param timeout - The amount of time that needs to pass before a subsequent function call is made.
+        */
+        throttle(fn: Function, timeout: number): void;
+        function /**
+        Enables kinetic scrolling on touch devices
+        @method
+        @param element - The container element to enable scrolling for.
+        */
+        touchScroller(element: string): void;
+        function /**
+        Enables kinetic scrolling on touch devices
+        @method
+        @param element - The container element to enable scrolling for.
+        */
+        touchScroller(element: JQuery): void;
+        function /**
+        Enables kinetic scrolling on touch devices
+        @method
+        @param element - The container element to enable scrolling for.
+        */
+        touchScroller(element: Element): void;
+        function /**
+        Formats a Number or Date using the specified format and the current culture.
+        @method
+        @param value - The Date or Number which should be formatted.
+        @param format - The format string which should be used to format the value. Number formatting and date formatting depends on the current culture.
+        @param culture - The name of the culture which should be used to format the value. The culture should be registered on the page.
+        @returns the string representation of the formatted value.
+        */
+        toString(value: Date, format: string, culture?: string): string;
+        function /**
+        Formats a Number or Date using the specified format and the current culture.
+        @method
+        @param value - The Date or Number which should be formatted.
+        @param format - The format string which should be used to format the value. Number formatting and date formatting depends on the current culture.
+        @param culture - The name of the culture which should be used to format the value. The culture should be registered on the page.
+        @returns the string representation of the formatted value.
+        */
+        toString(value: number, format: string, culture?: string): string;
+        function /**
+        Unbinds a tree of HTML elements from a View-Model.
+        @method
+        @param element - The root element(s) from which the unbinding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        */
+        unbind(element: string): void;
+        function /**
+        Unbinds a tree of HTML elements from a View-Model.
+        @method
+        @param element - The root element(s) from which the unbinding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        */
+        unbind(element: JQuery): void;
+        function /**
+        Unbinds a tree of HTML elements from a View-Model.
+        @method
+        @param element - The root element(s) from which the unbinding starts. Can be a valid jQuery string selector, a DOM element or a jQuery object.
+All descendant elements are traversed.
+        */
+        unbind(element: Element): void;
 
 }
 declare module kendo.mobile.ui {
@@ -3816,6 +4370,12 @@ declare module kendo.mobile.ui {
         */
         badge?: string;
         /**
+        Configures the DOM event used to trigger the button click event/navigate in the mobile application. Can be set to "down" as an alias for touchstart, mousedown, MSPointerDown, and PointerDown vendor specific events.
+Setting the clickOn to down usually makes sense for buttons in the header or in non-scrollable views for increased responsiveness.By default, buttons trigger click/navigate when the user taps the button (a press + release action sequence occurs).
+        @member {string}
+        */
+        clickOn?: string;
+        /**
         If set to false the widget will be disabled and will not allow the user to click it. The widget is enabled by default.
         @member {boolean}
         */
@@ -3956,6 +4516,82 @@ However, if the widget is placed in a scrollable view, the user may accidentally
         @member {number}
         */
         index?: number;
+    }
+
+
+    class Collapsible extends kendo.mobile.ui.Widget {
+        static fn: Collapsible;
+        static extend(proto: Object): Collapsible;
+
+        element: JQuery;
+        wrapper: JQuery;
+        constructor(element: Element, options?: CollapsibleOptions);
+        options: CollapsibleOptions;
+        /**
+        Collapses the content.
+        @method
+        @param instant - Optional. When set to true the collapse action will be performed without animation.
+        */
+        collapse(instant: boolean): void;
+        /**
+        Prepares the Collapsible for safe removal from DOM. Detaches all event handlers and removes jQuery.data attributes to avoid memory leaks. Calls destroy method of any child Kendo widgets.
+        @method
+        */
+        destroy(): void;
+        /**
+        Expands the content.
+        @method
+        @param instant - When set to true the expand action will be performed without animation.
+        */
+        expand(instant?: boolean): void;
+        /**
+        Toggles the content visibility.
+        @method
+        @param instant - When set to true the expand/collapse action will be performed without animation.
+        */
+        toggle(instant?: boolean): void;
+    }
+
+    interface CollapsibleOptions {
+        name?: string;
+        /**
+        Turns on or off the animation of the widget.
+        @member {boolean}
+        */
+        animation?: boolean;
+        /**
+        If set to false the widget content will be expanded initially. The content of the widget is collapsed by default.
+        @member {boolean}
+        */
+        collapsed?: boolean;
+        /**
+        Sets the icon for the header of the collapsible widget when it is in a expanded state.
+        @member {string}
+        */
+        expandIcon?: string;
+        /**
+        Sets the icon position in the header of the collapsible widget. Possible values are "left", "right", "top".
+        @member {string}
+        */
+        iconPosition?: string;
+        /**
+        Forses inset appearance - the collapsible panel is padded from the View and receives rounded corners.
+        @member {boolean}
+        */
+        inset?: boolean;
+        /**
+        Fires when the user collapses the content.
+        */
+        collapse?(e: CollapsibleEvent): void;
+        /**
+        Fires when the user expands the content.
+        */
+        expand?(e: CollapsibleEvent): void;
+    }
+    interface CollapsibleEvent {
+        sender: Collapsible;
+        isDefaultPrevented(): boolean;
+        preventDefault: Function;
     }
 
 
@@ -4366,6 +5002,11 @@ Previously loaded pages in the DataSource are also discarded.
         @member {ListViewFilterable}
         */
         filterable?: ListViewFilterable;
+        /**
+        Used when virtualization of local data is used. This configuration is needed to determine the items displayed, since the datasource does not (and should not) have paging set.
+        @member {number}
+        */
+        virtualViewSize?: number;
         /**
         Fires when item is tapped.
         */
@@ -5850,6 +6491,180 @@ Notice: After the last finger is moved, the dragend event is fired.
 
 
 }
+declare module kendo.ooxml {
+    class Workbook extends Observable {
+        constructor(options?: WorkbookOptions);
+        options: WorkbookOptions;
+        /**
+        Creates an Excel file that represents the current workbook and returns it as a data URL.
+        @method
+        @returns the Excel file as data URL.
+        */
+        toDataURL(): string;
+        /**
+                The sheets of the workbook. Every sheet represents a page from the final Excel file.See sheets configuration.
+                */
+                sheets: WorkbookSheet[];
+    }
+
+    interface WorkbookSheetColumn {
+        /**
+        If set to true the column will stretch to fit the contents of all cells.
+        @member {boolean}
+        */
+        autoWidth?: boolean;
+        /**
+        The width of the column in pixels.
+        @member {number}
+        */
+        width?: number;
+    }
+
+    interface WorkbookSheetFilter {
+        /**
+        The index of the first filterable column.
+        @member {number}
+        */
+        from?: number;
+        /**
+        The index of the last filterable column.
+        @member {number}
+        */
+        to?: number;
+    }
+
+    interface WorkbookSheetFreezePane {
+        /**
+        Number of columns to freeze from the left.
+        @member {number}
+        */
+        colSplit?: number;
+        /**
+        Number of rows to freeze from the top.
+        @member {number}
+        */
+        rowSplit?: number;
+    }
+
+    interface WorkbookSheetRowCell {
+        /**
+        Sets the background color of the cell. Supports hex CSS-like values that start with "#" e.g. "#ff00ff".
+        @member {string}
+        */
+        background?: string;
+        /**
+        Setting it to true makes the cell value bold.
+        @member {boolean}
+        */
+        bold?: boolean;
+        /**
+        The text color of the cell. Supports hex CSS-like values that start with "#" e.g. "#ff00ff".
+        @member {string}
+        */
+        color?: string;
+        /**
+        Sets the number of columns that a cell occupies.
+        @member {number}
+        */
+        colSpan?: number;
+        /**
+        Sets the font used to display the cell value.
+        @member {string}
+        */
+        fontName?: string;
+        /**
+        Sets the font size in pixels.
+        @member {number}
+        */
+        fontSize?: number;
+        /**
+        Sets the format that Excel uses to display the cell value.The Create a custom number format page describes the formats that Excel supports.
+        @member {string}
+        */
+        format?: string;
+        /**
+        Sets the horizontal alignment of the cell value. Supported values are "left", "center" and "right".
+        @member {string}
+        */
+        hAlign?: string;
+        /**
+        Setting it to true italicizes the cell value.
+        @member {boolean}
+        */
+        italic?: boolean;
+        /**
+        Sets the number of rows that a cell occupies.
+        @member {number}
+        */
+        rowSpan?: number;
+        /**
+        Setting it to true underlines the cell value.
+        @member {boolean}
+        */
+        underline?: boolean;
+        /**
+        Setting it to true wraps the cell value.
+        @member {boolean}
+        */
+        wrap?: boolean;
+        /**
+        Sets the vertical alignment of the cell value. Supported values are "top", "center" and "bottom".
+        @member {string}
+        */
+        vAlign?: string;
+        /**
+        The value of the cell. Numbers and dates will be formatted as strings. String values are HTML encoded.
+        @member {any}
+        */
+        value?: any;
+    }
+
+    interface WorkbookSheetRow {
+        cells?: WorkbookSheetRowCell[];
+    }
+
+    interface WorkbookSheet {
+        columns?: WorkbookSheetColumn[];
+        /**
+        Frozen rows and columns configuration.
+        @member {WorkbookSheetFreezePane}
+        */
+        freezePane?: WorkbookSheetFreezePane;
+        /**
+        Excel auto filter configuration. When set the final document will have auto filtering enabled.
+        @member {WorkbookSheetFilter}
+        */
+        filter?: WorkbookSheetFilter;
+        rows?: WorkbookSheetRow[];
+        /**
+        Sets the title of the exported workbook sheet.
+        @member {string}
+        */
+        title?: string;
+    }
+
+    interface WorkbookOptions {
+        name?: string;
+        /**
+        The creator of the workbook.
+        @member {string}
+        */
+        creator?: string;
+        /**
+        The date when the workbook is created. The default value is new Date().
+        @member {Date}
+        */
+        date?: Date;
+        sheets?: WorkbookSheet[];
+    }
+    interface WorkbookEvent {
+        sender: Workbook;
+        isDefaultPrevented(): boolean;
+        preventDefault: Function;
+    }
+
+
+}
 
 declare module kendo.dataviz.geometry {
     class Arc extends Observable {
@@ -6121,6 +6936,10 @@ The current instance elements are not altered.
         @returns A string representation of the matrix, e.g. "1, 0, 0, 1, 0, 0".
         */
         toString(digits: number, separator: string): string;
+        static rotate(angle: number, x: number, y: number): kendo.geometry.Matrix;
+        static scale(scaleX: number, scaleY: number): kendo.geometry.Matrix;
+        static translate(x: number, y: number): kendo.geometry.Matrix;
+        static unit(): kendo.geometry.Matrix;
         /**
                 The a (1, 1) member of the matrix.
                 */
@@ -6308,6 +7127,13 @@ The callee coordinates will remain unchanged.
         @returns The current point instance.
         */
         translateWith(vector: any): kendo.geometry.Point;
+        static create(x: number, y: number): kendo.geometry.Point;
+        static create(x: any, y: number): kendo.geometry.Point;
+        static create(x: kendo.geometry.Point, y: number): kendo.geometry.Point;
+        static min(): kendo.geometry.Point;
+        static max(): kendo.geometry.Point;
+        static minPoint(): kendo.geometry.Point;
+        static maxPoint(): kendo.geometry.Point;
         /**
                 The x coordinate of the point.
                 */
@@ -6435,6 +7261,8 @@ This is also the rectangle origin
         @returns The rectangle width.
         */
         width(): number;
+        static fromPoints(pointA: kendo.geometry.Point, pointB: kendo.geometry.Point): kendo.geometry.Rect;
+        static union(rectA: kendo.geometry.Rect, rectB: kendo.geometry.Rect): kendo.geometry.Rect;
         /**
                 The origin (top-left corner) of the rectangle.
                 */
@@ -6496,6 +7324,9 @@ This is also the rectangle origin
         @returns The current Size instance.
         */
         setHeight(value: number): kendo.geometry.Size;
+        static create(width: number, height: number): kendo.geometry.Size;
+        static create(width: any, height: number): kendo.geometry.Size;
+        static create(width: kendo.geometry.Size, height: number): kendo.geometry.Size;
         /**
                 The horizontal size.
                 */
@@ -6551,11 +7382,20 @@ The underlying transformation matrix is updated in-place.
         @param angle - The angle of rotation in decimal degrees.
 Measured in clockwise direction with 0 pointing "right".
 Negative values or values greater than 360 will be normalized.
-        @param x - The center of rotation on the X axis.
-        @param y - The center of rotation on the Y axis.
+        @param center - The center of rotation.
         @returns The current transformation instance.
         */
-        rotate(angle: number, x: number, y: number): kendo.geometry.Transformation;
+        rotate(angle: number, center: any): kendo.geometry.Transformation;
+        /**
+        Sets rotation with the specified parameters.
+        @method
+        @param angle - The angle of rotation in decimal degrees.
+Measured in clockwise direction with 0 pointing "right".
+Negative values or values greater than 360 will be normalized.
+        @param center - The center of rotation.
+        @returns The current transformation instance.
+        */
+        rotate(angle: number, center: kendo.geometry.Point): kendo.geometry.Transformation;
         /**
         Sets scale with the specified parameters.
         @method
@@ -6610,6 +7450,13 @@ Inherited from Element.clip
         @param clip - The element clipping path.
         */
         clip(clip: kendo.drawing.Path): void;
+        /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
         /**
         Gets or sets the arc geometry.
         @method
@@ -6752,6 +7599,13 @@ Inherited from Element.clip
         */
         clip(clip: kendo.drawing.Path): void;
         /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
+        /**
         Gets or sets the circle geometry.
         @method
         @returns The current circle geometry.
@@ -6890,6 +7744,12 @@ Inherited from Element.visible
         */
         clip(clip: kendo.drawing.Path): void;
         /**
+        Returns the bounding box of the element with clipping and transformations applied.This is the rectangle that will fit around the actual rendered element.
+        @method
+        @returns The bounding box of the element with clipping and transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
+        /**
         Gets or sets the element opacity.
         @method
         @returns The current element opacity.
@@ -7004,6 +7864,13 @@ Inherited from Element.clip
         */
         clip(clip: kendo.drawing.Path): void;
         /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
+        /**
         Gets or sets the group opacity.
 Inherited from Element.opacityThe opacity of any child groups and elements will be multiplied by this value.
         @method
@@ -7062,6 +7929,11 @@ Inherited from Element.opacityThe opacity of any child groups and elements will 
         */
         opacity?: number;
         /**
+        Page options to apply during PDF export.
+        @member {kendo.drawing.PDFOptions}
+        */
+        pdf?: kendo.drawing.PDFOptions;
+        /**
         The transformation to apply to this group and its children.
 Inherited from Element.transform
         @member {kendo.geometry.Transformation}
@@ -7105,6 +7977,13 @@ Inherited from Element.clip
         @param clip - The element clipping path.
         */
         clip(clip: kendo.drawing.Path): void;
+        /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
         /**
         Gets or sets the element opacity.
 Inherited from Element.opacity
@@ -7207,6 +8086,73 @@ Inherited from Element.visible
     }
 
 
+    class Layout extends kendo.drawing.Group {
+        constructor(options?: LayoutOptions);
+        options: LayoutOptions;
+        /**
+        Gets or sets the layout rectangle.
+        @method
+        @returns The current rectangle.
+        */
+        rect(): kendo.geometry.Rect;
+        /**
+        Gets or sets the layout rectangle.
+        @method
+        @param rect - The layout rectangle.
+        */
+        rect(rect: kendo.geometry.Rect): void;
+        /**
+        Arranges the elements based on the current options.
+        @method
+        */
+        reflow(): void;
+    }
+
+    interface LayoutOptions {
+        name?: string;
+        /**
+        Specifies the alignment of the content.
+        @member {string}
+        */
+        alignContent?: string;
+        /**
+        Specifies the alignment of the items based.
+        @member {string}
+        */
+        alignItems?: string;
+        /**
+        Specifies how should the content be justified.
+        @member {string}
+        */
+        justifyContent?: string;
+        /**
+        Specifies the distance between the lines for wrapped layout.
+        @member {number}
+        */
+        lineSpacing?: number;
+        /**
+        Specifies the distance between the elements.
+        @member {number}
+        */
+        spacing?: number;
+        /**
+        Specifies layout orientation. The supported values are:
+        @member {string}
+        */
+        orientation?: string;
+        /**
+        Specifies the behavior when the elements size exceeds the rectangle size. If set to true, the elements will be moved to the next "line". If set to false, the layout will be scaled so that the elements fit in the rectangle.
+        @member {boolean}
+        */
+        wrap?: boolean;
+    }
+    interface LayoutEvent {
+        sender: Layout;
+        isDefaultPrevented(): boolean;
+        preventDefault: Function;
+    }
+
+
     class MultiPath extends kendo.drawing.Element {
         constructor(options?: MultiPathOptions);
         options: MultiPathOptions;
@@ -7231,6 +8177,13 @@ Inherited from Element.clip
         @param clip - The element clipping path.
         */
         clip(clip: kendo.drawing.Path): void;
+        /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
         /**
         Closes the current sub-path by linking its current end point with its start point.
         @method
@@ -7528,6 +8481,13 @@ Inherited from Element.clip
         */
         clip(clip: kendo.drawing.Path): void;
         /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
+        /**
         Closes the path by linking the current end point with the start point.
         @method
         @returns The current instance to allow chaining.
@@ -7672,6 +8632,9 @@ Inherited from Element.visible
         @param visible - A flag indicating if the element should be visible.
         */
         visible(visible: boolean): void;
+        static fromPoints(points: any): kendo.drawing.Path;
+        static fromRect(rect: kendo.geometry.Rect): kendo.drawing.Path;
+        static parse(svgPath: string, options?: any): kendo.drawing.Path;
         /**
                 A collection of the path segments.
                 */
@@ -7824,6 +8787,33 @@ Inherited from Element.visible
     class Surface extends kendo.Observable {
         constructor(options?: SurfaceOptions);
         options: SurfaceOptions;
+        /**
+        Clears the drawing surface.
+        @method
+        */
+        clear(): void;
+        /**
+        Draws the element and its children on the surface.
+Existing elements will remain visible.
+        @method
+        @param element - The element to draw.
+        */
+        draw(element: kendo.drawing.Element): void;
+        /**
+        Returns the target drawing element of a DOM event.
+        @method
+        @param e - The original DOM or jQuery event object.
+        @returns The target drawing element, if any.
+        */
+        eventTarget(e: any): kendo.drawing.Element;
+        /**
+        Resizes the surface to match the size of the container.
+        @method
+        @param force - Whether to proceed with resizing even if the container dimensions have not changed.
+        */
+        resize(force?: boolean): void;
+        static create(element: JQuery, options?: any): kendo.drawing.Surface;
+        static create(element: Element, options?: any): kendo.drawing.Surface;
     }
 
     interface SurfaceOptions {
@@ -7933,6 +8923,13 @@ Inherited from Element.clip
         @param clip - The element clipping path.
         */
         clip(clip: kendo.drawing.Path): void;
+        /**
+        Returns the bounding box of the element with clipping and transformations applied.
+Inherited from Element.clippedBBox
+        @method
+        @returns The bounding box of the element with clipping transformations applied.
+        */
+        clippedBBox(): kendo.geometry.Rect;
         /**
         Gets or sets the text content.
         @method
@@ -8107,6 +9104,10 @@ interface JQuery {
     kendoMobileButtonGroup(): JQuery;
     kendoMobileButtonGroup(options: kendo.mobile.ui.ButtonGroupOptions): JQuery;
     data(key: "kendoMobileButtonGroup") : kendo.mobile.ui.ButtonGroup;
+
+    kendoMobileCollapsible(): JQuery;
+    kendoMobileCollapsible(options: kendo.mobile.ui.CollapsibleOptions): JQuery;
+    data(key: "kendoMobileCollapsible") : kendo.mobile.ui.Collapsible;
 
     kendoMobileDetailButton(): JQuery;
     kendoMobileDetailButton(options: kendo.mobile.ui.DetailButtonOptions): JQuery;

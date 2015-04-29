@@ -5,7 +5,7 @@ function getParameterByName(name, url) {
     var regex = new RegExp(regexS);
     var results = regex.exec(url);
 
-    if (results == null) {
+    if (results === null) {
         return false;
     } else {
         return decodeURIComponent(results[1].replace(/\+/g, ' '));
@@ -20,7 +20,7 @@ var IdentityProvider = function (config) {
         // Begin Authorization
         var authorize_url;
 
-        if (config.name == 'ADFS') {
+        if (config.name === 'ADFS') {
             authorize_url = config.endpoint
                             + '?wa=' + config.wa
                             + '&wreply=' + config.wtrealm + '/adfs/token'
@@ -52,7 +52,7 @@ var IdentityProvider = function (config) {
     }
 
     this.locationChanged = function(loc, callback) {
-        if (loc.indexOf('access_token=') != -1) {
+        if (loc.indexOf('access_token=') !== -1) {
             ref.close();
             var token = getParameterByName('access_token', loc);
             callback(token);

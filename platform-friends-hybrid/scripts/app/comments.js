@@ -29,22 +29,24 @@ app.Comments = (function () {
                     defaultValue: null
                 }
             },
-            CreatedAtFormatted: function () {
-
-                return app.helper.formatDate(this.get('CreatedAt'));
-            },
             User: function () {
-
+                
                 var userId = this.get('UserId');
 
                 var user = $.grep(app.Users.users(), function (e) {
                     return e.Id === userId;
                 })[0];
-
-                return user ? user.DisplayName : 'Anonymous';
+                
+                return user ? { 
+                    DisplayName: user.DisplayName, 
+                    PictureUrl: app.helper.resolveProfilePictureUrl(user.Picture) 
+                } : { 
+                    DisplayName: 'Anonymous', 
+                    PictureUrl: app.helper.resolveProfilePictureUrl() 
+                };
             }
         };
-        
+
         var commentsDataSource = new kendo.data.DataSource({
             type: 'everlive',
             schema: {

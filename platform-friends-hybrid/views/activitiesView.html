@@ -1,16 +1,16 @@
 <div data-role="view" id="view-all-activities" data-layout="default" class="activities-view" data-model="app.Activities">
     <div data-role="header">
         <div data-role="navbar">
-            Activities
-            <a class="nav-button nav-button-back hide-text" data-align="left" data-role="backbutton" data-click="app.Activities.logout">Log out</a>
-            <a class="nav-button nav-button-add hide-text" data-align="right" data-role="button" href="views/addActivityView.html">Add</a>
+            Friends
+            <a class="nav-button" data-align="left" data-role="backbutton" data-click="app.Activities.logout">Logout</a>
+            <a class="nav-button" data-align="right" data-role="button" href="views/addActivityView.html">Add</a>
         </div>
     </div>
 
     <ul id="activities-listview" data-style="inset" data-role="listview" data-template="activityTemplate"
         data-bind="source: activities"></ul>
     <p id="no-activities-span" hidden="hidden" class="no-items-msg">
-        <b>You have no posts yet.</b><br /><br />Tap on the plus sign and share what's on your mind.
+        <b>You have no posts yet.</b><br><br>Tap on the plus sign and share what's on your mind.
     </p>
 </div>
 
@@ -18,12 +18,15 @@
 <script type="text/x-kendo-template" id="activityTemplate">
     <div data-role="touch" data-bind="events: { tap: activitySelected }" class="cf">
         <div class="user-avatar">
-            <img data-bind="attr:{src: User().PictureUrl}" alt="styles/images/avatar.png" />
+            <img data-bind="attr:{src: User().PictureUrl}" alt="#: User().DisplayName #">
         </div>
         <div class="activity-content">
-            <h2 class="person-name">${User().DisplayName}</h2>
-            <span class="time-span">${CreatedAtFormatted()}</span>
-            <a class="user-share-txt">${Text}</a>
+            <h2 class="person-name">#: User().DisplayName #</h2>
+            <div data-bind="visible: Picture">
+                <img id="picture" class="picture" data-bind="attr:{src: PictureUrl()}" width="100%">
+            </div>
+            <a class="user-share-txt">#: Text #</a>
+            <span class="time-span">#: CreatedAtFormatted() #</span>
         </div>
     </div>
 </script>
