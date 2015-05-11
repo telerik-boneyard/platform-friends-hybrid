@@ -34,7 +34,7 @@ spec(function() {
 		},
 		activity: {
 			textArea: { id: 'newStatus' },
-			postButton: [{ id: 'share' }, { className: 'km-rightitem' }, { className: 'nav-button-post' }]
+			postButton: [{ id: 'share' }, { className: 'km-rightitem' }, { className: 'nav-button km-widget km-button' }]
 		}
 	};
 
@@ -93,7 +93,7 @@ spec(function() {
 		'Then the Activities screen should be displayed' : {
 			'default': [
 				web.getHtml({ className: 'km-view-title'}, function(result) {
-					assert(result.trim()).equals('Activities');
+					assert(result.trim()).equals('Friends');
 				}),
 				web.wait(1000)
 			]
