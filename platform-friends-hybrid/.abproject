@@ -80,5 +80,5 @@
   "projectVersion": "1",
   "WP8WindowsPublisherName": "CN=Telerik",
   "WP8PackageIdentityName": "1234Telerik.com.telerik.everlivefriendshybrid",
-  "WPSdk": "8.0"
+  "WPSdk": "8.1"
 }
