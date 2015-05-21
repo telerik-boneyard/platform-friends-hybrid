@@ -42,6 +42,10 @@ var IdentityProvider = function (config) {
             that.locationChanged(event.url, callback);
         });
 
+        ref.addEventListener('loaderror', function(event) {
+            alert("Load error: " + event.message);
+        });
+        
         // The following is required in iPhone as the loadstop event is never fired.
         // The check for Google is required to parse the access token of the redirect Uri 
         if (config.name === 'ADFS' || config.name === 'Google') {
