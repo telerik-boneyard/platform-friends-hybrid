@@ -10,7 +10,7 @@ var appSettings = {
     },
 
     eqatec: {
-        productKey: '$EQATEC_PRODUCT_KEY$',  // Put your EQATEC product key here
+        productKey: '$EQATEC_PROJECT_KEY$',  // Put your Tekerik Analytics project key here
         version: '1.0.0.0' // Put your application version here
     },
     
