@@ -119,16 +119,3 @@ By default the Friends Sample is configured to use HTTP. If you want to switch t
 Once the app is configured, you can run it either on a real device or in the Telerik AppBuilder simulator.
 
 > Make sure that the emulator or the device that you are using has Internet connectivity when running the sample.
-
-## Screenshots
-<div style="width: 100%; overflow: hidden">
-	<div style="width:75px; float:left">
-		<img src="screenshots/ios-login-screen.png" >
-	</div>
-	<div style="width:75px";margin-left:80px">
-		<img src="screenshots/ios-activities-stream.png" >
-	</div>
-	<div style="width:75px";margin-left:160px">
-		<img src="screenshots/ios-activitiy-details.png" >
-	</div>
-</div>
