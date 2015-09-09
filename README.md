@@ -1,3 +1,14 @@
+---
+title: "Telerik Friends Sample App for PhoneGap/Cordova"
+slug: sample-backend-services-friends-hybrid
+position: 1
+publish: true
+page_title: Telerik Friends Sample App for PhoneGap/Cordova | Telerik Platform
+description: 
+tags: Hybrid, Sample App, Application, iOS, Android, Windows Phone, Apache Cordova, JavaScript, BaaS, mBaaS, Social, Analytics, Social Login, AD FS
+---
+
+
 # Telerik Friends Sample App for PhoneGap/Cordova
 
 * [Overview](#overview)
@@ -119,3 +130,9 @@ By default the Friends Sample is configured to use HTTP. If you want to switch t
 Once the app is configured, you can run it either on a real device or in the Telerik AppBuilder simulator.
 
 > Make sure that the emulator or the device that you are using has Internet connectivity when running the sample.
+
+## Screenshots
+
+![](screenshots/ios-login-screen.png)
+![](screenshots/ios-activities-stream.png)
+![](screenshots/ios-activitiy-details.png)
