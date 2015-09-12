@@ -42,6 +42,12 @@ To implement all the features listed above, the sample app utilizes the followin
 - Telerik Analytics Cordova plugin - to collect data needed for analyses
 - Telerik Mobile Testing - used to implement tests for the mobile app
 
+## Screenshots
+
+![Login Screen](screenshots/ios-login-screen.png)
+![Activities stream view](screenshots/ios-activities-stream.png)
+![Activity details view](screenshots/ios-activitiy-details.png)
+
 ## Requirements
 
 Before you begin, you need to ensure that you have the following:
@@ -148,8 +154,3 @@ Once the app is configured, you can run it either on a real device or in the Tel
 
 > Ensure that the emulator or the device that you are using has Internet connectivity when running the sample.
 
-## Screenshots
-
-![](screenshots/ios-login-screen.png)
-![](screenshots/ios-activities-stream.png)
-![](screenshots/ios-activitiy-details.png)
