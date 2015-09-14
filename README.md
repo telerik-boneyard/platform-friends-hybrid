@@ -61,11 +61,17 @@ Ensure that you can log in to a Telerik Platform account. This can be a free tri
 
 The Friends sample app comes fully functional, but to see it in action you must link it to your own Telerik Platform account.
 
-What you need to set:
+1. Click the "Try in AppBuilder" button to clone the repository in AppBuilder.<br>
+	An app called "My App" is created for you with an AppBuilder project set up.
+2. Click **My App** in the navigation bar at the top to go the app home.
+3. Create a Backend Services project, selecting the **Start from the Friends app** option.
+4. Once the Backend Services project is ready, go to **Overview > API Keys**.
+5. Take note of your API Key.
+6. Go back to the AppBuilder project and continue setting up as explained in the next sections.
 
 ### API Key for Telerik Backend Services
 
-This is a unique string that links the sample mobile app to a project in Telerik Backend Services where all the data is read from/saved. When creating the project, you must base it on the Friends sample Backend Services project that has all the necessary data prepopulated.
+This is a unique string that links the sample mobile app to a project in Telerik Backend Services where all the data is read from/saved. When creating the project, you must base it on a Friends sample Backend Services project that has all the necessary data prepopulated.
 
 You must use this project's API key. To set it in the app:
 
@@ -151,6 +157,8 @@ By default the Friends Sample is configured to use HTTP. If you want to switch t
 ## Running the Sample
 
 Once the app is configured, you can run it either on a real device or in the Telerik AppBuilder simulator.
+
+To run it, follow the steps in the product's documentation: [Running Apps on Devices](http://docs.telerik.com/platform/appbuilder/testing-your-app/running-on-devices/working-with-devices).
 
 > Ensure that the emulator or the device that you are using has Internet connectivity when running the sample.
 
