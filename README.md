@@ -34,9 +34,9 @@ To implement all the features listed above, the sample app utilizes the followin
 
 ## Screenshots
 
-![Login Screen](screenshots/ios-login-screen.png)
-![Activities stream view](screenshots/ios-activities-stream.png)
-![Activity details view](screenshots/ios-activitiy-details.png)
+Login Screen|Activity Stream|Activity Details
+---|---|---
+![Login Screen](https://raw.githubusercontent.com/telerik/platform-friends-hybrid/master/screenshots/ios-login-screen.png)|![Activities stream view](https://raw.githubusercontent.com/telerik/platform-friends-hybrid/master/screenshots/ios-activities-stream.png)|![Activity details view](https://raw.githubusercontent.com/telerik/platform-friends-hybrid/master/screenshots/ios-activitiy-details.png)
 
 ## Requirements
 
