@@ -26,12 +26,12 @@ The Telerik Friends sample app showcases these features and SDKs:
 
 To implement all the features listed above, the sample app utilizes the following Telerik products and SDKs:
 
-- Telerik Backend Services - this is where all data, files, and user accounts are stored in the cloud
-- Telerik Backend Services JavaScript SDK - to connect the app to Telerik Backend Services
-- Telerik Analytics - used to store and monitor analytics data in the cloud
-- Telerik Analytics JavaScript SDK - to connect the app with Telerik Analytics
-- Telerik Analytics Cordova plugin - to collect data needed for analyses
-- Telerik Mobile Testing - used to implement tests for the mobile app
+- Telerik Backend Services&mdash;this is where all data, files, and user accounts are stored in the cloud
+- Telerik Backend Services JavaScript SDK&mdash;to connect the app to Telerik Backend Services
+- Telerik Analytics&mdash;used to store and monitor analytics data in the cloud
+- Telerik Analytics JavaScript SDK&mdash;to connect the app with Telerik Analytics
+- Telerik Analytics Cordova plugin&mdash;to collect data needed for analyses
+- Telerik Mobile Testing&mdash;used to implement tests for the mobile app
 
 ## Screenshots
 
@@ -79,7 +79,7 @@ This is a unique string that links the sample mobile app to a Telerik Analytics 
 2. Replace `$EQATEC_PROJECT_KEY$` with the Project Key of your Friends Analytics project.
 
 ### (Optional) Facebook App ID
-To demonstrate social login, we've pre-initialized the sample to use a purpose-built Facebook app by Telerik. However, you still need to enable Facebook integration in the Telerik Platform portal:
+To demonstrate social login, we've preinitialized the sample to use a purpose-built Facebook app by Telerik. However, you still need to enable Facebook integration in the Telerik Platform portal:
 
 1. Go to your app.
 2. Click the Backend Services project that you are using.
@@ -94,7 +94,7 @@ To demonstrate social login, we've pre-initialized the sample to use a purpose-b
 
 ### (Optional) Google Client ID
 
-To demonstrate social login, we've pre-initialized the sample to use a Google Client ID owned by Telerik. However, you still need to enable Google integration in the Telerik Platform portal:
+To demonstrate social login, we've preinitialized the sample to use a Google Client ID owned by Telerik. However, you still need to enable Google integration in the Telerik Platform portal:
 
 1. Go to your app.
 2. Click the Backend Services project that you are using.
