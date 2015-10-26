@@ -67,7 +67,7 @@ This is a unique string that links the sample mobile app to a project in Telerik
 You must use this project's API key. To set it in the app:
 
 1. Open the `/scripts/app/settings.js` file.
-2. Replace `$EVERLIVE_API_KEY$` with the API Key of your Friends Backend Services project.
+2. Replace `$TELERIK_APP_ID$` with the API Key of your Friends Backend Services project.
 
 > If you happen to break the structure of the automatically generated Friends sample project, you can delete it and a fresh instance will be created again for you automatically. Alternatively, you could create a new project and choose to start from a Friends template, instead of starting from a blank project.
 

@@ -83,7 +83,7 @@ var app = (function (win) {
  
     // Initialize Everlive SDK
     var el = new Everlive({
-                              apiKey: appSettings.everlive.apiKey,
+                              appId: appSettings.everlive.appId,
                               scheme: appSettings.everlive.scheme
                           });
 
