@@ -56,18 +56,18 @@ The Friends sample app comes fully functional, but to see it in action you must 
 	An app called "My App" is created for you with an AppBuilder project set up.
 2. Click **My App** in the navigation bar at the top to go the app home.
 3. Create a Backend Services project, selecting the **Start from the Friends app** option.
-4. Once the Backend Services project is ready, go to **Overview > API Keys**.
-5. Take note of your API Key.
+4. Once the Backend Services project is ready, go to **Overview > App ID & Tokens**.
+5. Take note of your App ID.
 6. Go back to the AppBuilder project and continue setting up as explained in the next sections.
 
-### API Key for Telerik Backend Services
+### App ID for Telerik Backend Services
 
 This is a unique string that links the sample mobile app to a project in Telerik Backend Services where all the data is read from/saved. When creating the project, you must base it on a Friends sample Backend Services project that has all the necessary data prepopulated.
 
-You must use this project's API key. To set it in the app:
+You must use this project's App ID. To set it in the app:
 
 1. Open the `/scripts/app/settings.js` file.
-2. Replace `$EVERLIVE_API_KEY$` with the API Key of your Friends Backend Services project.
+2. Replace `$EVERLIVE_API_KEY$` with the App ID of your Friends Backend Services project.
 
 > If you happen to break the structure of the automatically generated Friends sample project, you can delete it and a fresh instance will be created again for you automatically. Alternatively, you could create a new project and choose to start from a Friends template, instead of starting from a blank project.
 
