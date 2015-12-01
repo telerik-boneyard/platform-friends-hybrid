@@ -12,8 +12,7 @@
   "_release": "1.6.0",
   "_resolution": {
     "type": "version",
-    "tag": "1.6.0",
-    "commit": "445404dc1e58e4bbc853e4172e252b0ca451be49"
+    "tag": "1.6.0"
   },
   "_source": "git://github.com/telerik/backend-services-js-sdk.git",
   "_target": "~1.6.0",
