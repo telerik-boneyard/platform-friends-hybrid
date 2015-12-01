@@ -3,13 +3,14 @@
 
 <a href="https://platform.telerik.com/#appbuilder/clone/https://github.com/telerik/platform-friends-hybrid" target="_blank"><img src="http://docs.telerik.com/platform/samples/images/try-in-appbuilder.png" alt="Try in AppBuilder" title="Try in Telerik Platform" /></a> <a href="https://github.com/telerik/platform-friends-hybrid" target="_blank"><img style="padding-left:20px" src="http://docs.telerik.com/platform/samples/images/get-github.png" alt="Get from GitHub" title="Get from GitHub"></a>
 
+<a id="top"></a>
 * [Overview](#overview)
 * [Screenshots](#screenshots)
 * [Requirements](#requirements)
 * [Configuration](#configuration)
 * [Running the Sample](#running-the-sample)
 
-## Overview
+# Overview
 
 This repository contains the Telerik Friends app for PhoneGap/Cordova. It is a sample mobile app demonstrating how to integrate a large gamut of Telerik Platform services into a hybrid mobile application.
 
@@ -33,13 +34,13 @@ To implement all the features listed above, the sample app utilizes the followin
 - Telerik Analytics Cordova plugin&mdash;to collect data needed for analyses
 - Telerik Mobile Testing&mdash;used to implement tests for the mobile app
 
-## Screenshots
+# Screenshots
 
 Login Screen|Activity Stream|Activity Details
 ---|---|---
 ![Login Screen](https://raw.githubusercontent.com/telerik/platform-friends-hybrid/master/screenshots/ios-login-screen.png)|![Activities stream view](https://raw.githubusercontent.com/telerik/platform-friends-hybrid/master/screenshots/ios-activities-stream.png)|![Activity details view](https://raw.githubusercontent.com/telerik/platform-friends-hybrid/master/screenshots/ios-activitiy-details.png)
 
-## Requirements
+# Requirements
 
 Before you begin, you need to ensure that you have the following:
 
@@ -48,7 +49,7 @@ Ensure that you can log in to a Telerik Platform account. This can be a free tri
 
 - **Telerik AppBuilder** The sample app requires Telerik AppBuilder to run. This can be the in-browser client, the desktop client or the extension for Visual Studio.
 
-## Configuration
+# Configuration
 
 The Friends sample app comes fully functional, but to see it in action you must link it to your own Telerik Platform account.
 
@@ -56,29 +57,29 @@ The Friends sample app comes fully functional, but to see it in action you must 
 	An app called "My App" is created for you with an AppBuilder project set up.
 2. Click **My App** in the navigation bar at the top to go the app home.
 3. Create a Backend Services project, selecting the **Start from the Friends app** option.
-4. Once the Backend Services project is ready, go to **Overview > API Keys**.
-5. Take note of your API Key.
+4. Once the Backend Services project is ready, go to **Overview > App ID & Tokens**.
+5. Take note of your App ID.
 6. Go back to the AppBuilder project and continue setting up as explained in the next sections.
 
-### API Key for Telerik Backend Services
+## App ID for Telerik Backend Services
 
 This is a unique string that links the sample mobile app to a project in Telerik Backend Services where all the data is read from/saved. When creating the project, you must base it on a Friends sample Backend Services project that has all the necessary data prepopulated.
 
-You must use this project's API key. To set it in the app:
+You must use this project's App ID. To set it in the app:
 
 1. Open the `/scripts/app/settings.js` file.
-2. Replace `$TELERIK_APP_ID$` with the API Key of your Friends Backend Services project.
+2. Replace `$EVERLIVE_API_KEY$` with the App ID of your Friends Backend Services project.
 
 > If you happen to break the structure of the automatically generated Friends sample project, you can delete it and a fresh instance will be created again for you automatically. Alternatively, you could create a new project and choose to start from a Friends template, instead of starting from a blank project.
 
-### (Optional) Project Key for Telerik Analytics
+## (Optional) Project Key for Telerik Analytics
 
 This is a unique string that links the sample mobile app to a Telerik Analytics project in your account. If you do not set this the sample will still work, but no analytics data will be collected.
 	
 1. Open the `/scripts/app/settings.js` file.
 2. Replace `$EQATEC_PROJECT_KEY$` with the Project Key of your Friends Analytics project.
 
-### (Optional) Facebook App ID
+## (Optional) Facebook App ID
 To demonstrate social login, we've preinitialized the sample to use a purpose-built Facebook app by Telerik. However, you still need to enable Facebook integration in the Telerik Platform portal:
 
 1. Go to your app.
@@ -92,7 +93,7 @@ To demonstrate social login, we've preinitialized the sample to use a purpose-bu
 2. Find the `appId: '1408629486049918'` line.
 3. Replace the number with your Facebook app ID.
 
-### (Optional) Google Client ID
+## (Optional) Google Client ID
 
 To demonstrate social login, we've preinitialized the sample to use a Google Client ID owned by Telerik. However, you still need to enable Google integration in the Telerik Platform portal:
 
@@ -107,7 +108,7 @@ To demonstrate social login, we've preinitialized the sample to use a Google Cli
 2. Find the `clientId: '406987471724-q1sorfhhcbulk6r5r317l482u9f62ti8.apps.googleusercontent.com'` line.
 3. Replace the number with your Google Client ID.
 	
-### (Optional) Microsoft Account
+## (Optional) Microsoft Account
 
 To demonstrate social login, we've pre-initialized the sample to use a  Microsoft Account Client ID owned by Telerik. However, you still need to enable Microsoft Account integration in the Telerik Platform portal:
 
@@ -122,7 +123,7 @@ To demonstrate social login, we've pre-initialized the sample to use a  Microsof
 2. Find the `clientId: '000000004C10D1AF'` line.
 3. Replace the number with your Microsoft Account Client ID.
 	
-### (Optional) Active Directory Federation Services (AD FS)
+## (Optional) Active Directory Federation Services (AD FS)
 
 The sample app allows users to [register using AD FS](http://docs.telerik.com/platform/backend-services/javascript/users/adfs-login/introduction). To try this integration, configure the following:
 
@@ -141,11 +142,11 @@ The sample app allows users to [register using AD FS](http://docs.telerik.com/pl
 
 > Note that AD FS authentication can only be accomplished over HTTPS.
 
-### HTTPS Connections
+## HTTPS Connections
 
 By default the Friends Sample is configured to use HTTP. If you want to switch to HTTPS, update the `appSettings.everlive.scheme` setting in  `/scripts/app/settings.js` to `https`.
 
-## Running the Sample
+# Running the Sample
 
 Once the app is configured, you can run it either on a real device or in the Telerik AppBuilder simulator.
 
