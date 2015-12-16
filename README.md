@@ -12,7 +12,7 @@
 
 # Overview
 
-This repository contains the Telerik Friends app for PhoneGap/Cordova. It is a sample mobile app demonstrating how to integrate a large gamut of Telerik Platform services into a hybrid mobile application.
+This repository contains the Telerik Friends app for PhoneGap/Cordova. It is a sample mobile app demonstrating how to integrate a wide range of Telerik Platform services into a hybrid mobile application.
 
 The Telerik Friends sample app showcases these features and SDKs:
 
@@ -68,7 +68,7 @@ This is a unique string that links the sample mobile app to your Telerik Platfor
 
 ## (Optional) Project Key for Telerik Analytics
 
-This is a unique string that links the sample mobile app to a Telerik Analytics project in your account. If you do not set this the sample will still work, but no analytics data will be collected.
+This is a unique string that links the sample mobile app to the Analytics part of your Telerik Platform app. If you do not set this the sample will still work, but no analytics data will be collected.
 	
 1. In the Telerik Platform portal, go to your app.
 2. Click the **Analytics** tab and then click **Enable**.
@@ -94,8 +94,8 @@ To demonstrate social login, we have preinitialized the sample to use a purpose-
 To demonstrate social login, we have preinitialized the sample to use a Google Client ID owned by Telerik. However, you still need to enable Google integration in the Telerik Platform portal:
 
 1. In the Telerik Platform portal, go to your app.
-3. Navigate to **Users > Authentication**.
-4. Ensure that the **Google** box is checked.
+2. Navigate to **Users > Authentication**.
+3. Ensure that the **Google** box is checked.
 
 > Note that if you intend to use the code for a production app you need to set up your own Google Client ID and adjust the code as follows:
 
@@ -108,8 +108,8 @@ To demonstrate social login, we have preinitialized the sample to use a Google C
 To demonstrate social login, we have preinitialized the sample to use a  Microsoft Account Client ID owned by Telerik. However, you still need to enable Microsoft Account integration in the Telerik Platform portal:
 
 1. In the Telerik Platform portal, go to your app.
-3. Navigate to **Users > Authentication**.
-4. Ensure that the **Windows Live** box is checked.
+2. Navigate to **Users > Authentication**.
+3. Ensure that the **Windows Live** box is checked.
 
 > Note that if you intend to use the code for a production app you need to set up your own Microsoft Account Client ID and adjust the code as follows:
 
