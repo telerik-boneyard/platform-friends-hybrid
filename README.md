@@ -16,20 +16,20 @@ This repository contains the Telerik Friends app for PhoneGap/Cordova. It is a s
 
 The Telerik Friends sample app showcases these features and SDKs:
 
-- Cloud data access (Telerik Backend Services)
-- Working with files (Telerik Backend Services)
-- User registration and authentication (Telerik Backend Services)
-- Authentication with social login providers (Facebook, Google, etc.) (Telerik Backend Services)
-- Authentication with AD FS (Telerik Backend Services)
+- [Cloud data](http://docs.telerik.com/platform/backend-services/javascript/data/introduction) access (Telerik Backend Services)
+- Working with [files](http://docs.telerik.com/platform/backend-services/javascript/files/introduction) (Telerik Backend Services)
+- User [registration](http://docs.telerik.com/platform/backend-services/javascript/users/users-register) and [authentication](http://docs.telerik.com/platform/backend-services/javascript/users/users-authenticate) (Telerik Backend Services)
+- Authentication with [social login](http://docs.telerik.com/platform/backend-services/javascript/users/social-login/introduction) providers (Facebook, Google, etc.) (Telerik Backend Services)
+- Authentication with [AD FS](http://docs.telerik.com/platform/backend-services/javascript/users/adfs-login/introduction) (Telerik Backend Services)
 - Using custom user account fields (Telerik Backend Services)
-- Basic app analytics (Telerik Analytics)
-- Tracking feature usage (Telerik Analytics)
+- Basic [app analytics](http://docs.telerik.com/platform/analytics/getting-started/introduction) (Telerik Analytics)
+- Tracking [feature use](http://docs.telerik.com/platform/analytics/client/reports/feature-use) (Telerik Analytics)
 
 To implement all the features listed above, the sample app utilizes the following Telerik products and SDKs:
 
-- Telerik Backend Services JavaScript SDK&mdash;to connect the app to Telerik Platform
-- Telerik Analytics JavaScript SDK&mdash;to connect the app with Telerik Platform
-- Telerik Analytics Cordova plugin&mdash;to collect data needed for analyses
+- [Telerik Backend Services JavaScript SDK](http://docs.telerik.com/platform/backend-services/javascript/getting-started-javascript-sdk)&mdash;to connect the app to Telerik Platform
+- [Telerik Analytics JavaScript SDK](http://docs.telerik.com/platform/analytics/sdk/js/)&mdash;to connect the app to Telerik Platform
+- [Telerik Analytics Cordova plugin](http://plugins.telerik.com/cordova/plugin/telerik-analytics)&mdash;to collect data needed for analyses
 
 # Screenshots
 
@@ -72,9 +72,9 @@ This is a unique string that links the sample mobile app to the Analytics part o
 	
 1. In the Telerik Platform portal, go to your app.
 2. Click the **Analytics** tab and then click **Enable**.
-6. Go to **Analytics > Settings > Options** and take note of your **Project Key**.
-2. Open the `platform-friends-hybrid/scripts/app/settings.js` file.
-2. Replace `$EQATEC_PROJECT_KEY$` with the **Project Key** that you acquired earlier.
+3. Go to **Analytics > Settings > Options** and take note of your **Project Key**.
+4. Open the `platform-friends-hybrid/scripts/app/settings.js` file.
+5. Replace `$EQATEC_PROJECT_KEY$` with the **Project Key** that you acquired earlier.
 
 ## (Optional) Facebook App ID
 To demonstrate social login, we have preinitialized the sample to use a purpose-built Facebook app by Telerik. However, you still need to enable Facebook integration in the Telerik Platform portal:
