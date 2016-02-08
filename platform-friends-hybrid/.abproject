@@ -24,7 +24,7 @@
     "android.permission.WRITE_EXTERNAL_STORAGE"
   ],
   "CorePlugins": [
-    "com.telerik.feedback",
+    "com.telerik.feedback@2.0.0",
     "com.telerik.mobiletesting",
     "com.telerik.plugin.eqatecanalytics",
     "org.apache.cordova.battery-status",
