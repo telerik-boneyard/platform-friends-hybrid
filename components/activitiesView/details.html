@@ -1,0 +1,47 @@
+<div data-layout="main-nonav" data-role="view" data-title="Details" data-model="app.activitiesView.activityDetailsViewModel" data-bind="events: { show: onShow, hide: onHide }" id="activitiesViewModelDetailsView">
+    <div class="details-content">
+        <img data-bind="attr: { src: currentActivity.PictureUrl }" width="100%" height="auto" style="max-height: 300px;">
+
+        <h2 data-bind="text: currentActivity.User"></h2>
+        <h3 data-bind="text: currentActivity.CreatedAt"></h3>
+        <p data-bind="text: currentActivity.Text"></p>
+    </div>
+
+    <button id="goback" data-bind="events: {click: goBack }">
+        Back
+    </button>
+
+    <button id="edit" data-bind="events: { click: editActivity }, visible: canEdit ">
+        Edit
+    </button>
+
+    <button id="remove" data-bind="events: { click: removeActivity }, visible: canDelete ">
+        Remove
+    </button>
+
+    <button id="view-comments-button" data-bind="events: {click: loadComments }">
+        View comments
+    </button>
+
+    <button id="add-comment-button" data-bind="events: {click: addComment }">
+        Add comment
+    </button>
+
+    <ul id="comments-list-view" data-role="listview" data-template="comments-template"
+        data-bind="{ source: commentsDataSource, visible: showComments }" data-auto-bind="false">
+    </ul>
+
+    <script id="comments-count-template" type="text/x-kendo-template">
+        #if(data){# View comments (#: data #) #}else{# View comments #}#
+    </script>
+
+    <script id="comments-template" type="text/x-kendo-template">
+        <div class="image-with-text" data-id="#: data['Id'] #">
+            <h3>#: data['User']['DisplayName'] #</h3>
+            <p>#: data['Comment'] #</p>
+
+            <button style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: editComment }" >Edit</button>
+            <button style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: removeComment }" >Remove</button>
+        </div>
+    </script>
+</div>

@@ -1,0 +1,38 @@
+<div data-role="view" data-title="Profile" data-layout="main-nonav" data-model="app.profileView.profileViewModel" data-bind="events: { show: onShow }">
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+            <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;" data-role="view-title"></span>
+            <a data-role="backbutton" data-align="left"></a>
+            <a data-role="button" data-align="right" data-bind="events: {click: updateProfile }" data-icon="compose"></a>
+        </div>
+    </header>
+
+    <form id="edit-profile-form">
+        <ul data-role="listview" data-style="inset">
+            <li>
+                <label>DisplayName
+                    <input type="text" data-bind="value: profile.DisplayName" required>
+                </label>
+            </li>
+            <li>
+                <label>Email
+                    <input type="email" data-bind="value: profile.Email" required>
+                </label>
+            </li>
+            <li>
+                <label> Birth Date
+                    <input type="date" id="birth" data-bind="value: profile.BirthDate">
+                </label>
+            </li>
+            <li class="select-wrp">
+                <label> Gender
+                    <select id="gender" data-bind="value: profile.Gender">
+                        <option value="0" selected>gender</option>
+                        <option value="1">Male</option>
+                        <option value="2">Female</option>
+                    </select>
+                </label>
+            </li>
+        </ul>
+    </form>
+</div>

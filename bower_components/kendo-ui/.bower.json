@@ -1,0 +1,44 @@
+{
+  "name": "kendo-ui",
+  "version": "2016.1.217",
+  "dependencies": {
+    "jquery": ">=1.9.1 <=2.1.1"
+  },
+  "authors": [
+    "Telerik"
+  ],
+  "description": "Everything you need to build sites and apps with HTML5 & JavaScript",
+  "main": "js/kendo.ui.core.min.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "keywords": [
+    "html5",
+    "javascript",
+    "jquery",
+    "ui",
+    "framework"
+  ],
+  "license": "Apache2",
+  "homepage": "http://www.github.com/telerik/kendo-ui-core",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/components",
+    "test",
+    "tests"
+  ],
+  "_release": "2016.1.217",
+  "_resolution": {
+    "type": "version",
+    "tag": "2016.1.217",
+    "commit": "90fb4d9cc10b9a97ae3342855455df9120c8cc8c"
+  },
+  "_source": "git://github.com/kendo-labs/bower-kendo-ui.git",
+  "_target": "~2016.1.217",
+  "_originalSource": "kendo-ui-core",
+  "_direct": true
+}
