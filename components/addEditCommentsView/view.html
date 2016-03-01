@@ -1,0 +1,20 @@
+<div data-role="view" data-title="Form" data-layout="main" data-bind="events: { show: onShow }" data-model="app.addEditCommentsView.addEditCommentsViewModel">
+    <div id="addCommentsViewModel" class="form-view">
+        <form>
+            <ul class="form-content" data-role="listview" data-style="inset">
+                <li>
+
+                    <label>Comment
+                        <input data-bind="value: fields.comment" placeholder="Add a comment" type="text">
+                    </label>
+
+                </li>
+            </ul>
+
+            <div class="button-group">
+                <a data-role="button" data-bind="events: { click: cancel }">Cancel</a>
+                <a class="primary" data-role="button" data-bind="events: { click: submit }">Confirm</a>
+            </div>
+        </form>
+    </div>
+</div>

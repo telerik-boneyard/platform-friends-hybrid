@@ -1,0 +1,26 @@
+{
+  "name": "friends-hybrid",
+  "authors": [
+    "gngeorgiev <gngeorgiev.it@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "everlive": "1.6.4",
+    "kendo-ui": "kendo-ui-core#~2016.1.217",
+    "lodash": "~4.5.1"
+  },
+  "resolutions": {
+    "everlive": "1.6.4"
+  }
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Platform Friends Hybrid</title>
+
+    <link href="bower_components/kendo-ui/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/kendo-ui/js/kendo.ui.core.min.js"></script>
+    <script src="bower_components/everlive/src/everlive.all.js"></script>
+    <script src="bower_components/lodash/dist/lodash.min.js"></script>
+
+    <script src="app.js"></script>
+    <script src="notify.js"></script>
+    <script src="settings.js"></script>
+    <script src="validate.js"></script>
+    <script src="constants.js"></script>
+
+    <script src="dataProviders/defaultProvider.js"></script>
+
+    <script src="components/authenticationView/index.js"></script>
+    <script src="components/activitiesView/index.js"></script>
+    <script src="components/addEditCommentsView/index.js"></script>
+    <script src="components/profileView/index.js"></script>
+</head>
+<body>
+    <div data-role="layout" data-id="main">
+        <!-- application views will be rendered here -->
+    </div>
+
+    <div id="appDrawer" data-role="drawer" data-title="Navigation" data-model="app.drawerModel">
+        <header data-role="header">
+            <div data-role="navbar">
+                <span data-role="view-title"></span>
+            </div>
+        </header>
+        <ul id="navigation-container" data-role="listview">
+            <!--<li><a href="components/home/view.html" data-icon="home">Home View</a></li>-->
+            <!--<li><a href="components/formView/view.html" data-icon="bookmarks">Form</a></li>-->
+            <!--<li><a href="components/editableListViewgdagda/view.html" data-icon="organize">Editable List</a></li>-->
+
+            <li>
+                <a data-bind="events: { click: logout }" data-icon="reply">Logout</a>
+            </li>
+            <li>
+                <a data-bind="events: { click: goToProfile }" data-icon="contacts">Profile</a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
