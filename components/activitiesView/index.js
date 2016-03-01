@@ -65,21 +65,6 @@
         activity: null,
         imageChanged: false,
 
-        _getImage: function (cb) {
-            var files = $('#activityPhoto')[0].files;
-            if (!files.length) {
-                return cb();
-            }
-
-            var file = files[0];
-            var reader = new FileReader();
-
-            reader.readAsDataURL(file);
-            reader.onload = function (e) {
-                var base64 = e.target.result;
-                cb(base64, file);
-            }.bind(this);
-        },
         _handleActivityOperation: function (pictureId) {
             var model = {};
             model.Text = this.activity.Text;
@@ -107,22 +92,31 @@
 
             app.utils.loading(true);
 
-            if (this.imageChanged) {
-                this._getImage(function (base64, file) {
-                    if (base64) {
-                        var cleanBase64 = base64.split(',')[1];
-                        return provider.files.create({
-                            Filename: app.user.Id + '_' + file.name,
-                            ContentType: file.type,
-                            base64: cleanBase64
-                        })
-                        .then(function (res) {
-                            return this._handleActivityOperation(res.result.Id);
-                        }.bind(this)).catch(app.notify.error);
+            if (this.imageChanged && this.activity.PictureUrl) {
+                var picture = this.activity.PictureUrl;
+                var uploadImagePromise;
+
+                if (window.cordova) {
+                    uploadImagePromise = provider.files.upload(picture);
+                } else {
+                    uploadImagePromise = provider.files.create({
+                        Filename: app.user.Id + '_' + file.name,
+                        ContentType: file.type,
+                        base64: picture
+                    });
+                }
+
+                uploadImagePromise.then(function (res) {
+                    var id;
+                    if (res.response) {
+                        var responseObject = JSON.parse(res.response);
+                        id = responseObject.Result[0].Id
+                    } else {
+                        id = res.result.Id;
                     }
 
-                    return this._handleActivityOperation();
-                }.bind(this));
+                    return this._handleActivityOperation(id);
+                }.bind(this)).catch(app.notify.error);
             } else {
                 return this._handleActivityOperation()
             }
@@ -145,14 +139,42 @@
                 });
             }
 
-            $('#activityPhoto:file').change(function () {
-                this.set('imageChanged', true);
-                this._getImage(function (base64) {
-                    if (base64) {
-                        this.set('activity.PictureUrl', base64);
-                    }
+            if (window.cordova) {
+                $('#choose-file-button').click(function () {
+                    navigator.camera.getPicture(function (uri) {
+                        this.set('imageChanged', true);
+                        this.set('activity.PictureUrl', uri);
+                    }.bind(this), app.notify.error, {
+                        quality: 50,
+                        destinationType: navigator.camera.DestinationType.FILE_URI,
+                        sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+                    });
                 }.bind(this));
-            }.bind(this));
+            } else {
+                $('#choose-file-button').click(function () {
+                    $('#activityPhoto').click();
+                });
+
+                $('#activityPhoto:file').change(function () {
+                    this.set('imageChanged', true);
+                    var files = $('#activityPhoto')[0].files;
+                    if (!files.length) {
+                        return cb();
+                    }
+
+                    var file = files[0];
+                    var reader = new FileReader();
+
+                    reader.readAsDataURL(file);
+                    reader.onload = function (e) {
+                        var base64 = e.target.result;
+                        if (base64) {
+                            var cleanBase64 = uri.split(',')[1];
+                            this.set('activity.PictureUrl', cleanBase64);
+                        }
+                    }.bind(this);
+                }.bind(this));
+            }
 
             activityValidator = app.validate.getValidator('#activity-form');
         }
