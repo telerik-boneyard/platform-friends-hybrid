@@ -2,6 +2,7 @@
 
 (function() {
     var provider = app.data.defaultProvider = new Everlive({
+        url: '//localhost:3000/v1/',
         offlineStorage: true,
         appId: app.settings.appId,
         scheme: app.settings.scheme,
@@ -46,22 +47,22 @@
                         token.access_token,
                         token.token_type,
                         token.principal_id);
+                }
 
-                    provider.users.currentUser(function _currentUserSuccess(data) {
-                        if (data.result) {
-                            app.user = data.result;
-                        } else {
-                            authentication.setCachedAccessToken(null);
-                            providerAuthentication.clearAuthorization();
-                        }
-
-                        return resolve();
-                    }, function _currentUserFailure(err) {
+                provider.users.currentUser(function _currentUserSuccess(data) {
+                    if (data.result) {
+                        app.user = data.result;
+                    } else {
                         authentication.setCachedAccessToken(null);
                         providerAuthentication.clearAuthorization();
-                        return reject(err);
-                    });
-                }
+                    }
+
+                    return resolve();
+                }, function _currentUserFailure(err) {
+                    authentication.setCachedAccessToken(null);
+                    providerAuthentication.clearAuthorization();
+                    return reject(err);
+                });
             });
         }
     };

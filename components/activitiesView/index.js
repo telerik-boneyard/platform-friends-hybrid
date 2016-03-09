@@ -23,7 +23,7 @@
                             TargetTypeName: 'Users',
                             SingleField: 'DisplayName'
                         },
-                        UserId: {
+                        CreatedBy: {
                             TargetTypeName: 'Users',
                             SingleField: 'DisplayName',
                             ReturnAs: 'User'
@@ -41,14 +41,6 @@
                 activity.Likes = activity.Likes || [];
                 activity.LikesCount = activity.Likes.length;
                 activity.Liked = activity.Likes.indexOf(app.user.DisplayName) !== -1;
-
-                //TODO: remove this hack
-                activity.Meta = {
-                    Permissions: {
-                        CanEdit: activity.CreatedBy === app.user.Id,
-                        CanDelete: activity.CreatedBy === app.user.Id
-                    }
-                }
             });
         },
         error: app.notify.error,
@@ -195,7 +187,7 @@
                     read: {
                         headers: {
                             'X-Everlive-Expand': JSON.stringify({
-                                UserId: {
+                                CreatedBy: {
                                     TargetTypeName: 'Users',
                                     Fields: {
                                         'DisplayName': 1

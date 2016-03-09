@@ -39,7 +39,6 @@
                 comment.Id = this.commentId;
                 promise = commentsData.updateSingle(comment);
             } else {
-                comment.UserId = app.user.Id;
                 comment.ActivityId = this.activityId;
                 promise = commentsData.create(comment);
             }

@@ -100,6 +100,41 @@
         toggleView: function () {
             mode = mode === 'signin' ? 'register' : 'signin';
             init();
+        },
+        facebookLogin: function () {
+            var login = function (response) {
+                provider.authentication.loginWithFacebook(response.authResponse.accessToken, successHandler, init);
+            };
+
+            FB.getLoginStatus(function (response) {
+                if (response.status === 'connected') {
+                    login(response);
+                } else {
+                    FB.login(function (response) {
+                        if (response.status === 'connected') {
+                            login(response);
+                        }
+                    });
+                }
+            });
+        },
+        twitterLogin: function () {
+            provider.authentication.loginWithTwitter(
+                app.settings.social.twitter.acessToken,
+                app.settings.social.twitter.accessTokenSecret,
+                successHandler,
+                init
+            );
+        },
+        googleLogin: function () {
+            var auth = gapi.auth2.getAuthInstance();
+            gapi.auth2.getAuthInstance().signIn()
+                .then(function () {
+                    var user = auth.currentUser.get();
+                    var authResponse = user.getAuthResponse();
+                    var accessToken = authResponse.access_token;
+                    provider.authentication.loginWithGoogle(accessToken, successHandler, init);
+                }, app.notify.error);
         }
     });
 
