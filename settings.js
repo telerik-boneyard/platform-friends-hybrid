@@ -14,6 +14,14 @@
             },
             google: {
                 clientId: '843111169698-51ar5f2n1dqgcgrs63c0aadujrssa9pm.apps.googleusercontent.com'
+            },
+            windows: {
+                clientId: '000000004417FB50',
+                redirect_uri: 'http://mydomain.com:8012'
+            },
+            adfs: {
+                endpoint: '',
+                realm: ''
             }
         }
     };

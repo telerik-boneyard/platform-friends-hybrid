@@ -28,7 +28,6 @@
 </head>
 <body>
     <div data-role="layout" data-id="main">
-        <!-- application views will be rendered here -->
     </div>
 
     <div id="appDrawer" data-role="drawer" data-title="Navigation" data-model="app.drawerModel">
@@ -38,10 +37,6 @@
             </div>
         </header>
         <ul id="navigation-container" data-role="listview">
-            <!--<li><a href="components/home/view.html" data-icon="home">Home View</a></li>-->
-            <!--<li><a href="components/formView/view.html" data-icon="bookmarks">Form</a></li>-->
-            <!--<li><a href="components/editableListViewgdagda/view.html" data-icon="organize">Editable List</a></li>-->
-
             <li>
                 <a data-bind="events: { click: logout }" data-icon="reply">Logout</a>
             </li>
@@ -51,6 +46,7 @@
         </ul>
     </div>
 
+    <!--INIT FACEBOOK LOGIN-->
     <script>
         window.fbAsyncInit = function() {
             FB.init({
@@ -68,7 +64,9 @@
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
     </script>
+    <!--INIT FACEBOOK LOGIN-->
 
+    <!--INIT GOOGLE LOGIN-->
     <script>
         function gapiLoad() {
             gapi.load('auth2', function () {
@@ -79,6 +77,23 @@
         }
     </script>
     <script src="https://apis.google.com/js/platform.js?onload=gapiLoad" async defer></script>
+    <!--INIT GOOGLE LOGIN-->
 
+    <!--INIT MICROSOFT LIVE LOGIN-->
+    <script src="https://js.live.net/v5.0/wl.js"></script>
+    <div id="signin"></div>
+    <script>
+        WL.init({
+            client_id: app.settings.social.windows.clientId,
+            redirect_uri: app.settings.social.windows.redirect_uri,
+            scope: 'w1.signin',
+            response_type: 'token'
+        });
+        WL.ui({
+            name: 'signin',
+            element: 'signin'
+        });
+    </script>
+    <!--INIT MICROSOFT LIVE LOGIN-->
 </body>
 </html>
