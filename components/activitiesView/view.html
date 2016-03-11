@@ -18,9 +18,18 @@
             <img src="#: data['PictureUrl'] #" width="30%" height="30%">
             <h3>#: data['Text'] #</h3>
             <p>#: data['CreatedAt'] #</p>
-            <p>Likes: #: data['LikesCount'] #</p>
-            <button data-bind="events: {click: activitiesViewModel.likeActivity}">
-                # if (data['Liked']) { # Unlike # } else { # Like # } #
+            # if (data['Liked']) { #
+                <button data-bind="events: {click: activitiesViewModel.likeActivity}" class="liked">
+                    #= data['LikesCount'] #
+                </button>
+            # } else { #
+                <button data-bind="events: {click: activitiesViewModel.likeActivity}">
+                    #= data['LikesCount'] #
+                </button>
+            # } #
+
+            <button data-bind="events: {click: activitiesViewModel.openComments }">
+                Comments (#: data['CommentsCount'] #)
             </button>
         </div>
     </script>

@@ -27,6 +27,16 @@
                             TargetTypeName: 'Users',
                             SingleField: 'DisplayName',
                             ReturnAs: 'User'
+                        },
+                        'Comments.ActivityId': {
+                            Aggregate: {
+                                Aggregate: {
+                                    Count: {
+                                        count: null
+                                    }
+                                }
+                            },
+                            ReturnAs: 'Comments'
                         }
                     })
                 }
@@ -41,6 +51,12 @@
                 activity.Likes = activity.Likes || [];
                 activity.LikesCount = activity.Likes.length;
                 activity.Liked = activity.Likes.indexOf(app.user.DisplayName) !== -1;
+
+                if (activity.Comments.length) {
+                    activity.CommentsCount = activity.Comments[0].Count;
+                } else {
+                    activity.CommentsCount = 0;
+                }
             });
         },
         error: app.notify.error,
@@ -48,8 +64,6 @@
         serverPaging: true,
         pageSize: 50
     });
-
-    var commentsData = provider.data('Comments');
 
     var activityValidator;
     var addEditActivityViewModel = kendo.observable({
@@ -177,85 +191,13 @@
         canEdit: false,
         canDelete: false,
         commentsDataSource: [],
-        showComments: false,
-
-        _getCommentsDataSource: function (filter) {
-            return new kendo.data.DataSource({
-                type: 'everlive',
-                transport: {
-                    typeName: 'Comments',
-                    read: {
-                        headers: {
-                            'X-Everlive-Expand': JSON.stringify({
-                                CreatedBy: {
-                                    TargetTypeName: 'Users',
-                                    Fields: {
-                                        'DisplayName': 1
-                                    },
-                                    ReturnAs: 'User'
-                                }
-                            })
-                        }
-                    }
-                },
-                filter: filter || {},
-                serverFiltering: true,
-                error: app.notify.error
-            });
-        },
-        _renderCommentsCountTemplate: function (data) {
-            var template = kendo.template($('#comments-count-template').html());
-            var renderedTemplate = template(data || '');
-            $('#view-comments-button').html(renderedTemplate);
-        },
-        _aggregateComments: function () {
-            var query = new Everlive.AggregateQuery;
-
-            query.where().equal('ActivityId', this.currentActivity.Id);
-            query.count();
-
-            commentsData.aggregate(query)
-                .then(function (data) {
-                    var templateData = data.result.length ? data.result[0].Count : 0;
-                    this._renderCommentsCountTemplate(templateData);
-                }.bind(this))
-                .catch(app.notify.error);
-        },
-
         onShow: function (e) {
-            this._renderCommentsCountTemplate();
             var currentActivity = activitiesDataSource.get(e.view.params.id);
             this.set('currentActivity', null);
             this.set('currentActivity', currentActivity);
-            this._aggregateComments();
 
-            if (this.showComments) {
-                this.loadComments();
-            }
-
-            this.set('canEdit', currentActivity.Meta.Permissions.CanEdit);
+            this.set('canEdit', currentActivity.Meta.Permissions.CanUpdate);
             this.set('canDelete', currentActivity.Meta.Permissions.CanDelete);
-        },
-        onHide: function () {
-            this.set('showComments', false);
-        },
-        loadComments: function () {
-            var commentsDataSource = this._getCommentsDataSource({
-                field: 'ActivityId',
-                operator: 'eq',
-                value: this.currentActivity.Id
-            });
-
-            this.set('commentsDataSource', commentsDataSource);
-
-            commentsDataSource.read()
-                .then(function () {
-                    this.set('showComments', true);
-                }.bind(this), app.notify.error);
-        },
-        editComment: function (e) {
-            var commentId = e.data.Id;
-            app.mobileApp.navigate('#components/addEditCommentsView/view.html?commentId=' + commentId);
         },
         editActivity: function () {
             app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);
@@ -276,15 +218,6 @@
                     return this.goBack();
                 }
             }
-        },
-        removeComment: function (e) {
-            var commentId = e.data.Id;
-            var comment = this.commentsDataSource.getByUid(commentId);
-            this.commentsDataSource.remove(comment);
-            this.commentsDataSource.sync().then(this._aggregateComments.bind(this), app.notify.error);
-        },
-        addComment: function () {
-            app.mobileApp.navigate('#components/addEditCommentsView/view.html?activityId=' + this.currentActivity.Id);
         },
         goBack: app.utils.goBack
     });
@@ -317,6 +250,11 @@
                 .then(function () {
                     app.mobileApp.navigate('#components/authenticationView/view.html');
                 }, app.notify.error);
+        },
+        openComments: function (e) {
+            e.stopPropagation();
+            var activityId = e.data.Id;
+            app.mobileApp.navigate('#components/commentsView/view.html?activityId=' + activityId);
         }
     });
 

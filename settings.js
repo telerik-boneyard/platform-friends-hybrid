@@ -2,22 +2,22 @@
 
 (function () {
     app.settings = {
-        appId: 'o4mw1ldrudo8maro',
+        appId: '',
         scheme: 'http',
         social: {
             facebook: {
-                appId: '206258206377165'
+                appId: ''
             },
             twitter: {
-                acessToken: '3004026989-UzHGFbbxH9sDKEVPNUlBKtKoRqZ7q9Q3OCmRnLB',
-                accessTokenSecret: 'rLyPa4XRvQEkvfLjGPCBitqRsqqCJCkGDZRo2eu6A6wh1'
+                acessToken: '',
+                accessTokenSecret: ''
             },
             google: {
-                clientId: '843111169698-51ar5f2n1dqgcgrs63c0aadujrssa9pm.apps.googleusercontent.com'
+                clientId: ''
             },
             windows: {
-                clientId: '000000004417FB50',
-                redirect_uri: 'http://mydomain.com:8012'
+                clientId: '',
+                redirect_uri: ''
             },
             adfs: {
                 endpoint: '',

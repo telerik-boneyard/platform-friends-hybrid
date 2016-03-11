@@ -1,0 +1,22 @@
+<div data-role="view" data-title="Comments" data-layout="main" data-bind="events: { show: onShow }" data-model="app.commentsView.commentsViewModel">
+    <div id=view-comments" class="form-view">
+        <ul id="comments-list-view" data-role="listview" data-template="comments-template"
+            data-bind="{ source: commentsDataSource }">
+        </ul>
+
+        <button id="add-comment-button" data-bind="events: {click: addComment }">
+            Add comment
+        </button>
+
+        <script id="comments-template" type="text/x-kendo-template">
+            <div class="image-with-text" data-id="#: data['Id'] #">
+                <h3>#: data['User']['DisplayName'] #</h3>
+                <p>#: data['Comment'] #</p>
+                <p>#: data['CreatedAt'] #</p>
+
+                <button style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: editComment }" >Edit</button>
+                <button style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: removeComment }" >Remove</button>
+            </div>
+        </script>
+    </div>
+</div>
