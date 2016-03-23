@@ -1,12 +1,19 @@
-<div data-role="view" data-title="Comments" data-layout="main" data-bind="events: { show: onShow }" data-model="app.commentsView.commentsViewModel">
+<div data-role="view" data-title="Comments"  data-layout="main-nonav" data-bind="events: { show: onShow }" data-model="app.commentsView.commentsViewModel">
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+
+            <span data-role="view-title" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
+
+            <a data-role="backbutton" data-align="left"></a>
+            <a data-role="button" data-align="right"
+               data-bind="events: { click: addComment }" data-icon="add"></a>
+        </div>
+    </header>
+
     <div id=view-comments" class="form-view">
         <ul id="comments-list-view" data-role="listview" data-template="comments-template"
             data-bind="{ source: commentsDataSource }">
         </ul>
-
-        <button id="add-comment-button" data-bind="events: {click: addComment }">
-            Add comment
-        </button>
 
         <script id="comments-template" type="text/x-kendo-template">
             <div class="image-with-text" data-id="#: data['Id'] #">
