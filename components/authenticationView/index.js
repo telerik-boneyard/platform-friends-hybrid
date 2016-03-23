@@ -48,6 +48,8 @@
         displayName: '',
         email: '',
         password: '',
+        birthDate: null,
+        gender: '',
         validateData: function (data) {
             if (!data.email) {
                 app.notify.info('Missing email');
@@ -70,7 +72,12 @@
                 return false;
             }
 
-            provider.users.login(email, password, successHandler, init);
+            provider.users.login(email, password, function (data) {
+                vm.set('email', '');
+                vm.set('password', '');
+
+                successHandler(data);
+            }, init);
         },
         register: function () {
             if (!validator.validate()) {
@@ -96,6 +103,10 @@
             }
 
             provider.users.register(email, password, attrs, function () {
+                vm.set('displayName', '');
+                vm.set('birtDate', null);
+                vm.set('gender', '');
+
                 vm.signin(email, password);
             }, init);
         },
