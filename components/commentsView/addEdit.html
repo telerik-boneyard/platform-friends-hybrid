@@ -1,4 +1,13 @@
-<div data-role="view" data-title="Form" data-layout="main" data-bind="events: { show: onShow }" data-model="app.commentsView.addEditCommentsViewModel">
+<div data-role="view" data-title="Add Comment"  data-layout="main-nonav" data-bind="events: { show: onShow }" data-model="app.commentsView.addEditCommentsViewModel">
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+
+            <span data-role="view-title" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; display: block; margin-left: 70px; margin-right: 70px;"></span>
+
+            <a data-role="backbutton" data-align="left"></a>
+        </div>
+    </header>
+
     <div id="addCommentsViewModel" class="form-view">
         <form>
             <ul class="form-content" data-role="listview" data-style="inset">
