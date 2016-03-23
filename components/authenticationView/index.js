@@ -61,10 +61,10 @@
 
             return true;
         },
-        signin: function () {
+        signin: function (email, password) {
             var model = vm;
-            var email = model.email.toLowerCase();
-            var password = model.password;
+            email = email || model.email.toLowerCase();
+            password = password || model.password;
 
             if (!model.validateData(model)) {
                 return false;
@@ -95,7 +95,9 @@
                 return false;
             }
 
-            provider.users.register(email, password, attrs, successHandler, init);
+            provider.users.register(email, password, attrs, function () {
+                vm.signin(email, password);
+            }, init);
         },
         toggleView: function () {
             mode = mode === 'signin' ? 'register' : 'signin';
