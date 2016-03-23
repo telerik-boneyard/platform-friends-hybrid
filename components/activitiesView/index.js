@@ -69,6 +69,7 @@
     var addEditActivityViewModel = kendo.observable({
         isEdit: false,
         activity: null,
+        file: null,
         imageChanged: false,
 
         _handleActivityOperation: function (pictureId) {
@@ -105,10 +106,12 @@
                 if (window.cordova) {
                     uploadImagePromise = provider.files.upload(picture);
                 } else {
+                    var file = this.file;
+                    var cleanBase64 = picture.split(',')[1];
                     uploadImagePromise = provider.files.create({
                         Filename: app.user.Id + '_' + file.name,
                         ContentType: file.type,
-                        base64: picture
+                        base64: cleanBase64
                     });
                 }
 
@@ -169,14 +172,14 @@
                     }
 
                     var file = files[0];
+                    this.set('file', file);
                     var reader = new FileReader();
 
                     reader.readAsDataURL(file);
                     reader.onload = function (e) {
                         var base64 = e.target.result;
                         if (base64) {
-                            var cleanBase64 = uri.split(',')[1];
-                            this.set('activity.PictureUrl', cleanBase64);
+                            this.set('activity.PictureUrl', base64);
                         }
                     }.bind(this);
                 }.bind(this));

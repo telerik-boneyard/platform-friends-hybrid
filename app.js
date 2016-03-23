@@ -23,10 +23,14 @@
 
     var bootstrap = function () {
         $(function () {
-            app.mobileApp = new kendo.mobile.Application(document.body, {
-                initial: 'components/authenticationView/view.html',
-                transition: 'fade'
-            });
+            var initialView;
+            if (app.settings.appId.length !== 16) {
+                initialView = 'components/missingSettingsView/noappidView.html';
+            } else {
+                initialView = 'components/authenticationView/view.html';
+            }
+
+            app.mobileApp = new kendo.mobile.Application(document.body, {initial: initialView});
         });
     };
 
