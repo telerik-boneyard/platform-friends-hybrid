@@ -46,13 +46,16 @@
 
     var vm = kendo.observable({
         displayName: '',
-        email: '',
+        username: '',
         password: '',
         birthDate: null,
         gender: '',
+        onShow: function () {
+            mode = 'signin'; //reset the view mode
+        },
         validateData: function (data) {
-            if (!data.email) {
-                app.notify.info('Missing email');
+            if (!data.username) {
+                app.notify.info('Missing username');
                 return false;
             }
 
@@ -63,17 +66,22 @@
 
             return true;
         },
-        signin: function (email, password) {
+        signin: function (username, password) {
             var model = vm;
-            email = email || model.email.toLowerCase();
-            password = password || model.password;
+            if (typeof username !== 'string') {
+                username = model.username.toLowerCase();
+            }
+
+            if (typeof password !== 'string') {
+                password = model.password;
+            }
 
             if (!model.validateData(model)) {
                 return false;
             }
 
-            provider.users.login(email, password, function (data) {
-                vm.set('email', '');
+            provider.users.login(username, password, function (data) {
+                vm.set('username', '');
                 vm.set('password', '');
 
                 successHandler(data);
@@ -85,14 +93,13 @@
             }
 
             var model = vm;
-            var email = model.email.toLowerCase();
+            var username = model.username.toLowerCase();
             var password = model.password;
             var displayName = model.displayName;
             var birthDate = model.birthDate;
             var gender = model.gender;
 
             var attrs = {
-                Email: email,
                 DisplayName: displayName,
                 BirthDate: birthDate,
                 Gender: gender
@@ -102,12 +109,12 @@
                 return false;
             }
 
-            provider.users.register(email, password, attrs, function () {
+            provider.users.register(username, password, attrs, function () {
                 vm.set('displayName', '');
                 vm.set('birtDate', null);
                 vm.set('gender', '');
 
-                vm.signin(email, password);
+                vm.signin(username, password);
             }, init);
         },
         toggleView: function () {
