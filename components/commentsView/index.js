@@ -87,10 +87,13 @@
                 this.set('isEdit', true);
                 commentsData.getById(this.commentId)
                     .then(function (res) {
-                        this.set('fields.comment', res.result.Id);
+                        this.set('fields.comment', res.result.Comment);
                     }.bind(this))
                     .catch(app.notify.error);
             }
+        },
+        onHide: function () {
+            this.set('fields.comment', '');
         },
         submit: function() {
             var promise = null;
