@@ -62,6 +62,11 @@
         error: app.notify.error,
         serverFiltering: true,
         serverPaging: true,
+        serverSorting: true,
+        sort: {
+            field: 'CreatedAt',
+            dir: 'desc'
+        },
         pageSize: 50
     });
 
