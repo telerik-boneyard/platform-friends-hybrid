@@ -19,5 +19,5 @@
         Remove
     </button>
 
-    <button role="button" data-bind="text: currentActivity.CommentsCount"></button>
+    <button role="button" data-bind="events: {click: openComments }"><span data-bind="text: currentActivity.CommentsCount"></span> Comments</button>
 </div>

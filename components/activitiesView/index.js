@@ -222,6 +222,10 @@
                 }
             }
         },
+        openComments: function () {
+            var activityId = this.currentActivity.Id;
+            app.mobileApp.navigate('#components/commentsView/view.html?activityId=' + activityId);
+        },
         goBack: app.utils.goBack
     });
 
