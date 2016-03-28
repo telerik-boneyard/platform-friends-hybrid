@@ -57,6 +57,13 @@
                 } else {
                     activity.CommentsCount = 0;
                 }
+
+                activity.Meta = {
+                    Permissions: {
+                        CanUpdate: activity.CreatedBy === app.user.Id,
+                        CanDelete: activity.CreatedBy === app.user.Id
+                    }
+                }
             });
         },
         error: app.notify.error,
@@ -153,46 +160,60 @@
                 });
             }
 
-            if (window.cordova) {
-                $('#choose-file-button').click(function () {
-                    navigator.camera.getPicture(function (uri) {
-                        this.set('imageChanged', true);
-                        this.set('activity.PictureUrl', uri);
-                    }.bind(this), app.notify.error, {
-                        quality: 50,
-                        destinationType: navigator.camera.DestinationType.FILE_URI,
-                        sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
-                    });
-                }.bind(this));
-            } else {
-                $('#choose-file-button').click(function () {
-                    $('#activityPhoto').click();
-                });
-
-                $('#activityPhoto:file').change(function () {
-                    this.set('imageChanged', true);
-                    var files = $('#activityPhoto')[0].files;
-                    if (!files.length) {
-                        return cb();
-                    }
-
-                    var file = files[0];
-                    this.set('file', file);
-                    var reader = new FileReader();
-
-                    reader.readAsDataURL(file);
-                    reader.onload = function (e) {
-                        var base64 = e.target.result;
-                        if (base64) {
-                            this.set('activity.PictureUrl', base64);
-                        }
-                    }.bind(this);
-                }.bind(this));
-            }
-
+            initActivityEvents();
             activityValidator = app.validate.getValidator('#activity-form');
         }
     });
+
+    var initialized;
+    function initActivityEvents() {
+        if (initialized) {
+            return;
+        }
+
+        if (window.cordova) {
+            $('#choose-file-button').click(function () {
+                navigator.camera.getPicture(function (uri) {
+                    addEditActivityViewModel.set('imageChanged', true);
+                    addEditActivityViewModel.set('activity.PictureUrl', uri);
+                }, app.notify.error, {
+                    quality: 50,
+                    destinationType: navigator.camera.DestinationType.FILE_URI,
+                    sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+                });
+            });
+        } else {
+            $('#choose-file-button').click(function () {
+                $('#activityPhoto').click();
+            });
+
+            $('#activity-form').submit(function () {
+                return false;
+            });
+
+            $('#activityPhoto:file').change(function () {
+                addEditActivityViewModel.set('imageChanged', true);
+                var files = $('#activityPhoto')[0].files;
+                if (!files.length) {
+                    return;
+                }
+
+                var file = files[0];
+                addEditActivityViewModel.set('file', file);
+                var reader = new FileReader();
+
+                reader.readAsDataURL(file);
+                reader.onload = function (e) {
+                    var base64 = e.target.result;
+                    if (base64) {
+                        addEditActivityViewModel.set('activity.PictureUrl', base64);
+                    }
+                };
+            });
+        }
+
+        initialized = true;
+    }
 
     var activityDetailsViewModel = kendo.observable({
         currentActivity: null,
