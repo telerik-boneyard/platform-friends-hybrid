@@ -3,6 +3,7 @@
         error: function (error) {
             console.error(error);
             console.trace();
+            alert(error);
         },
         info: function (text) {
             alert(text);

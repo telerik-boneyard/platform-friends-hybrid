@@ -93,7 +93,7 @@
             }
 
             var model = vm;
-            var username = model.username.toLowerCase();
+            var username = model.username;
             var password = model.password;
             var displayName = model.displayName;
             var birthDate = model.birthDate;
