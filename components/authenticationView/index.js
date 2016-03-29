@@ -147,7 +147,7 @@
         },
         twitterLogin: function () {
             provider.authentication.loginWithTwitter(
-                app.settings.social.twitter.acessToken,
+                app.settings.social.twitter.accessToken,
                 app.settings.social.twitter.accessTokenSecret,
                 successHandler,
                 init

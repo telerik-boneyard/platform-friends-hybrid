@@ -25,7 +25,6 @@
                         },
                         CreatedBy: {
                             TargetTypeName: 'Users',
-                            SingleField: 'DisplayName',
                             ReturnAs: 'User'
                         },
                         'Comments.ActivityId': {
@@ -47,10 +46,16 @@
 
             data.forEach(function (activity) {
                 activity.PictureUrl = activity.PictureUrl || app.constants.defaultPicture;
-                activity.CreatedAt = kendo.toString(new Date(activity.CreatedAt), 'd');
+                activity.CreatedAt = kendo.toString(new Date(activity.CreatedAt), 'MMM d, yyyy');
                 activity.Likes = activity.Likes || [];
                 activity.LikesCount = activity.Likes.length;
                 activity.Liked = activity.Likes.indexOf(app.user.DisplayName) !== -1;
+                var pictureUrl = activity.User.Picture;
+                if (pictureUrl) {
+                    activity.User.PictureUrl = app.data.defaultProvider.files.getDownloadUrl(pictureUrl);
+                } else {
+                    activity.User.PictureUrl = app.constants.defaultPicture;
+                }
 
                 if (activity.Comments.length) {
                     activity.CommentsCount = activity.Comments[0].Count;

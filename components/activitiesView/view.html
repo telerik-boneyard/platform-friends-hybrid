@@ -15,6 +15,8 @@
 
     <script type="text/x-kendo-template" id="activitiesViewModelTemplate">
         <div class="image-with-text" data-id="#: data['Id'] #" data-bind="events: {click: activitiesViewModel.activityClick}" style="min-height: 260px">
+            <img src="#: data['User']['PictureUrl'] #" width="30" height="30" style="border-radius: 40px">
+
             <img src="#: data['PictureUrl'] #" width="30%" height="30%">
             <h3>#: data['Text'] #</h3>
             <p>#: data['CreatedAt'] #</p>

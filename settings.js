@@ -9,7 +9,7 @@
                 //check out .debug.abproject and .release.abproject
             },
             twitter: {
-                acessToken: '3004026989-UzHGFbbxH9sDKEVPNUlBKtKoRqZ7q9Q3OCmRnLB', //Put your Twitter access token here
+                accessToken: '3004026989-UzHGFbbxH9sDKEVPNUlBKtKoRqZ7q9Q3OCmRnLB', //Put your Twitter access token here
                 accessTokenSecret: 'rLyPa4XRvQEkvfLjGPCBitqRsqqCJCkGDZRo2eu6A6wh1' //Put your Twitter token secret here
             },
             google: {
