@@ -114,6 +114,7 @@
                 vm.set('birtDate', null);
                 vm.set('gender', '');
 
+                app.notify.info('Registration successful');
                 vm.signin(username, password);
             }, init);
         },
