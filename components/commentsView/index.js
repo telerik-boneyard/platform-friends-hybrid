@@ -57,6 +57,7 @@
             app.mobileApp.navigate('#components/commentsView/addEdit.html?commentId=' + commentId);
         },
         removeComment: function (e) {
+            app.activitiesView.activitiesViewModel.dataSource.read();
             var commentId = e.data.Id;
             var comment = this.commentsDataSource.get(commentId);
             this.commentsDataSource.remove(comment);
@@ -72,7 +73,6 @@
         commentId: null,
         comment: null,
         isEdit: false,
-        newCommentAdded: false,
         fields: {
             comment: ''
         },
@@ -111,15 +111,11 @@
             }
 
             promise.then(function () {
-                this.set('newCommentAdded', true);
+                app.activitiesView.activitiesViewModel.dataSource.read();
                 this.cancel();
             }.bind(this), app.notify.error);
         },
         cancel: function() {
-            if (this.newCommentAdded) {
-                app.activitiesView.activitiesViewModel.dataSource.read();
-            }
-
             app.utils.goBack();
         }
     });
