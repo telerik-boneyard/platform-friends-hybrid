@@ -6,7 +6,7 @@
         scheme: 'http',
         social: {
             facebook: {
-                appId: '1408629486049918' // Put your Facebook App ID here
+                //check out .debug.abproject and .release.abproject
             },
             twitter: {
                 acessToken: '3004026989-UzHGFbbxH9sDKEVPNUlBKtKoRqZ7q9Q3OCmRnLB', //Put your Twitter access token here

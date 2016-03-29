@@ -122,19 +122,25 @@
             init();
         },
         facebookLogin: function () {
-            var login = function (response) {
-                provider.authentication.loginWithFacebook(response.authResponse.accessToken, successHandler, init);
+            var fbLogin = function (response) {
+                provider.authentication.loginWithFacebook(response.authResponse.accessToken)
+                    .then(successHandler, init);
             };
 
-            FB.getLoginStatus(function (response) {
+            facebookConnectPlugin.getLoginStatus(function(response) {
                 if (response.status === 'connected') {
-                    login(response);
+                    fbLogin(response);
                 } else {
-                    FB.login(function (response) {
-                        if (response.status === 'connected') {
-                            login(response);
-                        }
-                    });
+                    facebookConnectPlugin.login(['email'],
+                        function(response) {
+                            if (response.status === 'connected') {
+                                fbLogin(response);
+                            } else {
+                                app.notify.info('You are not logged in');
+                            }
+                        }, function (err) {
+                            app.notify.error(err);
+                        });
                 }
             });
         },
