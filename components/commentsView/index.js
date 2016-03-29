@@ -19,9 +19,6 @@
                             'X-Everlive-Expand': JSON.stringify({
                                 CreatedBy: {
                                     TargetTypeName: 'Users',
-                                    Fields: {
-                                        'DisplayName': 1
-                                    },
                                     ReturnAs: 'User'
                                 }
                             })
@@ -32,7 +29,14 @@
                     var data = this.data();
 
                     data.forEach(function (comment) {
-                        comment.CreatedAt = kendo.toString(new Date(comment.CreatedAt), 'd')
+                        comment.CreatedAt = kendo.toString(new Date(comment.CreatedAt), app.constants.dateFormat);
+                        var picture = comment.User.Picture;
+                        if (picture) {
+                            comment.User.PictureUrl = app.data.defaultProvider.files.getDownloadUrl(picture);
+                        } else {
+                            comment.User.PictureUrl = app.constants.defaultPicture;
+                        }
+
                     });
                 },
                 filter: filter || {},

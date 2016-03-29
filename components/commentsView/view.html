@@ -17,6 +17,8 @@
 
         <script id="comments-template" type="text/x-kendo-template">
             <div class="image-with-text" data-id="#: data['Id'] #">
+                <img src="#: data['User']['PictureUrl'] #" width="30" height="30" style="border-radius: 40px">
+
                 <h3>#: data['User']['DisplayName'] #</h3>
                 <p>#: data['Comment'] #</p>
                 <p>#: data['CreatedAt'] #</p>

@@ -46,7 +46,7 @@
 
             data.forEach(function (activity) {
                 activity.PictureUrl = activity.PictureUrl || app.constants.defaultPicture;
-                activity.CreatedAt = kendo.toString(new Date(activity.CreatedAt), 'MMM d, yyyy');
+                activity.CreatedAt = kendo.toString(new Date(activity.CreatedAt), app.constants.dateFormat);
                 activity.Likes = activity.Likes || [];
                 activity.LikesCount = activity.Likes.length;
                 activity.Liked = activity.Likes.indexOf(app.user.DisplayName) !== -1;
