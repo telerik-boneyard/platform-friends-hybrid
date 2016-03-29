@@ -21,6 +21,10 @@
         return app.user.Id === dataItem.CreatedBy;
     };
 
+    app.utils.isInSimulator = function () {
+        return location.href.indexOf('local://simulator') !== -1 || location.href.indexOf('icenium') !== -1;
+    };
+
     var bootstrap = function () {
         $(function () {
             var initialView;
