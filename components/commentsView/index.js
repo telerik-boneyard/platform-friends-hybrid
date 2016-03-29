@@ -72,6 +72,7 @@
         commentId: null,
         comment: null,
         isEdit: false,
+        newCommentAdded: false,
         fields: {
             comment: ''
         },
@@ -110,11 +111,15 @@
             }
 
             promise.then(function () {
-                app.activitiesView.activitiesViewModel.set('showComments', true);
+                this.set('newCommentAdded', true);
                 this.cancel();
             }.bind(this), app.notify.error);
         },
         cancel: function() {
+            if (this.newCommentAdded) {
+                app.activitiesView.activitiesViewModel.dataSource.read();
+            }
+
             app.utils.goBack();
         }
     });
