@@ -173,6 +173,10 @@
 
         if (window.cordova) {
             $('#choose-file-button').click(function () {
+                if (app.utils.isInSimulator()) {
+                    return app.notify.info('Activity photos can only be uploaded from a device or a browser supporting FileReader');
+                }
+
                 navigator.camera.getPicture(function (uri) {
                     addEditActivityViewModel.set('imageChanged', true);
                     addEditActivityViewModel.set('activity.PictureUrl', uri);
