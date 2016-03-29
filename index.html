@@ -21,6 +21,8 @@
     <script src="dataProviders/defaultProvider.js"></script>
 
     <script src="components/authenticationView/index.js"></script>
+    <script src="components/authenticationView/identityProvider.js"></script>
+
     <script src="components/activitiesView/index.js"></script>
     <script src="components/profileView/index.js"></script>
     <script src="components/commentsView/index.js"></script>
@@ -78,22 +80,5 @@
     </script>
     <script src="https://apis.google.com/js/platform.js?onload=gapiLoad" async defer></script>
     <!--INIT GOOGLE LOGIN-->
-
-    <!--INIT MICROSOFT LIVE LOGIN-->
-    <script src="https://js.live.net/v5.0/wl.js"></script>
-    <div id="signin"></div>
-    <script>
-        WL.init({
-            client_id: app.settings.social.windows.clientId,
-            redirect_uri: app.settings.social.windows.redirect_uri,
-            scope: 'w1.signin',
-            response_type: 'token'
-        });
-        WL.ui({
-            name: 'signin',
-            element: 'signin'
-        });
-    </script>
-    <!--INIT MICROSOFT LIVE LOGIN-->
 </body>
 </html>

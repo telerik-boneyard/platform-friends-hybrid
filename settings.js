@@ -15,10 +15,6 @@
             google: {
                 clientId: '406987471724-q1sorfhhcbulk6r5r317l482u9f62ti8.apps.googleusercontent.com' // Put your Google Client ID here
             },
-            windows: {
-                clientId: '000000004C10D1AF', // Put your LiveID Client ID here
-                redirect_uri: ''
-            },
             adfs: {
                 endpoint: '$ADFS_ENDPOINT$', // Put your ADFS Realm here
                 realm: '$ADFS_REALM$' // Put your ADFS Endpoint here

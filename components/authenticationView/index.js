@@ -162,23 +162,6 @@
                     provider.authentication.loginWithGoogle(accessToken, successHandler, init);
                 }, app.notify.error);
         },
-        windowsLogin: function () {
-            var onWindowsLogin = function () {
-                if (session.error) {
-                    app.notify.error(session.error);
-                }
-                else {
-                    provider.authentication.loginWithLiveID(session.access_token, successHandler, init);
-                }
-            };
-
-            return function () {
-                WL.Event.unsubscribe('auth.login', onWindowsLogin);
-                WL.Event.subscribe('auth.login', onWindowsLogin);
-
-                WL.login();
-            }
-        }(),
         adfsLogin: function () {
             var getParameterByName = function (name, url) {
                 name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
