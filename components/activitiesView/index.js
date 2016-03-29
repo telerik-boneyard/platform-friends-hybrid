@@ -184,6 +184,10 @@
             });
         } else {
             $('#choose-file-button').click(function () {
+                if (app.utils.isInSimulator()) {
+                    return app.notify.info('Activity photos can only be uploaded from a device or a browser supporting FileReader');
+                }
+
                 $('#activityPhoto').click();
             });
 
@@ -277,7 +281,6 @@
                 error: app.notify.error
             }).send();
         },
-
         logout: function () {
             provider.users.logout()
                 .then(function () {
