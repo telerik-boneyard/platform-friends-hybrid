@@ -101,6 +101,11 @@
             this.set('fields.comment', '');
         },
         submit: function() {
+            var commentValidator = app.validate.getValidator('#comment-form');
+            if (!commentValidator.validate()) {
+                return;
+            }
+
             var promise = null;
             var comment = {
                 Comment: this.fields.comment
