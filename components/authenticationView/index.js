@@ -1,13 +1,9 @@
 'use strict';
 
 (function () {
-    var validator;
     var view = app.authenticationView = kendo.observable({
         afterShow: function () {
             provider.users.currentUser().then(successHandler, init)
-        },
-        onShow: function () {
-            validator = app.validate.getValidator('#authentication-form');
         }
     });
 
@@ -53,19 +49,6 @@
         onShow: function () {
             mode = 'signin'; //reset the view mode
         },
-        validateData: function (data) {
-            if (!data.username) {
-                app.notify.info('Missing username');
-                return false;
-            }
-
-            if (!data.password) {
-                app.notify.info('Missing password');
-                return false;
-            }
-
-            return true;
-        },
         signin: function (username, password) {
             var model = vm;
             if (typeof username !== 'string') {
@@ -76,8 +59,9 @@
                 password = model.password;
             }
 
-            if (!model.validateData(model)) {
-                return false;
+            var loginValidator = app.validate.getValidator('#login-form');
+            if (!loginValidator.validate()) {
+                return;
             }
 
             provider.users.login(username, password, function (data) {
@@ -88,7 +72,8 @@
             }, init);
         },
         register: function () {
-            if (!validator.validate()) {
+            var registerValidator = app.validate.getValidator('#authentication-form');
+            if (!registerValidator.validate()) {
                 return;
             }
 

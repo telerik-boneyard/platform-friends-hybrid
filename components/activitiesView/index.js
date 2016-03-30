@@ -65,8 +65,8 @@
 
                 activity.Meta = {
                     Permissions: {
-                        CanUpdate: activity.CreatedBy === app.user.Id,
-                        CanDelete: activity.CreatedBy === app.user.Id
+                        CanUpdate: app.utils.isOwner(activity),
+                        CanDelete: app.utils.isOwner(activity)
                     }
                 }
             });
