@@ -8,6 +8,8 @@
     var validator;
     var profileViewModel = kendo.observable({
         profile: null,
+        uploader: null,
+        photoChanged: false,
         onShow: function () {
             var user = app.user;
             var profile = kendo.observable({
@@ -15,11 +17,28 @@
                 Email: user.Email,
                 BirthDate: user.BirthDate,
                 Gender: user.Gender,
-                About: user.About
+                About: user.About,
+                Picture: user.Picture
             });
 
+            if (profile.Picture) {
+                profile.PictureUrl = provider.files.getDownloadUrl(profile.Picture);
+            } else {
+                profile.PictureUrl = app.constants.defaultPicture;
+            }
+
+            this.uploader = new app.utils.imageUploader('#profile-choose-file-button', '#edit-profile-form', '#profile-activity-photo');
+            this.uploader.onImage(function (uri) {
+                this.set('photoChanged', true);
+                this.set('profile.PictureUrl', uri);
+            }.bind(this));
+
             this.set('profile', profile);
+
             validator = app.validate.getValidator('#edit-profile-form');
+        },
+        onHide: function () {
+            this.uploader.detach();
         },
         updateProfile: function () {
             if (!validator.validate()) {
@@ -53,12 +72,25 @@
             }
 
             app.utils.loading(true);
-            provider.users.updateSingle(model)
-                .then(function () {
-                    return app.authentication.loadCachedAccessToken();
-                })
-                .then(app.utils.goBack)
-                .catch(app.notify.error);
+            var promise;
+            if (this.photoChanged) {
+                promise = this.uploader.upload()
+                    .then(function (id) {
+                        model.Picture = id;
+                        app.activitiesView.activitiesViewModel.dataSource.read();
+                    }, app.notify.error);
+            } else {
+                promise = Everlive._utils.successfulPromise();
+            }
+
+            promise.then(function () {
+                provider.users.updateSingle(model)
+                    .then(function () {
+                        return app.authentication.loadCachedAccessToken();
+                    })
+                    .then(app.utils.goBack)
+                    .catch(app.notify.error);
+            });
         }
     });
 

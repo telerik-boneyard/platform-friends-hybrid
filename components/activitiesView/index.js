@@ -88,6 +88,7 @@
         activity: null,
         file: null,
         imageChanged: false,
+        uploader: null,
 
         _handleActivityOperation: function (pictureId) {
             var model = {};
@@ -117,35 +118,16 @@
             app.utils.loading(true);
 
             if (this.imageChanged && this.activity.PictureUrl) {
-                var picture = this.activity.PictureUrl;
-                var uploadImagePromise;
-
-                if (window.cordova) {
-                    uploadImagePromise = provider.files.upload(picture);
-                } else {
-                    var file = this.file;
-                    var cleanBase64 = picture.split(',')[1];
-                    uploadImagePromise = provider.files.create({
-                        Filename: app.user.Id + '_' + file.name,
-                        ContentType: file.type,
-                        base64: cleanBase64
-                    });
-                }
-
-                uploadImagePromise.then(function (res) {
-                    var id;
-                    if (res.response) {
-                        var responseObject = JSON.parse(res.response);
-                        id = responseObject.Result[0].Id
-                    } else {
-                        id = res.result.Id;
-                    }
-
-                    return this._handleActivityOperation(id);
-                }.bind(this)).catch(app.notify.error);
+                this.uploader.upload()
+                    .then(function (id) {
+                        return this._handleActivityOperation(id)
+                    }.bind(this)).catch(app.notify.error);
             } else {
-                return this._handleActivityOperation()
+                return this._handleActivityOperation();
             }
+        },
+        onHide: function () {
+            this.uploader.detach();
         },
         onShow: function (e) {
             var id = e.view.params.id;
@@ -165,68 +147,15 @@
                 });
             }
 
-            initActivityEvents();
+            this.uploader = new app.utils.imageUploader('#choose-file-button', '#activity-form', '#activityPhoto');
+            this.uploader.onImage(function (uri) {
+                addEditActivityViewModel.set('imageChanged', true);
+                addEditActivityViewModel.set('activity.PictureUrl', uri);
+            });
+
             activityValidator = app.validate.getValidator('#activity-form');
         }
     });
-
-    var initialized;
-    function initActivityEvents() {
-        if (initialized) {
-            return;
-        }
-
-        if (window.cordova) {
-            $('#choose-file-button').click(function () {
-                if (app.utils.isInSimulator()) {
-                    return app.notify.info('Activity photos can only be uploaded from a device or a browser supporting FileReader');
-                }
-
-                navigator.camera.getPicture(function (uri) {
-                    addEditActivityViewModel.set('imageChanged', true);
-                    addEditActivityViewModel.set('activity.PictureUrl', uri);
-                }, app.notify.error, {
-                    quality: 50,
-                    destinationType: navigator.camera.DestinationType.FILE_URI,
-                    sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
-                });
-            });
-        } else {
-            $('#choose-file-button').click(function () {
-                if (app.utils.isInSimulator()) {
-                    return app.notify.info('Activity photos can only be uploaded from a device or a browser supporting FileReader');
-                }
-
-                $('#activityPhoto').click();
-            });
-
-            $('#activity-form').submit(function () {
-                return false;
-            });
-
-            $('#activityPhoto:file').change(function () {
-                addEditActivityViewModel.set('imageChanged', true);
-                var files = $('#activityPhoto')[0].files;
-                if (!files.length) {
-                    return;
-                }
-
-                var file = files[0];
-                addEditActivityViewModel.set('file', file);
-                var reader = new FileReader();
-
-                reader.readAsDataURL(file);
-                reader.onload = function (e) {
-                    var base64 = e.target.result;
-                    if (base64) {
-                        addEditActivityViewModel.set('activity.PictureUrl', base64);
-                    }
-                };
-            });
-        }
-
-        initialized = true;
-    }
 
     var activityDetailsViewModel = kendo.observable({
         currentActivity: null,

@@ -1,29 +1,5 @@
 (function () {
-    var app = {
-        data: {},
-        utils: {}
-    };
-
-    app.utils.loading = function (load) {
-        if (load) {
-            return kendo.mobile.application.showLoading();
-        }
-
-        return kendo.mobile.application.hideLoading();
-    };
-
-    app.utils.goBack = function () {
-        app.mobileApp.navigate('#:back');
-        app.utils.loading(false);
-    };
-
-    app.utils.isOwner = function (dataItem) {
-        return app.user.Id === dataItem.CreatedBy;
-    };
-
-    app.utils.isInSimulator = function () {
-        return location.href.indexOf('local://simulator') !== -1 || location.href.indexOf('icenium') !== -1;
-    };
+    var app = {};
 
     var bootstrap = function () {
         $(function () {
@@ -49,11 +25,11 @@
             var element = document.getElementById('appDrawer');
             if (typeof(element) != 'undefined' && element !== null) {
                 if (window.navigator.msPointerEnabled) {
-                    $('#navigation-container').on('MSPointerDown', 'a', function(event) {
+                    $('#navigation-container').on('MSPointerDown', 'a', function() {
                         app.keepActiveState($(this));
                     });
                 } else {
-                    $('#navigation-container').on('touchstart', 'a', function(event) {
+                    $('#navigation-container').on('touchstart', 'a', function() {
                         app.keepActiveState($(this));
                     });
                 }
@@ -75,6 +51,7 @@
         logout: function () {
             app.data.defaultProvider.users.logout()
                 .then(function () {
+                    localStorage.clear();
                     app.mobileApp.navigate('components/authenticationView/view.html');
                 })
                 .catch(app.notify.error);

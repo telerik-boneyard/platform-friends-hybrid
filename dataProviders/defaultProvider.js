@@ -1,8 +1,9 @@
 'use strict';
 
 (function() {
+    app.data = app.data || {};
+
     var provider = app.data.defaultProvider = new Everlive({
-        url: '//localhost:3000/v1/',
         offlineStorage: true,
         appId: app.settings.appId,
         scheme: app.settings.scheme,
