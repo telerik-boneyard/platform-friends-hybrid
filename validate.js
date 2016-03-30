@@ -14,10 +14,18 @@
                         }
 
                         return true;
+                    },
+                    validateEmailRule: function (input) {
+                        if (input.is('input[name=email]') && !!input.val()) {
+                            return input.val().indexOf('@') > 0;
+                        }
+
+                        return true;
                     }
                 },
                 messages: {
                     validateBirthDateRule: 'Please set a birth date in the past.',
+                    validateEmailRule: 'The specified email is invalid',
                     required: 'This field is required.'
                 }
             }, params)).data('kendoValidator');

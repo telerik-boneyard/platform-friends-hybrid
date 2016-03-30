@@ -30,32 +30,23 @@
         <form id="authentication-form">
             <ul data-role="listview" data-style="inset">
                 <li>
-                    <label>Username
+                    <label>Username *
                         <input name="username" type="text" data-bind="value: authenticationViewModel.username" required>
                     </label>
                 </li>
                 <li>
-                    <label>Password
+                    <label>Password *
                         <input name="password" type="password" data-bind="value: authenticationViewModel.password" required>
                     </label>
                 </li>
                 <li>
-                    <label>Name
-                        <input name="name" type="text" data-bind="value: authenticationViewModel.displayName" required>
+                    <label>Email
+                        <input name="email" type="email" data-bind="value: authenticationViewModel.email">
                     </label>
                 </li>
                 <li>
-                    <label> Birth Date
-                        <input name="birth-date" type="date" id="birth" data-bind="value: authenticationViewModel.birthDate">
-                    </label>
-                </li>
-                <li class="select-wrp">
-                    <label> Gender
-                        <select name="gender" id="gender" data-bind="value: authenticationViewModel.gender">
-                            <option value="0" selected>gender</option>
-                            <option value="1">Male</option>
-                            <option value="2">Female</option>
-                        </select>
+                    <label>Name
+                        <input name="name" type="text" data-bind="value: authenticationViewModel.displayName">
                     </label>
                 </li>
             </ul>

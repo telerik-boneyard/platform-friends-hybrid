@@ -11,26 +11,31 @@
         <ul data-role="listview" data-style="inset">
             <li>
                 <label>DisplayName
-                    <input type="text" data-bind="value: profile.DisplayName" required>
+                    <input name="display-name" type="text" data-bind="value: profile.DisplayName" required>
                 </label>
             </li>
             <li>
                 <label>Email
-                    <input type="email" data-bind="value: profile.Email" required>
+                    <input name="email" type="text" data-bind="value: profile.Email">
                 </label>
             </li>
             <li>
                 <label> Birth Date
-                    <input type="date" id="birth" data-bind="value: profile.BirthDate">
+                    <input name="birth-date" type="date" id="birth" data-bind="value: profile.BirthDate">
                 </label>
             </li>
             <li class="select-wrp">
                 <label> Gender
-                    <select id="gender" data-bind="value: profile.Gender">
+                    <select name="gender" id="gender" data-bind="value: profile.Gender">
                         <option value="0" selected>gender</option>
                         <option value="1">Male</option>
                         <option value="2">Female</option>
                     </select>
+                </label>
+            </li>
+            <li>
+                <label>About
+                    <textarea name="about" id="about" data-bind="value: profile.About"></textarea>
                 </label>
             </li>
         </ul>

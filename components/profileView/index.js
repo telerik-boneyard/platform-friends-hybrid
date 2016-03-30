@@ -14,7 +14,8 @@
                 DisplayName: user.DisplayName,
                 Email: user.Email,
                 BirthDate: user.BirthDate,
-                Gender: user.Gender
+                Gender: user.Gender,
+                About: user.About
             });
 
             this.set('profile', profile);
@@ -45,6 +46,10 @@
 
             if (profile.Gender !== user.Gender) {
                 model.Gender = profile.Gender;
+            }
+
+            if (profile.About !== user.About) {
+                model.About = profile.About;
             }
 
             app.utils.loading(true);

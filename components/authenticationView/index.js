@@ -44,8 +44,7 @@
         displayName: '',
         username: '',
         password: '',
-        birthDate: null,
-        gender: '',
+        email: '',
         onShow: function () {
             mode = 'signin'; //reset the view mode
         },
@@ -77,27 +76,19 @@
                 return;
             }
 
-            var model = vm;
-            var username = model.username;
-            var password = model.password;
-            var displayName = model.displayName;
-            var birthDate = model.birthDate;
-            var gender = model.gender;
+            var username = vm.username;
+            var password = vm.password;
+            var displayName = vm.displayName;
+            var email = vm.email;
 
             var attrs = {
                 DisplayName: displayName,
-                BirthDate: birthDate,
-                Gender: gender
+                Email: email
             };
-
-            if (!model.validateData(model)) {
-                return false;
-            }
 
             provider.users.register(username, password, attrs, function () {
                 vm.set('displayName', '');
-                vm.set('birtDate', null);
-                vm.set('gender', '');
+                vm.set('email', '');
 
                 app.notify.info('Registration successful');
                 vm.signin(username, password);
