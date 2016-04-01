@@ -18,7 +18,8 @@
                 BirthDate: user.BirthDate,
                 Gender: user.Gender,
                 About: user.About,
-                Picture: user.Picture
+                Picture: user.Picture,
+                Username: user.Username
             });
 
             if (profile.Picture) {
@@ -50,6 +51,10 @@
             var model = {
                 Id: user.Id
             };
+
+            if (profile.Username !== user.Username) {
+                model.Username = profile.Username;
+            }
 
             if (profile.DisplayName !== user.DisplayName) {
                 model.DisplayName = profile.DisplayName;

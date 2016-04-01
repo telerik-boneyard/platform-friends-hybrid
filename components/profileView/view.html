@@ -11,7 +11,12 @@
         <ul data-role="listview" data-style="inset">
             <img data-bind="attr: { src: profile.PictureUrl }" id="preview" width="100%" height="auto" style="max-height: 300px;"/>
             <li>
-                <label>DisplayName
+                <label>User Name
+                    <input name="user-name" type="text" data-bind="value: profile.Username" required>
+                </label>
+            </li>
+            <li>
+                <label>Display Name
                     <input name="display-name" type="text" data-bind="value: profile.DisplayName" required>
                 </label>
             </li>
