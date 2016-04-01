@@ -93,7 +93,9 @@
                     .then(function () {
                         return app.authentication.loadCachedAccessToken();
                     })
-                    .then(app.utils.goBack)
+                    .then(function () {
+                        app.mobileApp.navigate('components/activitiesView/view.html');
+                    })
                     .catch(app.notify.error);
             });
         }
