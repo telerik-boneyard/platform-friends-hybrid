@@ -47,6 +47,8 @@
         username: '',
         password: '',
         email: '',
+        loginValidator: null,
+        registerValidator: null,
         onShow: function () {
             mode = 'signin'; //reset the view mode
         },
@@ -60,8 +62,8 @@
                 password = model.password;
             }
 
-            var loginValidator = app.validate.getValidator('#login-form');
-            if (!loginValidator.validate()) {
+            this.loginValidator = app.validate.getValidator('#login-form');
+            if (!this.loginValidator.validate()) {
                 return;
             }
 
@@ -74,8 +76,8 @@
             }, init);
         },
         register: function () {
-            var registerValidator = app.validate.getValidator('#authentication-form');
-            if (!registerValidator.validate()) {
+            this.registerValidator = app.validate.getValidator('#authentication-form');
+            if (!this.registerValidator.validate()) {
                 return;
             }
 
@@ -100,6 +102,18 @@
         },
         toggleView: function () {
             mode = mode === 'signin' ? 'register' : 'signin';
+            vm.set('username', '');
+            vm.set('password', '');
+            vm.set('displayName', '');
+            vm.set('email', '');
+            if (this.loginValidator) {
+                this.loginValidator.hideMessages();
+            }
+
+            if (this.registerValidator) {
+                this.registerValidator.hideMessages();
+            }
+
             init();
         },
         facebookLogin: function () {
