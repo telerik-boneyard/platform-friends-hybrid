@@ -3,7 +3,7 @@
         error: function (error) {
             console.error(error);
             console.trace();
-            alert(JSON.stringify(error));
+            alert(error.message || JSON.stringify(error));
         },
         info: function (text) {
             alert(text);
