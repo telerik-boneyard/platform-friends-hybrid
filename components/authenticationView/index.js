@@ -121,14 +121,6 @@
                 }
             });
         },
-        twitterLogin: function () {
-            provider.authentication.loginWithTwitter(
-                app.settings.social.twitter.accessToken,
-                app.settings.social.twitter.accessTokenSecret,
-                successHandler,
-                init
-            );
-        },
         googleLogin: function () {
             var auth = gapi.auth2.getAuthInstance();
             gapi.auth2.getAuthInstance().signIn()
