@@ -13,6 +13,7 @@
     var signinRedirect = 'activitiesView';
 
     var init = function (error) {
+        app.utils.loading(false);
         if (error) {
             app.notify.error(error);
             return false;
@@ -34,6 +35,7 @@
             app.authentication.loadCachedAccessToken()
                 .then(function () {
                     app.mobileApp.navigate('components/' + redirect + '/view.html');
+                    app.utils.loading(false);
                 });
         } else {
             init();
@@ -63,6 +65,7 @@
                 return;
             }
 
+            app.utils.loading(true);
             provider.users.login(username, password, function (data) {
                 vm.set('username', '');
                 vm.set('password', '');
@@ -86,6 +89,7 @@
                 Email: email
             };
 
+            app.utils.loading(true);
             provider.users.register(username, password, attrs, function () {
                 vm.set('displayName', '');
                 vm.set('email', '');

@@ -25,7 +25,7 @@
                 },
                 messages: {
                     validateBirthDateRule: 'Please set a birth date in the past.',
-                    validateEmailRule: 'The specified email is invalid',
+                    validateEmailRule: 'The specified email is in invalid format.',
                     required: 'This field is required.'
                 }
             }, params)).data('kendoValidator');
