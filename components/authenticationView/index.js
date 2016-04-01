@@ -125,16 +125,6 @@
                 }
             });
         },
-        googleLogin: function () {
-            var auth = gapi.auth2.getAuthInstance();
-            gapi.auth2.getAuthInstance().signIn()
-                .then(function () {
-                    var user = auth.currentUser.get();
-                    var authResponse = user.getAuthResponse();
-                    var accessToken = authResponse.access_token;
-                    provider.authentication.loginWithGoogle(accessToken, successHandler, init);
-                }, app.notify.error);
-        },
         adfsLogin: function () {
             var getParameterByName = function (name, url) {
                 name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
