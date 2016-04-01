@@ -8,7 +8,11 @@
         appId: app.settings.appId,
         scheme: app.settings.scheme,
         authentication: {
-            persist: true
+            persist: true,
+            onAuthenticationRequired: function () {
+                app.notify.info('Your access token has expired, please log in.');
+                app.mobileApp.navigate('components/authenticationView/view.html');
+            }
         }
     });
 
