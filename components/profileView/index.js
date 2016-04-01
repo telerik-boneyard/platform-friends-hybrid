@@ -95,6 +95,7 @@
                     })
                     .then(function () {
                         app.mobileApp.navigate('components/activitiesView/view.html');
+                        app.utils.loading(false);
                     })
                     .catch(app.notify.error);
             });
