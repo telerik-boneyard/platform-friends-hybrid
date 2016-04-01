@@ -74,11 +74,12 @@
         };
 
         this.detach = function () {
+            $(formSelector).off('submit', that._formSubmit);
+
             if (window.cordova) {
                 $(chooseFileSelector).off('click', that._chooseFileClickCordova);
             } else {
                 $(chooseFileSelector).off('click', that._chooseFileClickDesktop);
-                $(formSelector).off('submit', that._formSubmit);
                 $(fileInputChangeSelector).off('change', that._fileChange);
             }
         };
@@ -124,11 +125,11 @@
             });
         };
 
+        $(formSelector).submit(that._formSubmit);
         if (window.cordova) {
             $(chooseFileSelector).click(that._chooseFileClickCordova);
         } else {
             $(chooseFileSelector).click(that._chooseFileClickDesktop);
-            $(formSelector).submit(that._formSubmit);
             $(fileInputChangeSelector).change(that._fileChange);
         }
     };
