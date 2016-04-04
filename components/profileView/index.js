@@ -11,7 +11,6 @@
         uploader: null,
         photoChanged: false,
         onShow: function () {
-            app.monitor.TrackFeature('Profile.Show');
             var user = app.user;
             var profile = kendo.observable({
                 DisplayName: user.DisplayName,
@@ -43,7 +42,6 @@
             this.uploader.detach();
         },
         updateProfile: function () {
-            app.monitor.TrackFeature('Profile.Update');
             if (!validator.validate()) {
                 return;
             }

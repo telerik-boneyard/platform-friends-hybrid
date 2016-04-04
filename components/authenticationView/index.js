@@ -53,8 +53,6 @@
             mode = 'signin'; //reset the view mode
         },
         signin: function (username, password) {
-            app.monitor.TrackFeature('Authentication.Login');
-
             var model = vm;
             if (typeof username !== 'string') {
                 username = model.username.toLowerCase();
@@ -78,8 +76,6 @@
             }, init);
         },
         register: function () {
-            app.monitor.TrackFeature('Authentication.Register');
-
             this.registerValidator = app.validate.getValidator('#authentication-form');
             if (!this.registerValidator.validate()) {
                 return;
@@ -121,8 +117,6 @@
             init();
         },
         facebookLogin: function () {
-            app.monitor.TrackFeature('Authentication.FacebookLogin');
-
             var fbLogin = function (response) {
                 provider.authentication.loginWithFacebook(response.authResponse.accessToken)
                     .then(successHandler, init);
@@ -146,8 +140,6 @@
             });
         },
         adfsLogin: function () {
-            app.monitor.TrackFeature('Authentication.AdfsLogin');
-
             var getParameterByName = function (name, url) {
                 name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
                 var regexS = name + '=([^&#]*)';
