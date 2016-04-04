@@ -127,6 +127,7 @@
             }
         },
         onHide: function () {
+            this.imageChanged = false;
             this.uploader.detach();
         },
         onShow: function (e) {
