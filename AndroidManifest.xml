@@ -10,6 +10,10 @@
         </activity>
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/fb_app_id" />
         <activity android:label="@string/fb_app_name" android:name="com.facebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:label="@string/title_activity_send_feedback" android:name="com.telerik.widget.feedback.SendFeedbackActivity" android:theme="@style/AppCompatTheme" />
+        <activity android:label="@string/title_activity_view_feedback" android:name="com.telerik.widget.feedback.ViewFeedbackActivity" android:theme="@style/AppCompatTheme" />
+        <activity android:label="@string/title_activity_view_feedback" android:name="com.telerik.widget.feedback.ViewFeedbackItemActivity" android:theme="@style/AppCompatTheme" />
+        <activity android:label="@string/title_activity_edit_details" android:name="com.telerik.widget.feedback.EditDetailsActivity" android:theme="@style/AppCompatTheme" />
         <receiver android:name="com.telerik.LiveSync.IsLiveSyncSupportedReceiver">
             <intent-filter>
                 <action android:name="com.telerik.IsLiveSyncSupported" />

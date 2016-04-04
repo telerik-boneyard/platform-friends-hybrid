@@ -20,7 +20,8 @@
 		"cordova-plugin-vibration",
 		"cordova-plugin-whitelist",
 		"com.phonegap.plugins.facebookconnect@1.0.1.1",
-		"com.telerik.plugin.telerikanalytics@3.4.1"
+		"com.telerik.plugin.telerikanalytics@3.4.1",
+		"com.telerik.feedback@2.0.0"
 	],
 	"CordovaPluginVariables": {
 		"com.phonegap.plugins.facebookconnect": {
@@ -31,6 +32,11 @@
 			"AUTO_TRACK_EXCEPTIONS": "true",
 			"AUTO_TRACK_KENDO_EVENTS": "true",
 			"PRODUCT_ID": "6203376ee2ce463cb38383afe07bba72"
+		},
+		"com.telerik.feedback": {
+			"API_KEY": "1wfhv4porw2chs6m",
+			"API_URL": "",
+			"ENABLE_SHAKE": "true"
 		}
 	}
 }

@@ -62,6 +62,9 @@
         },
         goToProfile: function () {
             app.mobileApp.navigate('components/profileView/view.html');
+        },
+        showFeedback: function () {
+            window.feedback.showFeedback();
         }
     });
 
