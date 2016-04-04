@@ -163,6 +163,8 @@
         canDelete: false,
         commentsDataSource: [],
         onShow: function (e) {
+            app.monitor.TrackFeature('Activities.Show');
+
             var currentActivity = activitiesDataSource.get(e.view.params.id);
             this.set('currentActivity', null);
             this.set('currentActivity', currentActivity);
@@ -171,9 +173,11 @@
             this.set('canDelete', currentActivity.Meta.Permissions.CanDelete);
         },
         editActivity: function () {
+            app.monitor.TrackFeatureValue('Activities.EditActivity', this.currentActivity.Id);
             app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);
         },
         removeActivity: function () {
+            app.monitor.TrackFeatureValue('Activities.RemoveActivity', this.currentActivity.Id);
             var confirmed = app.notify.confirmation();
 
             if (!confirmed) {
@@ -192,6 +196,8 @@
         },
         openComments: function () {
             var activityId = this.currentActivity.Id;
+            app.monitor.TrackFeatureValue('Activities.OpenComments', activityId);
+
             app.mobileApp.navigate('#components/commentsView/view.html?activityId=' + activityId);
         },
         goBack: app.utils.goBack
@@ -200,8 +206,10 @@
     var activitiesViewModel = kendo.observable({
         dataSource: activitiesDataSource,
         activityClick: function (e) {
-            var itemId = e.data.Id;
-            app.mobileApp.navigate('#components/activitiesView/details.html?id=' + itemId);
+            var activityId = e.data.Id;
+            app.monitor.TrackFeatureValue('Activities.OpenActivity', activityId);
+
+            app.mobileApp.navigate('#components/activitiesView/details.html?id=' + activityId);
         },
         addActivityClick: function () {
             app.mobileApp.navigate('#components/activitiesView/addEdit.html');
@@ -209,6 +217,7 @@
         likeActivity: function (e) {
             e.stopPropagation();
             var activityId = e.data.Id;
+            app.monitor.TrackFeatureValue('Activities.LikeActivity', activityId);
 
             provider.request({
                 endpoint: 'Functions/likeActivity?activityId=' + activityId,
@@ -219,13 +228,9 @@
                 error: app.notify.error
             }).send();
         },
-        logout: function () {
-            provider.users.logout()
-                .then(function () {
-                    app.mobileApp.navigate('#components/authenticationView/view.html');
-                }, app.notify.error);
-        },
         openComments: function (e) {
+            app.monitor.TrackFeatureValue('Activities.OpenComments', activityId);
+
             e.stopPropagation();
             var activityId = e.data.Id;
             app.mobileApp.navigate('#components/commentsView/view.html?activityId=' + activityId);

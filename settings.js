@@ -12,6 +12,9 @@
                 endpoint: '$ADFS_ENDPOINT$', // Put your ADFS Realm here
                 realm: '$ADFS_REALM$' // Put your ADFS Endpoint here
             }
+        },
+        analytics: {
+            //check out .debug.abproject and .release.abproject
         }
     };
 }());

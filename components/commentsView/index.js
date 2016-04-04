@@ -58,11 +58,13 @@
         },
         editComment: function (e) {
             var commentId = e.data.Id;
+            app.monitor.TrackFeatureValue('Comments.Edit', commentId);
             app.mobileApp.navigate('#components/commentsView/addEdit.html?commentId=' + commentId);
         },
         removeComment: function (e) {
             app.activitiesView.activitiesViewModel.dataSource.read();
             var commentId = e.data.Id;
+            app.monitor.TrackFeatureValue('Comments.Remove', commentId);
             var comment = this.commentsDataSource.get(commentId);
             this.commentsDataSource.remove(comment);
             this.commentsDataSource.sync().then(null, app.notify.error);
@@ -81,6 +83,7 @@
             comment: ''
         },
         onShow: function (e) {
+            app.monitor.TrackFeature('Comments.Show');
             var params = e.view.params;
 
             if (params.activityId) {
@@ -101,6 +104,8 @@
             this.set('fields.comment', '');
         },
         submit: function() {
+            app.monitor.TrackFeature('Comments.Submit');
+
             var commentValidator = app.validate.getValidator('#comment-form');
             if (!commentValidator.validate()) {
                 return;

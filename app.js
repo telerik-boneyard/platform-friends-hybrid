@@ -18,6 +18,8 @@
 
     if (app.isCordova) {
         document.addEventListener('deviceready', function() {
+            app.monitor = window.plugins.EqatecAnalytics.Monitor;
+
             if (navigator && navigator.splashscreen) {
                 navigator.splashscreen.hide();
             }
@@ -49,6 +51,8 @@
 
     app.drawerModel = kendo.observable({
         logout: function () {
+            app.monitor.TrackFeature('Authentication.Logout');
+
             app.data.defaultProvider.users.logout()
                 .then(function () {
                     localStorage.clear();

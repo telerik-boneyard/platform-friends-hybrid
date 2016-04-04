@@ -52,3 +52,5 @@ tsconfig.json
 **/*.bak
 **/*.cache
 **/*.log
+
+friendshybrid.apk
