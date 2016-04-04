@@ -117,6 +117,10 @@
             init();
         },
         facebookLogin: function () {
+            if (app.utils.isInSimulator() || !app.isCordova) {
+                return app.notify.info('Facebook login is only available on a device.');
+            }
+
             var fbLogin = function (response) {
                 provider.authentication.loginWithFacebook(response.authResponse.accessToken)
                     .then(successHandler, init);
