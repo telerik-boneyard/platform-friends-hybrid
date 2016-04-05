@@ -15,6 +15,9 @@
         },
         analytics: {
             //check out .debug.abproject and .release.abproject
+        },
+        feedback: {
+            //check out .debug.abproject and .release.abproject
         }
     };
 }());

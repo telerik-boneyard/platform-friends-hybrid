@@ -29,11 +29,6 @@
 			"APP_ID": "1709291469331027",
 			"APP_NAME": "FriendsHybrid"
 		},
-		"com.telerik.plugin.telerikanalytics": {
-			"AUTO_TRACK_EXCEPTIONS": "true",
-			"AUTO_TRACK_KENDO_EVENTS": "true",
-			"PRODUCT_ID": "6203376ee2ce463cb38383afe07bba72"
-		},
 		"com.telerik.feedback": {
 			"API_KEY": "1wfhv4porw2chs6m",
 			"API_URL": "",
