@@ -61,6 +61,11 @@
             app.mobileApp.navigate('#components/commentsView/addEdit.html?commentId=' + commentId);
         },
         removeComment: function (e) {
+            var confirmed = app.notify.confirmation();
+            if (!confirmed) {
+                return;
+            }
+
             app.activitiesView.activitiesViewModel.dataSource.read();
             var commentId = e.data.Id;
             var comment = this.commentsDataSource.get(commentId);
