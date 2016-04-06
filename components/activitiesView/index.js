@@ -21,7 +21,11 @@
                         },
                         Likes: {
                             TargetTypeName: 'Users',
-                            SingleField: 'DisplayName'
+                            Fields: {
+                                DisplayName: 1,
+                                Username: 1,
+                                Id: 1
+                            }
                         },
                         CreatedBy: {
                             TargetTypeName: 'Users',
