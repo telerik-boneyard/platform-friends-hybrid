@@ -2,6 +2,10 @@
 
 (function () {
     var view = app.authenticationView = kendo.observable({
+        onShow: function () {
+            mode = 'signin'; //reset the view mode
+            init();
+        },
         afterShow: function () {
             provider.users.currentUser().then(successHandler, init)
         }
@@ -12,7 +16,7 @@
     var registerRedirect = 'activitiesView';
     var signinRedirect = 'activitiesView';
 
-    var init = function (error) {
+    function init(error) {
         app.utils.loading(false);
         if (error) {
             app.notify.error(error);
@@ -26,9 +30,9 @@
         } else {
             $(activeView).show().siblings().hide();
         }
-    };
+    }
 
-    var successHandler = function (data) {
+    function successHandler(data) {
         var redirect = mode === 'signin' ? signinRedirect : registerRedirect;
 
         if (data && data.result) {
@@ -49,9 +53,6 @@
         email: '',
         loginValidator: null,
         registerValidator: null,
-        onShow: function () {
-            mode = 'signin'; //reset the view mode
-        },
         signin: function (username, password) {
             var model = vm;
             if (typeof username !== 'string') {
