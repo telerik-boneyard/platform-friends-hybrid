@@ -3,16 +3,38 @@
 
     var bootstrap = function () {
         $(function () {
-            var initialView;
-            if (app.settings.appId.length !== 16) {
-                initialView = 'components/missingSettingsView/noappidView.html';
-            } else {
-                initialView = 'components/authenticationView/view.html';
-            }
+            var initialViewPromise;
 
             app.mobileApp = new kendo.mobile.Application(document.body, {
                 skin: 'flat',
-                initial: initialView
+                initial: 'components/emptyView/view.html',
+                init: function () {
+                    if (app.settings.appId.length !== 16) {
+                        initialViewPromise = new Everlive._common.rsvp.Promise(function (resolve) {
+                            return resolve('components/missingSettingsView/noappidView.html');
+                        })
+                    } else {
+                        initialViewPromise = new Everlive._common.rsvp.Promise(function (resolve) {
+                            app.authentication.loadCachedAccessToken()
+                                .then(function () {
+                                    if (app.authentication.getCachedAccessToken()) {
+                                        //we are logged in
+                                        return resolve('components/activitiesView/view.html');
+                                    }
+
+                                    throw 'not logged in';
+                                })
+                                .catch(function () {
+                                    //we are not logged in
+                                    return resolve('components/authenticationView/view.html');
+                                });
+                        });
+                    }
+
+                    initialViewPromise.then(function (view) {
+                        app.mobileApp.navigate(view);
+                    });
+                }
             });
         });
     };

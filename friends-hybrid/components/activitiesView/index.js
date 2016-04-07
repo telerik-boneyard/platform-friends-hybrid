@@ -5,7 +5,18 @@
     var provider = app.data.defaultProvider;
     var activitiesData = provider.data('Activities');
 
-    var view = app.activitiesView = kendo.observable();
+    var view = app.activitiesView = kendo.observable({
+        processImage: function (id) {
+            setTimeout(function () {
+                var img = $('img[data-id="' + id + '"]');
+                if (!img || !img.length) {
+                    return console.warn('No image to optimize with id found: ', id);
+                }
+
+                provider.helpers.html.process(img).catch(app.notify.error);
+            }); //wait for the listview element to be rendered
+        }
+    });
 
     var activitiesDataSource = new kendo.data.DataSource({
         type: 'everlive',
@@ -28,8 +39,15 @@
                             }
                         },
                         CreatedBy: {
+                            ReturnAs: 'User',
                             TargetTypeName: 'Users',
-                            ReturnAs: 'User'
+                            Expand: {
+                                Picture: {
+                                    TargetTypeName: 'Files',
+                                    ReturnAs: 'PictureUrl',
+                                    SingleField: 'Uri'
+                                }
+                            }
                         },
                         'Comments.ActivityId': {
                             Aggregate: {
@@ -54,10 +72,8 @@
                 activity.Likes = activity.Likes || [];
                 activity.LikesCount = activity.Likes.length;
                 activity.Liked = activity.Likes.indexOf(app.user.DisplayName) !== -1;
-                var pictureUrl = activity.User.Picture;
-                if (pictureUrl) {
-                    activity.User.PictureUrl = app.data.defaultProvider.files.getDownloadUrl(pictureUrl);
-                } else {
+                var pictureUrl = activity.User.PictureUrl;
+                if (!pictureUrl) {
                     activity.User.PictureUrl = app.constants.defaultPicture;
                 }
 
@@ -76,6 +92,8 @@
                     }
                 }
             });
+
+            app.utils.loading(false);
         },
         error: app.notify.error,
         serverFiltering: true,
@@ -138,8 +156,9 @@
             app.utils.autoSizeTextarea(textarea);
         },
         onShow: function (e) {
-            var id = e.view.params.id,
-                textarea = $('#activity-text');
+            var id = e.view.params.id;
+            var textarea = $('#activity-text');
+
             if (!id) {
                 this.set('isEdit', false);
                 this.set('activity', {
@@ -188,6 +207,9 @@
             var template = kendo.template($('.likesButtonTemplate').html());
             var renderedTemplate = template(currentActivity);
             $('#likes-template-content').html(renderedTemplate);
+
+            provider.helpers.html.process($('#current-activity-photo')).catch(app.notify.error);
+            provider.helpers.html.process($('#current-activity-author-photo')).catch(app.notify.error);
         },
         editActivity: function () {
             app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);
@@ -218,6 +240,11 @@
 
     var activitiesViewModel = kendo.observable({
         dataSource: activitiesDataSource,
+        onShow: function () {
+            if (!activitiesDataSource.data().length) {
+                app.utils.loading(true);
+            }
+        },
         activityClick: function (e) {
             var activityId = e.data.Id;
             app.mobileApp.navigate('#components/activitiesView/details.html?id=' + activityId);

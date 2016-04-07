@@ -518,6 +518,15 @@ textarea:-ms-input-placeholder {
     background-color: transparent;
 }
 
+.empty-view {
+    position: absolute;
+    top: 0;
+    min-width: 100%;
+    min-height: 100vh;
+    background-image: url('img/background-authentication.jpg');
+    background-size: cover;
+}
+
 @media only screen
     and (min-resolution: 1.5dppx)
     and (-webkit-min-device-pixel-ratio: 1.5)

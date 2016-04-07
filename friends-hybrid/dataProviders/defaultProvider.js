@@ -13,6 +13,12 @@
                 app.notify.error('Your access token has expired, please log in.');
                 app.mobileApp.navigate('components/authenticationView/view.html');
             }
+        },
+        helpers: {
+            html: {
+                processOnResize: true,
+                loadingImageUrl: 'styles/img/loading.gif'
+            }
         }
     });
 

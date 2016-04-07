@@ -2,7 +2,7 @@
 
 (function () {
     app.settings = {
-        appId: '6cw1738tgalif98n',
+        appId: '6ajtaiknltr0lsgr',
         scheme: 'http',
         social: {
             facebook: {
