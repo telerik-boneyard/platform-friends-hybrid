@@ -1,0 +1,54 @@
+<div data-role="view" data-title="Friends" data-layout="main-nonav" data-model="app.activitiesView" data-show="app.activitiesView.onShow" class="activities-view">
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+
+            <span data-role="view-title"></span>
+
+            <a class="button-icon button-menu" data-role="button" href="#appDrawer" data-rel="drawer" data-align="left"></a>
+            <a class="button-icon button-add" data-role="button" data-align="right"
+               data-bind="events: { click: activitiesViewModel.addActivityClick }"></a>
+        </div>
+    </header>
+
+    <ul data-role="listview" data-template="activitiesViewModelTemplate" data-bind="{ source: activitiesViewModel.dataSource }" data-pull-to-refresh="true" data-endless-scroll="true">
+    </ul>
+
+    <script type="text/x-kendo-template" id="activitiesViewModelTemplate">
+        <div class="content" data-id="#: data['Id'] #" data-bind="events: { click: activitiesViewModel.activityClick }">
+            <div class="content-header">
+                <div class="author-avatar">
+                    <img src="#: data['User']['PictureUrl'] #" width="40" height="40">
+                </div>
+                <div class="author-name">
+                    #: data['User']['DisplayName'] #
+                </div>
+                <div class="content-date">
+                    #: data['CreatedAt'] #
+                </div>
+            </div>
+            <div class="content-picture">
+                <img src="#: data['PictureUrl'] #" width="100%">
+            </div>
+            <p class="content-text">#: data['Text'] #</p>
+            <div class="activity-footer">
+                <button data-bind="events: { click: activitiesViewModel.likeActivity }" class="activity-likes">
+                # if (data['Liked']) { #
+                    <span class="icon icon-like"></span>
+                # } else { #
+                    <span class="icon icon-like-o"></span>
+                # } #
+                <span class="count">#= data['LikesCount'] #</span>
+                </button>
+
+                <button data-bind="events: {click: activitiesViewModel.openComments }" class="activity-comments">
+                # if (data['CommentsCount']) { #
+                    <span class="icon icon-comments"></span>
+                # } else { #
+                    <span class="icon icon-comments-o"></span>
+                # } #
+                    <span class="count">#: data['CommentsCount'] #</span>
+                </button>
+            </div>    
+        </div>
+    </script>
+</div>

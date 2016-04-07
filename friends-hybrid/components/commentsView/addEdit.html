@@ -1,0 +1,17 @@
+<div data-role="view" data-title="Add Comment"  data-layout="main-nonav" data-bind="events: { show: onShow, hide: onHide }" data-model="app.commentsView.addEditCommentsViewModel" class="add-edit-comment-view">
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+
+            <span data-role="view-title"></span>
+            
+            <a class="button-icon button-back" data-role="backbutton" data-align="left"></a>
+            <a class="button-icon button-save" data-role="button" data-align="right" data-bind="events: {click: submit }"></a>
+        </div>
+    </header>
+
+    <div id="addCommentsViewModel" class="form-view">
+        <form id="comment-form">
+            <textarea id="comment-text" name="comment" data-bind="value: fields.comment" placeholder="Add a comment" type="text" required></textarea>
+        </form>
+    </div>
+</div>

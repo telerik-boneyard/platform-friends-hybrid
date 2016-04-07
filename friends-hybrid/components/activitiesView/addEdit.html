@@ -1,0 +1,28 @@
+<div data-role="view" data-title="Activity" data-model="app.activitiesView.addEditActivityViewModel" data-bind="events: { show: onShow, hide: onHide }" id="activitiesViewModelAddItemView" class="add-edit-activity-view">
+
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+            <span data-role="view-title"></span>
+            <a class="button-icon button-back" data-role="backbutton" data-align="left"></a>
+            <a class="button-icon button-save" data-role="button" data-align="right" data-bind="events: {click: applyActivity }"></a>
+        </div>
+    </header>
+    
+    <div class="content-picture" style="max-height: 280px;">
+        <img data-bind="attr: { src: activity.PictureUrl }" id="preview" width="100%">
+    </div>    
+
+    <div id="editableListForm2" class="form-view">
+        <form id="activity-form">
+            <textarea id="activity-text" name="text" data-bind="value: activity.Text" placeholder="What's on your mind?" type="text" required></textarea>
+            <div class="activity-photo-upload">
+                <label for="activityPhoto">
+                    <button id="choose-file-button">
+                        <span class="icon icon-photo"></span>
+                    </button>
+                </label>
+                <input type="file" accept="image/*" id="activityPhoto" style="display: none" />
+            </div>
+        </form>
+    </div>
+</div>
