@@ -1,0 +1,22 @@
+<div data-layout="main-nonav" data-role="view" data-title="Details" data-model="app.activitiesView.activityDetailsViewModel" data-bind="events: { show: onShow }" id="activitiesViewModelDetailsView" class="activity-details-view">
+    <div class="content">
+        <div class="content-picture">
+            <img data-bind="attr: { src: currentActivity.PictureUrl }" width="100%">
+        </div>
+        <div class="content-header">
+            <div class="author-avatar large">
+                <img data-bind="attr: { src: currentActivity.User.PictureUrl }" width="80" height="80">
+            </div>
+            <div class="author-name" data-bind="text: currentActivity.User.DisplayName"></div>
+            <div class="content-date" data-bind="text: currentActivity.CreatedAt"></div>
+        </div>
+        <p class="content-text" data-bind="text: currentActivity.Text"></p>
+        <button role="button" data-bind="events: {click: openComments }" class="activity-comments">
+            <span class="icon icon-comments"></span>
+            <span data-bind="text: currentActivity.CommentsCount"></span>
+        </button>
+        <a class="button-icon button-remove" id="remove" data-role="button" data-bind="events: { click: removeActivity }, visible: canDelete"></a>
+    </div>
+    <a class="button-icon button-back top-left" data-role="button" data-bind="events: { click: goBack }"></a>
+    <a class="button-icon button-edit top-right" id="edit" data-role="button" data-bind="events: { click: editActivity }, visible: canEdit"></a>    
+</div>

@@ -1,0 +1,37 @@
+<div data-role="view" data-title="Comments"  data-layout="main-nonav" data-bind="events: { show: onShow }" data-model="app.commentsView.commentsViewModel" class="comments-view">
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+
+            <span data-role="view-title"></span>
+
+            <a class="button-icon button-back" data-role="backbutton" data-align="left"></a>
+            <a class="button-icon button-add" data-role="button" data-align="right"
+               data-bind="events: { click: addComment }"></a>
+        </div>
+    </header>
+
+    <div id="view-comments" class="form-view">
+        <ul id="comments-list-view" data-role="listview" data-template="comments-template" data-bind="{ source: commentsDataSource }"></ul>
+
+        <script id="comments-template" type="text/x-kendo-template">
+            <div class="content" data-id="#: data['Id'] #">
+                <div class="content-header">
+                    <div class="author-avatar">
+                        <img src="#: data['User']['PictureUrl'] #" width="40" height="40">
+                    </div>
+
+                    <div class="author-name">
+                        #: data['User']['DisplayName'] #
+                    </div>
+                    <div class="content-date">
+                        #: data['CreatedAt'] #
+                    </div>
+                </div>
+                <p class="content-text">#: data['Comment'] #</p>
+
+                <a class="button-icon button-edit-dark" data-role="button" style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: editComment }" ></a>
+                <a class="button-icon button-remove" data-role="button" style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: removeComment }" ></a>
+            </div>
+        </script>
+    </div>
+</div>

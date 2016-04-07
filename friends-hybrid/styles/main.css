@@ -1,0 +1,573 @@
+.km-flat {
+  font-size: .95em;
+}
+
+.km-listinset,
+.km-listgroupinset {
+  margin: 1em 2em;
+}
+
+.km-flat .km-touch-scrollbar {
+    background-color: #000;
+}
+
+h1 {
+    font-weight: 300;
+}
+
+h2 {
+    font-size: 1.35em;
+    font-weight: 600;
+}
+
+.km-flat .km-rowinsert,
+.km-flat .km-state-active,
+.km-flat .km-scroller-pull,
+.km-flat .k-slider-selection,
+.km-flat .km-pages .km-current-page,
+.km-flat .k-slider .k-draghandle,
+.km-flat .k-slider .k-draghandle:hover,
+.km-flat .km-scroller-refresh.km-load-more {
+  background: #7ed321;
+}
+
+.km-flat .km-loader {
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.km-flat .km-loader::before {
+  background: #7ed321;
+}
+
+#friendsApp.km-flat,
+#friendsApp.km-flat .km-navbar,
+#friendsApp.km-flat .km-content {
+  border: 0 none;
+  background-color: #fff;
+}
+
+#friendsApp.km-flat,
+#friendsApp.km-flat .km-navbar,
+#friendsApp.km-flat .km-content,
+input[type='date'],
+input[type='datetime-local'],
+input[type='month'],
+input[type='time'],
+input[type='week'] {
+    font-family: 'Open Sans', sans-serif;
+}
+
+#friendsApp.km-flat .km-drawer .km-content {
+    background-color: #414141;
+}
+
+#friendsApp.km-flat .km-drawer .km-list {
+    margin: 2em 0 0;
+}
+
+#friendsApp.km-flat .km-drawer .km-list > li {
+    padding: 1em .5em 1em 4em;
+    background-color: transparent;
+    color: #fff;
+    border: 0;
+    box-shadow: none;
+}
+
+#friendsApp.km-flat .km-drawer .km-content a:after {
+    display: none;
+}
+
+#friendsApp.km-flat .km-drawer .km-content a.active {
+    background-color: transparent;
+}
+
+::-webkit-input-placeholder {
+    color: #ccc;
+}
+
+:-moz-placeholder {
+    color: #ccc;
+}
+
+::-moz-placeholder {
+    color: #ccc;
+}
+
+:-ms-input-placeholder {
+    color: #ccc;
+}
+
+textarea::-webkit-input-placeholder {
+    color: #000;
+}
+
+textarea:-moz-placeholder {
+    color: #000;
+}
+
+textarea::-moz-placeholder {
+    color: #000;
+}
+
+textarea:-ms-input-placeholder {
+    color: #000;
+}
+
+#friendsApp.km-flat form .km-list > li {
+    margin: 0 0 1em;
+    padding: 1em 0;
+    border: 0;
+    background-color: transparent;
+}
+
+#friendsApp.km-flat .activities-view .km-list > li {
+    height: 32em;
+}
+
+#friendsApp .k-invalid-msg {
+    padding: .5em 2em .5em 1.5em;
+    color: #e84c3d;
+}
+
+#friendsApp.km-flat .km-list input[type='text']:not(.k-input),
+#friendsApp.km-flat .km-list input[type='password'],
+#friendsApp.km-flat .km-list input[type='email'],
+#friendsApp.km-flat .km-list input[type='date'],
+#friendsApp.km-flat textarea,
+#friendsApp.km-flat select {
+    position: static;
+    width: 100%;
+    padding: 1em 1.5em;
+    font-size: 1rem;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#friendsApp.km-flat .km-list input[type='date'] {
+    display: block;
+}
+
+#friendsApp.km-flat select {
+    padding: .4em 0 1em;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+#friendsApp.km-flat .km-list input[type='text']:not(.k-input),
+#friendsApp.km-flat .km-list input[type='password'],
+#friendsApp.km-flat .km-list input[type='email'],
+#friendsApp.km-flat .km-list input[type='date'] {
+    border: 1px solid #0d0e0e;
+    background-color: #2f312f;
+    color: #fff;
+}
+
+#friendsApp.km-flat .profile-view .km-list input[type='text']:not(.k-input),
+#friendsApp.km-flat .profile-view .km-list input[type='password'],
+#friendsApp.km-flat .profile-view .km-list input[type='email'],
+#friendsApp.km-flat .profile-view .km-list input[type='date'],
+#friendsApp.km-flat .profile-view .km-list textarea {
+    padding: 1em 0;
+    border: 1px solid #e5e5e5;
+    border-width: 0 0 1px;
+    background-color: #fff;
+    color: #000;
+}
+
+#friendsApp.km-flat .profile-view .km-list textarea {
+    padding: 0;
+}
+
+#friendsApp.km-flat textarea {
+    float: none;
+    height: auto;
+    margin: 0;
+    resize: none;
+    box-sizing: border-box;
+    border: 0;
+}
+
+.form {
+    margin: 0 2em 1em;
+    padding: 2em;
+    border-radius: .35em;
+    background-color: rgba(255, 255, 255, .85);
+}
+
+#friendsApp .km-button {
+    min-width: 7em;
+    padding: .75em 1.5em;
+    border: 0;
+    background-color: #9c9c9c;
+    color: #fff;
+    font-size: 1.25em;
+    text-transform: uppercase;
+}
+
+#friendsApp .km-button.km-state-active {
+    background-color: #878787;
+}
+
+#friendsApp .km-button.primary {
+    background-color: #7ed321;
+}
+
+#friendsApp .km-button.primary.km-state-active {
+    background-color: #68b811;
+}
+
+#friendsApp .km-button.text-only {
+    background-color: transparent;
+}
+
+#friendsApp .social-login {
+    margin: 0 2em;
+    text-align: center;
+}
+
+#friendsApp .button-icon,
+#friendsApp .icon {
+    width: 42px;
+    min-width: 0;
+    height: 42px;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 42px;
+}
+
+#friendsApp .button-icon {
+    vertical-align: middle;
+}
+
+#friendsApp .button-icon.top-left,
+#friendsApp .button-icon.top-right {
+    position: absolute;
+    top: 0;
+}
+
+#friendsApp .button-icon.top-left {
+    left: 0;
+}
+
+#friendsApp .button-icon.top-right {
+    right: 0;
+}
+
+#friendsApp .button-icon.km-state-active {
+    background-color: transparent;
+}
+
+#friendsApp .button-icon.button-back {
+    background-image: url(img/icon-back.png);
+}
+
+#friendsApp .button-icon.button-save {
+    background-image: url(img/icon-save.png);
+}
+
+#friendsApp .button-icon.button-menu {
+    background-image: url(img/icon-menu.png);
+}
+
+#friendsApp .button-icon.button-add {
+    background-image: url(img/icon-add.png);
+}
+
+#friendsApp .button-icon.button-edit {
+    background-image: url(img/icon-edit.png);
+}
+
+#friendsApp .button-icon.button-edit-dark {
+    background-image: url(img/icon-edit-dark.png);
+}
+
+#friendsApp .button-icon.button-remove {
+    background-image: url(img/icon-remove.png);
+}
+
+#friendsApp .comments-view .button-edit-dark {
+    margin-left: -.5em;
+}
+
+#friendsApp .icon,
+#friendsApp .count {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#friendsApp .icon.icon-like-o {
+    background-image: url(img/icon-like-o.png);
+}
+
+#friendsApp .icon.icon-like {
+    background-image: url(img/icon-like.png);
+}
+
+#friendsApp .icon.icon-comments-o {
+    background-image: url(img/icon-comments-o.png);
+}
+
+#friendsApp .icon.icon-comments {
+    background-image: url(img/icon-comments.png);
+}
+
+#friendsApp .icon.icon-photo {
+    background-image: url(img/icon-photo.png);
+}
+
+#friendsApp .authentication-view {
+    background: transparent url(img/background-authentication.jpg) no-repeat 50% 50%;
+    background-size: 100% auto;
+}
+
+#friendsApp .authentication-view .km-content {
+    background-color: transparent;
+}
+
+#friendsApp .authentication-view h1 {
+    margin: .5em 0;
+    font-size: 4.5em;
+    color: #fff;
+    text-align: center;
+}
+
+#friendsApp .authentication-view h2 {
+    margin-top: 0;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+#friendsApp .signin-view .km-button.primary,
+#friendsApp .signup-view .km-button.primary {
+    margin: 1em 0 0;
+    width: 100%;
+}
+
+#friendsApp .signin-view .km-button.text-only {
+    display: block;
+    margin: 0 auto 1em;
+}
+
+#friendsApp .km-header .km-navbar {
+    background-color: #7ed321;
+}
+
+#friendsApp .km-header .km-view-title {
+    display: block;
+    margin-left: 3.5em;
+    margin-right: 3.5em;
+    overflow: hidden;
+    color: #fff;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#friendsApp .activities-view .km-listview li:not(.km-load-more) {
+    padding: 1em 2em 0;
+}
+
+#friendsApp .comments-view .km-listview li:not(.km-load-more),
+#friendsApp .profile-view .km-listview li:not(.km-load-more):not(.content-picture) {
+    padding: 1em 2em;
+}
+
+#friendsApp .profile-view .km-listview {
+    margin: 0;
+}
+
+#friendsApp .profile-view .km-listview .content-picture {
+    padding: 0;
+}
+
+#friendsApp .profile-view input {
+    
+}
+
+#friendsApp .activity-details-view .content {
+    padding: 0 2em 1em;
+}
+
+#friendsApp .activities-view .image-with-text {
+    padding: 0 0 2em;
+    border-bottom: 1px solid red;
+}
+
+.content-header {
+    display: -moz-box;
+    -moz-box-orient: horizontal;
+    -moz-box-pack: center;
+    -moz-box-align: center;
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    width: 100%;
+    padding: .5em 0 1.25em;
+}
+
+.activity-details-view .content-header {
+    padding: 0;
+}
+
+.author-avatar,
+.author-name,
+.content-date  {
+    vertical-align: middle;
+}
+
+.author-avatar {
+    width: 3em;
+    height: 3em;
+    margin: 0 .5em 0 0;
+}
+
+.author-avatar img {
+    border-radius: 1.5em;
+}
+
+.author-avatar.large {
+    width: 6em;
+    height: 6em;
+    margin: -3.25em 1em 0 0;
+}
+
+.author-avatar.large img {
+    border-radius: 3em;
+}
+
+.author-name {
+    font-weight: 600;
+}
+
+.content-date  {
+    -moz-box-flex: 1;
+    -webkit-box-flex: 1;
+    font-size: .85em;
+    text-align: right;
+}
+
+.activity-details-view .author-name,
+.activity-details-view .content-date  {
+    margin-top: .75em;
+}
+
+.content-picture {
+    margin: 0 -2em;
+    overflow: hidden;
+}
+
+.add-edit-activity-view .content-picture {
+    margin: 0;
+}
+
+.content-picture  img {
+    display: block;
+}
+
+.content .content-text  {
+    margin: 1em 0;
+}
+
+.activities-view .content .content-text  {
+    display: block;
+    display: -webkit-box;
+    height: 2.8em;
+    font-size: 1em;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-footer {
+    text-align: right;
+}
+
+.activity-likes,
+.activity-comments {
+    border: 0;
+    font-size: 1.1em;
+    background-color: transparent;
+    color: #7f7f7f;
+}
+
+.activity-details-view .activity-comments {
+    margin-left: -1em;
+}
+
+.activity-photo-upload,
+.activity-photo-upload label,
+.activity-photo-upload button {
+    display: block;
+    width: 42px;
+    height: 42px;
+}
+
+.activity-photo-upload {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+}
+
+.activity-photo-upload button {
+    border: 0;
+    background-color: transparent;
+}
+
+@media only screen
+    and (min-resolution: 1.5dppx)
+    and (-webkit-min-device-pixel-ratio: 1.5)
+    and (min-resolution: 144dpi) {
+
+    #friendsApp .button-icon.button-back {
+        background-image: url(img/icon-back@2x.png);
+    }
+        
+    #friendsApp .button-icon.button-save {
+        background-image: url(img/icon-save@2x.png);
+    }
+
+    #friendsApp .button-icon.button-menu {
+        background-image: url(img/icon-menu@2x.png);
+    }
+
+    #friendsApp .button-icon.button-add {
+        background-image: url(img/icon-add@2x.png);
+    }
+        
+    #friendsApp .icon.icon-like-o {
+        background-image: url(img/icon-like-o@2x.png);
+    }
+
+    #friendsApp .icon.icon-like {
+        background-image: url(img/icon-like@2x.png);
+    }
+
+    #friendsApp .icon.icon-comments-o {
+        background-image: url(img/icon-comments-o@2x.png);
+    }
+
+    #friendsApp .icon.icon-comments {
+        background-image: url(img/icon-comments@2x.png);
+    }
+        
+    #friendsApp .icon.icon-photo {
+        background-image: url(img/icon-photo@2x.png);
+    }
+
+    #friendsApp .button-icon.button-edit {
+        background-image: url(img/icon-edit@2x.png);
+    }
+        
+    #friendsApp .button-icon.button-edit-dark {
+        background-image: url(img/icon-edit-dark@2x.png);
+    }
+
+    #friendsApp .button-icon.button-remove {
+        background-image: url(img/icon-remove@2x.png);
+    }
+}

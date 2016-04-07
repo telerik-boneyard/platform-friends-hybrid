@@ -1,0 +1,62 @@
+<div data-role="view" data-title="Profile" data-layout="main-nonav" data-model="app.profileView.profileViewModel" data-bind="events: { show: onShow, hide: onHide }" class="profile-view">
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+            <span data-role="view-title"></span>
+
+            <a class="button-icon button-back" data-role="backbutton" data-align="left"></a>
+            <a class="button-icon button-save" data-role="button" data-align="right" data-bind="events: {click: updateProfile }"></a>
+        </div>
+    </header>
+
+    <form id="edit-profile-form">
+        <div class="content">
+            <ul data-role="listview" data-style="inset">
+                <li class="content-picture">
+                    <img data-bind="attr: { src: profile.PictureUrl }" id="preview" width="100%" height="auto" style="max-height: 300px;">
+                    
+                    <div class="activity-photo-upload">
+                        <label for="profile-activity-photo">
+                            <button id="profile-choose-file-button">
+                                <span class="icon icon-photo"></span>
+                            </button>
+                        </label>
+                        <input type="file" accept="image/*" id="profile-activity-photo" style="display: none">
+                    </div>
+                </li>
+                <li>
+                    <label>
+                        <input name="user-name" type="text" placeholder="Username" data-bind="value: profile.Username" required>
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input name="display-name" type="text" placeholder="Display Name" data-bind="value: profile.DisplayName">
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input name="email" type="text" placeholder="Email" data-bind="value: profile.Email">
+                    </label>
+                </li>
+                <li>
+                    <label>Birth Date
+                        <input name="birth-date" type="date" id="birth" placeholder="Birth Date" data-bind="value: profile.BirthDate">
+                    </label>
+                </li>
+                <li>
+                    <label>Gender
+                        <select name="gender" id="gender" data-bind="value: profile.Gender">
+                            <option value="1">Male</option>
+                            <option value="2">Female</option>
+                        </select>
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <textarea placeholder="About" name="about" id="about" data-bind="value: profile.About"></textarea>
+                    </label>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

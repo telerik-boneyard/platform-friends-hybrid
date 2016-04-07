@@ -1,1 +1,4 @@
 friendshybrid.apk
+*/bin
+*/obj
+*.user-settings.xml
