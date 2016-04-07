@@ -67,6 +67,8 @@
                     activity.CommentsCount = 0;
                 }
 
+                activity.Author = activity.User.DisplayName || activity.User.Username;
+
                 activity.Meta = {
                     Permissions: {
                         CanUpdate: app.utils.isOwner(activity),
