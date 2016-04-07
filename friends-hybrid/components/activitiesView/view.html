@@ -13,6 +13,17 @@
     <ul data-role="listview" data-template="activitiesViewModelTemplate" data-bind="{ source: activitiesViewModel.dataSource }" data-pull-to-refresh="true" data-endless-scroll="true">
     </ul>
 
+    <script type="text/x-kendo-template" class="likesButtonTemplate">
+        <button data-bind="events: { click: activitiesViewModel.likeActivity }" class="activity-likes">
+            # if (data['Liked']) { #
+            <span class="icon icon-like"></span>
+            # } else { #
+            <span class="icon icon-like-o"></span>
+            # } #
+            <span class="count">#= data['LikesCount'] #</span>
+        </button>
+    </script>
+
     <script type="text/x-kendo-template" id="activitiesViewModelTemplate">
         <div class="content" data-id="#: data['Id'] #" data-bind="events: { click: activitiesViewModel.activityClick }">
             <div class="content-header">
@@ -31,14 +42,7 @@
             </div>
             <p class="content-text">#: data['Text'] #</p>
             <div class="activity-footer">
-                <button data-bind="events: { click: activitiesViewModel.likeActivity }" class="activity-likes">
-                # if (data['Liked']) { #
-                    <span class="icon icon-like"></span>
-                # } else { #
-                    <span class="icon icon-like-o"></span>
-                # } #
-                <span class="count">#= data['LikesCount'] #</span>
-                </button>
+                #= kendo.render(kendo.template($('.likesButtonTemplate').html()), [data]) #
 
                 <button data-bind="events: {click: activitiesViewModel.openComments }" class="activity-comments">
                 # if (data['CommentsCount']) { #

@@ -184,6 +184,10 @@
 
             this.set('canEdit', currentActivity.Meta.Permissions.CanUpdate);
             this.set('canDelete', currentActivity.Meta.Permissions.CanDelete);
+
+            var template = kendo.template($('.likesButtonTemplate').html());
+            var renderedTemplate = template(currentActivity);
+            $('#likes-template-content').html(renderedTemplate);
         },
         editActivity: function () {
             app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);
