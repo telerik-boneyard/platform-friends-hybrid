@@ -71,7 +71,10 @@
                 activity.CreatedAt = kendo.toString(new Date(activity.CreatedAt), app.constants.dateFormat);
                 activity.Likes = activity.Likes || [];
                 activity.LikesCount = activity.Likes.length;
-                activity.Liked = activity.Likes.indexOf(app.user.DisplayName) !== -1;
+                activity.Liked = !!_.find(activity.Likes, function (user) {
+                    return user.Id === app.user.Id;
+                });
+
                 var pictureUrl = activity.User.PictureUrl;
                 if (!pictureUrl) {
                     activity.User.PictureUrl = app.constants.defaultPicture;
