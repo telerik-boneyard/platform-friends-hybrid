@@ -54,7 +54,13 @@
                     localStorage.clear();
                     app.mobileApp.navigate('components/authenticationView/view.html');
                 })
-                .catch(app.notify.error);
+                .catch(function (err) {
+                    if (err.code === 301 || err.code === 302) {
+                       app.mobileApp.navigate('components/authenticationView/view.html');
+                    } else {
+                        app.notify.error(err);
+                    }
+                });
         },
         goToProfile: function () {
             app.mobileApp.navigate('components/profileView/view.html');

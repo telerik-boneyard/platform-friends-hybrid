@@ -96,7 +96,7 @@
                 vm.set('displayName', '');
                 vm.set('email', '');
 
-                app.notify.info('Registration successful');
+                app.notify.success('Registration successful');
                 vm.signin(username, password);
             }, init);
         },
@@ -135,7 +135,7 @@
                             if (response.status === 'connected') {
                                 fbLogin(response);
                             } else {
-                                app.notify.info('You are not logged in');
+                                app.notify.success('You are not logged in');
                             }
                         }, function (err) {
                             app.notify.error(err);
