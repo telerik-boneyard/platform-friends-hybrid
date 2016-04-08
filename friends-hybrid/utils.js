@@ -140,8 +140,8 @@
 
     app.utils.autoSizeTextarea = function (element) {
         element.css({
-            'height': 'auto',
-            'height': element[0].scrollHeight
+            height: 'auto',
+            height: element[0].scrollHeight
         });
     };
 }());
