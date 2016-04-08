@@ -30,7 +30,7 @@
             <div class="content-header">
                 <div class="author-avatar">
                     <img data-id="#: data['User']['Id'] #" data-src="#: data['User']['PictureUrl'] #" data-responsive width="40" height="40">
-                    <span style="display: none">#=  app.activitiesView.processImage(data.User.Id) #</span>
+                    <span style="display: none">#=  app.utils.processImage(data.User.Id) #</span>
                 </div>
                 <div class="author-name">
                     #: data['Author'] #
@@ -41,7 +41,7 @@
             </div>
             <div class="content-picture">
                 <img data-id="#: data['Id'] #" data-src="#: data['PictureUrl'] #" data-responsive width="100%" height="250" style="max-height: 250px;">
-                <span style="display: none">#= app.activitiesView.processImage(data.Id) #</span>
+                <span style="display: none">#= app.utils.processImage(data.Id) #</span>
             </div>
             <p class="content-text">#: data['Text'] #</p>
             <div class="activity-footer">

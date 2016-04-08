@@ -5,18 +5,7 @@
     var provider = app.data.defaultProvider;
     var activitiesData = provider.data('Activities');
 
-    var view = app.activitiesView = kendo.observable({
-        processImage: function (id) {
-            setTimeout(function () {
-                var img = $('img[data-id="' + id + '"]');
-                if (!img || !img.length) {
-                    return console.warn('No image to optimize with id found: ', id);
-                }
-
-                provider.helpers.html.process(img).catch(app.notify.error);
-            }); //wait for the listview element to be rendered
-        }
-    });
+    var view = app.activitiesView = kendo.observable();
 
     var activitiesDataSource = new kendo.data.DataSource({
         type: 'everlive',
