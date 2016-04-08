@@ -145,6 +145,23 @@
         });
     };
 
+    app.utils.processElement = function (el) {
+        setTimeout(function () {
+            el.each(function (index, image) {
+                if (!image.dataset.src && image.src) {
+                    return app.data.defaultProvider.helpers.html.process(image).catch(app.notify.error);
+                }
+
+                //when the image is local, e.g. the default image we do not need to optimize it
+                if (image.dataset.src.indexOf('default.jpg') === -1) {
+                    app.data.defaultProvider.helpers.html.process(image).catch(app.notify.error);
+                } else {
+                    image.src = image.dataset.src;
+                }
+            });
+        }); //wait for the listview element to be rendered
+    };
+
     app.utils.processImage = function (id) {
         setTimeout(function () {
             var img = $('img[data-id="' + id + '"]');
@@ -152,14 +169,7 @@
                 return console.warn('No image to optimize with id found: ', id);
             }
 
-            img.each(function (index, image) {
-                //when the image is local, e.g. the default image we do not need to optimize it
-                if (image.dataset.src.indexOf('http') !== -1) {
-                    app.data.defaultProvider.helpers.html.process(image).catch(app.notify.error);
-                } else {
-                    image.src = image.dataset.src;
-                }
-            });
-        }); //wait for the listview element to be rendered
+            app.utils.processElement(img);
+        });
     }
 }());

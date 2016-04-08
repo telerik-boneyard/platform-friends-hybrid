@@ -74,6 +74,7 @@
 
     app.drawerModel = kendo.observable({
         logout: function () {
+            app.newUser = true;
             app.data.defaultProvider.users.logout()
                 .then(function () {
                     localStorage.clear();

@@ -76,13 +76,6 @@
                 }
 
                 activity.Author = activity.User.DisplayName || activity.User.Username;
-
-                activity.Meta = {
-                    Permissions: {
-                        CanUpdate: app.utils.isOwner(activity),
-                        CanDelete: app.utils.isOwner(activity)
-                    }
-                }
             });
 
             app.utils.loading(false);
@@ -200,8 +193,8 @@
             var renderedTemplate = template(currentActivity);
             $('#likes-template-content').html(renderedTemplate);
 
-            provider.helpers.html.process($('#current-activity-photo')).catch(app.notify.error);
-            provider.helpers.html.process($('#current-activity-author-photo')).catch(app.notify.error);
+            app.utils.processElement($('#current-activity-photo'));
+            app.utils.processElement($('#current-activity-author-photo'));
         },
         editActivity: function () {
             app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);
@@ -232,8 +225,13 @@
 
     var activitiesViewModel = kendo.observable({
         dataSource: activitiesDataSource,
+        refreshOnShow: false,
         onShow: function () {
-            if (!activitiesDataSource.data().length) {
+            if (app.newUser) {
+                app.utils.loading(true);
+                activitiesDataSource.read();
+                app.newUser = false;
+            } else if (!activitiesDataSource.data().length) {
                 app.utils.loading(true);
             }
         },
@@ -247,6 +245,7 @@
         likeActivity: function (e) {
             e.stopPropagation();
             var activityId = e.data.Id;
+            app.utils.loading(true);
             provider.request({
                 endpoint: 'Functions/likeActivity?activityId=' + activityId,
                 method: 'GET',
