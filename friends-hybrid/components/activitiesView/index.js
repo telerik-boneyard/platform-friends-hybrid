@@ -26,7 +26,7 @@
                 headers: {
                     'X-Everlive-Expand': JSON.stringify({
                         Picture: {
-                            TargetTypeName: 'Files',
+                            TargetTypeName: 'System.Files',
                             ReturnAs: 'PictureUrl',
                             SingleField: 'Uri'
                         },
@@ -43,7 +43,7 @@
                             TargetTypeName: 'Users',
                             Expand: {
                                 Picture: {
-                                    TargetTypeName: 'Files',
+                                    TargetTypeName: 'System.Files',
                                     ReturnAs: 'PictureUrl',
                                     SingleField: 'Uri'
                                 }
