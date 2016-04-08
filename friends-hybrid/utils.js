@@ -100,13 +100,17 @@
                 return Everlive._utils.rejectedPromise();
             }
 
+            var filename = app.user.Id + '_' + new Date().valueOf();
             if (window.cordova) {
-                uploadImagePromise = provider.files.upload(picture);
+                uploadImagePromise = provider.files.upload(picture, {
+                    fileName: filename,
+                    mimeType: 'image/png'
+                });
             } else {
                 var file = that.file;
                 var cleanBase64 = picture.split(',')[1];
                 uploadImagePromise = provider.files.create({
-                    Filename: app.user.Id + '_' + file.name,
+                    Filename: filename,
                     ContentType: file.type,
                     base64: cleanBase64
                 });
