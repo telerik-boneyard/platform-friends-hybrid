@@ -201,7 +201,7 @@
             // The following is required in iPhone as the loadstop event is never fired.
             // The check for Google is required to parse the access token of the redirect Uri
             ref.addEventListener('loadstart', function(event) {
-                that.onLocationChanged(event.url, onResponse);
+                onLocationChanged(event.url, onResponse);
             });
         }
     });
