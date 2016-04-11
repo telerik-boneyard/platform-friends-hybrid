@@ -145,6 +145,7 @@
         });
     };
 
+    var processedElements = [];
     app.utils.processElement = function (el) {
         setTimeout(function () {
             el.each(function (index, image) {
@@ -155,12 +156,21 @@
                 //when the image is local, e.g. the default image we do not need to optimize it
                 if (image.dataset.src.indexOf('default.jpg') === -1) {
                     app.data.defaultProvider.helpers.html.process(image).catch(app.notify.error);
+                    if (processedElements.indexOf(image) === -1) {
+                        processedElements.push(image);
+                    }
                 } else {
                     image.src = image.dataset.src;
                 }
             });
         }); //wait for the listview element to be rendered
     };
+
+    $(window).resize(function () {
+        processedElements.forEach(function (el) {
+            app.utils.processElement($(el));
+        });
+    });
 
     app.utils.processImage = function (id) {
         setTimeout(function () {

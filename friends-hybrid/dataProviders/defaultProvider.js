@@ -16,7 +16,6 @@
         },
         helpers: {
             html: {
-                processOnResize: true,
                 loadingImageUrl: 'styles/img/loading.gif'
             }
         }
