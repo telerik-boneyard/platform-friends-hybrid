@@ -4,6 +4,21 @@
 (function () {
     var provider = app.data.defaultProvider;
     var activitiesData = provider.data('Activities');
+    var commentsData = provider.data('Comments');
+
+    var likeActivity = function (e) {
+        return new Everlive._common.rsvp.Promise(function (resolve, reject) {
+            e.stopPropagation();
+            var activityId = this.activityId;
+            app.utils.loading(true);
+            provider.request({
+                endpoint: 'Functions/likeActivity?activityId=' + activityId,
+                method: 'GET',
+                success: resolve,
+                error: reject
+            }).send();
+        }.bind(this)).catch(app.notify.error);
+    };
 
     var view = app.activitiesView = kendo.observable();
 
@@ -59,7 +74,6 @@
                 activity.PictureUrl = activity.PictureUrl || app.constants.defaultPicture;
                 activity.CreatedAt = kendo.toString(new Date(activity.CreatedAt), app.constants.dateFormat);
                 activity.Likes = activity.Likes || [];
-                activity.LikesCount = activity.Likes.length;
                 activity.Liked = !!_.find(activity.Likes, function (user) {
                     return user.Id === app.user.Id;
                 });
@@ -182,6 +196,7 @@
         canDelete: false,
         commentsDataSource: [],
         onShow: function (e) {
+            app.utils.loading(true);
             var currentActivity = activitiesDataSource.get(e.view.params.id);
             this.set('currentActivity', null);
             this.set('currentActivity', currentActivity);
@@ -189,9 +204,31 @@
             this.set('canEdit', currentActivity.Meta.Permissions.CanUpdate);
             this.set('canDelete', currentActivity.Meta.Permissions.CanDelete);
 
-            var template = kendo.template($('.likesButtonTemplate').html());
-            var renderedTemplate = template(currentActivity);
-            $('#likes-template-content').html(renderedTemplate);
+            var $likesIcon = $('#likes-icon');
+            $likesIcon.removeClass('icon-like').removeClass('icon-like-o');
+            if (this.currentActivity.Liked) {
+                $likesIcon.addClass('icon-like');
+            } else {
+                $likesIcon.addClass('icon-like-o');
+            }
+
+            var $commentsIcon = $('#comments-icon');
+            $commentsIcon.removeClass('icon-comments-o').removeClass('icon-comments');
+            commentsData.count({ActivityId: this.currentActivity.Id})
+                .then(function (res) {
+                    var count = res.result;
+                    if (count) {
+                        $commentsIcon.addClass('icon-comments');
+                    } else {
+                        $commentsIcon.addClass('icon-comments-o');
+                    }
+
+                    app.utils.loading(false);
+                })
+                .catch(function (err) {
+                    app.notify.error(err);
+                    $commentsIcon.addClass('icon-comments-o');
+                });
 
             app.utils.processElement($('#current-activity-photo'));
             app.utils.processElement($('#current-activity-author-photo'));
@@ -201,7 +238,6 @@
         },
         removeActivity: function () {
             var confirmed = app.notify.confirmation();
-
             if (!confirmed) {
                 return;
             }
@@ -220,6 +256,22 @@
             var activityId = this.currentActivity.Id;
             app.mobileApp.navigate('#components/commentsView/view.html?activityId=' + activityId);
         },
+        likeActivity: function (e) {
+            return likeActivity.call({activityId: this.currentActivity.Id}, e)
+                .then(function () {
+                    app.activitiesView.shouldRefresh = true;
+                    $('#likes-icon').toggleClass('icon-like').toggleClass('icon-like-o');
+                    var predicate = {Id: app.user.Id};
+                    if (_.find(this.currentActivity.Likes, predicate)) {
+                        _.remove(this.currentActivity.Likes, predicate);
+                    } else {
+                        this.currentActivity.Likes.push(_.pick(app.user, 'DisplayName', 'Id', 'Username'));
+                    }
+
+                    $('#count-icon').html(this.currentActivity.Likes.length);
+                    app.utils.loading(false);
+                }.bind(this));
+        },
         goBack: app.utils.goBack
     });
 
@@ -227,10 +279,10 @@
         dataSource: activitiesDataSource,
         refreshOnShow: false,
         onShow: function () {
-            if (app.newUser) {
+            if (app.activitiesView.shouldRefresh) {
                 app.utils.loading(true);
                 activitiesDataSource.read();
-                app.newUser = false;
+                app.activitiesView.shouldRefresh = false;
             } else if (!activitiesDataSource.data().length) {
                 app.utils.loading(true);
             }
@@ -243,17 +295,9 @@
             app.mobileApp.navigate('#components/activitiesView/addEdit.html');
         },
         likeActivity: function (e) {
-            e.stopPropagation();
-            var activityId = e.data.Id;
-            app.utils.loading(true);
-            provider.request({
-                endpoint: 'Functions/likeActivity?activityId=' + activityId,
-                method: 'GET',
-                success: function () {
-                    activitiesDataSource.read();
-                },
-                error: app.notify.error
-            }).send();
+            return likeActivity.call({activityId: e.data.Id}, e).then(function () {
+                activitiesDataSource.read();
+            });
         },
         openComments: function (e) {
             e.stopPropagation();

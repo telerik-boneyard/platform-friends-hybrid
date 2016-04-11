@@ -11,8 +11,8 @@
         uploader: null,
         photoChanged: false,
         onShow: function () {
-            var user = app.user,
-                textarea = $('#about');
+            var user = app.user;
+            var textarea = $('#about');
             var profile = kendo.observable({
                 DisplayName: user.DisplayName,
                 Email: user.Email,

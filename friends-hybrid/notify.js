@@ -7,6 +7,7 @@
 
     app.notify = {
         error: function (error) {
+            app.utils.loading(false);
             console.error(error);
             console.trace();
             var message = error.message || JSON.stringify(error);

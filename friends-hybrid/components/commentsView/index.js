@@ -68,6 +68,7 @@
             app.mobileApp.navigate('#components/commentsView/addEdit.html?commentId=' + commentId);
         },
         removeComment: function (e) {
+            app.activitiesView.shouldRefresh = true;
             var confirmed = app.notify.confirmation();
             if (!confirmed) {
                 return;
@@ -80,6 +81,7 @@
             this.commentsDataSource.sync().then(null, app.notify.error);
         },
         addComment: function () {
+            app.activitiesView.shouldRefresh = true;
             app.mobileApp.navigate('#components/commentsView/addEdit.html?activityId=' + this.currentActivityId);
         }
     });
@@ -93,8 +95,8 @@
             comment: ''
         },
         onShow: function (e) {
-            var params = e.view.params,
-                textarea = $('#comment-text');
+            var params = e.view.params;
+            var textarea = $('#comment-text');
 
             if (params.activityId) {
                 this.set('activityId', params.activityId);

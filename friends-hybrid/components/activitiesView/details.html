@@ -10,13 +10,17 @@
             <div class="content-date" data-bind="text: currentActivity.CreatedAt"></div>
         </div>
         <p class="content-text" data-bind="text: currentActivity.Text"></p>
+        <button role="button" data-bind="events: {click: likeActivity}" class="activity-likes">
+            <span id="likes-icon" class="likes-icon icon"></span>
+            <span id="count-icon" class="count" data-bind="text: currentActivity.Likes.length"></span>
+        </button>
         <button role="button" data-bind="events: {click: openComments }" class="activity-comments">
-            <span class="icon icon-comments"></span>
+            <span id="comments-icon" class="icon"></span>
             <span data-bind="text: currentActivity.CommentsCount"></span>
         </button>
         <span id="likes-template-content"></span>
         <a class="button-icon button-remove" id="remove" data-role="button" data-bind="events: { click: removeActivity }, visible: canDelete"></a>
     </div>
     <a class="button-icon button-back-shadow top-left" data-role="button" data-bind="events: { click: goBack }"></a>
-    <a class="button-icon button-edit-shadow top-right" id="edit" data-role="button" data-bind="events: { click: editActivity }, visible: canEdit"></a>    
+    <a class="button-icon button-edit-shadow top-right" id="edit" data-role="button" data-bind="events: { click: editActivity }, visible: canEdit"></a>
 </div>
