@@ -373,6 +373,11 @@ textarea:-ms-input-placeholder {
     text-transform: uppercase;
 }
 
+#friendsApp .noappid-scrn .km-header .km-view-title {
+    margin: 0 .5em;
+    white-space: normal;
+}
+
 #friendsApp .activities-view .km-listview li:not(.km-load-more) {
     padding: 1em 2em 0;
 }
