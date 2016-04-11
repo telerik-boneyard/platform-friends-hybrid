@@ -195,6 +195,7 @@
         canEdit: false,
         canDelete: false,
         commentsDataSource: [],
+
         onShow: function (e) {
             app.utils.loading(true);
             var currentActivity = activitiesDataSource.get(e.view.params.id);

@@ -9,8 +9,8 @@
                 //check out .debug.abproject and .release.abproject
             },
             adfs: {
-                endpoint: '$ADFS_ENDPOINT$', // Put your ADFS Realm here
-                realm: '$ADFS_REALM$' // Put your ADFS Endpoint here
+                endpoint: 'https://bs-wintest-1.everlive.rocks/adfs/ls', // Put your ADFS endpoint here
+                realm: 'https://sit-tap-bs.telerik.rocks/v1/9tadbe1v3afo3nit' // Put your ADFS realm here
             }
         },
         analytics: {

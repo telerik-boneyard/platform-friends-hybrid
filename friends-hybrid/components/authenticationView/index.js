@@ -4,7 +4,9 @@
     var view = app.authenticationView = kendo.observable({
         onShow: function () {
             var shouldDisableAdfsButton = app.settings.social.adfs.endpoint === '$ADFS_ENDPOINT$' && app.settings.social.adfs.realm === '$ADFS_REALM$';
-            $('#adfs-btn').css('disabled', shouldDisableAdfsButton);
+            if (shouldDisableAdfsButton) {
+                $('#adfs-btn').css('disabled', shouldDisableAdfsButton);
+            }
 
             mode = 'signin'; //reset the view mode
             init();
