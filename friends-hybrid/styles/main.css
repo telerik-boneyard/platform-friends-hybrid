@@ -262,6 +262,10 @@ textarea:-ms-input-placeholder {
     background-image: url(img/icon-back.png);
 }
 
+#friendsApp .button-icon.button-back-shadow {
+    background-image: url(img/icon-back-shadow.png);
+}
+
 #friendsApp .button-icon.button-save {
     background-image: url(img/icon-save.png);
 }
@@ -276,6 +280,10 @@ textarea:-ms-input-placeholder {
 
 #friendsApp .button-icon.button-edit {
     background-image: url(img/icon-edit.png);
+}
+
+#friendsApp .button-icon.button-edit-shadow {
+    background-image: url(img/icon-edit-shadow.png);
 }
 
 #friendsApp .button-icon.button-edit-dark {
@@ -500,8 +508,7 @@ textarea:-ms-input-placeholder {
 }
 
 .activity-photo-upload,
-.activity-photo-upload label,
-.activity-photo-upload button {
+.activity-photo-upload label {
     display: block;
     width: 42px;
     height: 42px;
@@ -510,10 +517,11 @@ textarea:-ms-input-placeholder {
 .activity-photo-upload {
     position: absolute;
     top: 1em;
-    right: 1em;
+    right: .5em;
 }
 
 .activity-photo-upload button {
+    padding: 0;
     border: 0;
     background-color: transparent;
 }
@@ -534,6 +542,10 @@ textarea:-ms-input-placeholder {
 
     #friendsApp .button-icon.button-back {
         background-image: url(img/icon-back@2x.png);
+    }
+        
+    #friendsApp .button-icon.button-back-shadow {
+        background-image: url(img/icon-back-shadow@2x.png);
     }
         
     #friendsApp .button-icon.button-save {
@@ -570,6 +582,10 @@ textarea:-ms-input-placeholder {
 
     #friendsApp .button-icon.button-edit {
         background-image: url(img/icon-edit@2x.png);
+    }
+        
+    #friendsApp .button-icon.button-edit-shadow {
+        background-image: url(img/icon-edit-shadow@2x.png);
     }
         
     #friendsApp .button-icon.button-edit-dark {
