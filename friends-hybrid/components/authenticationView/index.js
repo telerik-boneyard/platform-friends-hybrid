@@ -149,7 +149,11 @@
                 }
             });
         },
-        adfsLogin: function () {
+        adfsLogin: function (e) {
+            if (e.target.prop('disabled')) {
+                return;
+            }
+
             var getParameterByName = function (name, url) {
                 name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
                 var regexS = name + '=([^&#]*)';
