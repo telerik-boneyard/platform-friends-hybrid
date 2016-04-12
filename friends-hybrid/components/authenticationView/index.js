@@ -5,7 +5,7 @@
         onShow: function () {
             var shouldDisableAdfsButton = app.settings.social.adfs.endpoint === '$ADFS_ENDPOINT$' && app.settings.social.adfs.realm === '$ADFS_REALM$';
             if (shouldDisableAdfsButton) {
-                $('#adfs-btn').css('disabled', shouldDisableAdfsButton);
+                $('#adfs-btn').prop('disabled', shouldDisableAdfsButton);
             }
 
             mode = 'signin'; //reset the view mode
