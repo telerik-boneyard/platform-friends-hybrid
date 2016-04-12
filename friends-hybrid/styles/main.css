@@ -224,16 +224,33 @@ textarea:-ms-input-placeholder {
 }
 
 #friendsApp .button-icon,
-#friendsApp .icon {
+#friendsApp .icon,
+#friendsApp .button-facebook,
+#friendsApp .button-adsf {
     width: 42px;
     min-width: 0;
     height: 42px;
     margin: 0;
     padding: 0;
-    background-color: transparent;
     background-repeat: no-repeat;
     background-position: 50%;
     background-size: 42px;
+}
+
+#friendsApp .button-icon,
+#friendsApp .icon {
+    background-color: transparent;
+}
+
+#friendsApp .button-facebook,
+#friendsApp .button-adsf {
+    margin: 0 .5em;
+    background-color: #7ed321;
+}
+
+#friendsApp .button-facebook.km-state-active,
+#friendsApp .button-adsf.km-state-active {
+    background-color: #68b811;
 }
 
 #friendsApp .button-icon {
@@ -256,6 +273,14 @@ textarea:-ms-input-placeholder {
 
 #friendsApp .button-icon.km-state-active {
     background-color: transparent;
+}
+
+#friendsApp .button-facebook {
+    background-image: url(img/icon-facebook.png);
+}
+
+#friendsApp .button-adsf {
+    background-image: url(img/icon-adsf.png);
 }
 
 #friendsApp .button-icon.button-back {
@@ -549,6 +574,14 @@ textarea:-ms-input-placeholder {
     and (min-resolution: 1.5dppx)
     and (-webkit-min-device-pixel-ratio: 1.5)
     and (min-resolution: 144dpi) {
+
+    #friendsApp .button-facebook {
+        background-image: url(img/icon-facebook@2x.png);
+    }
+
+    #friendsApp .button-adsf {
+        background-image: url(img/icon-adsf@2x.png);
+    }
 
     #friendsApp .button-icon.button-back {
         background-image: url(img/icon-back@2x.png);
