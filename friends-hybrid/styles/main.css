@@ -496,20 +496,25 @@ textarea:-ms-input-placeholder {
     text-overflow: ellipsis;
 }
 
-.activity-footer {
+.content-footer {
+    margin: 0 -1em;
     text-align: right;
 }
 
-.activity-likes,
-.activity-comments {
+.content-footer .button-remove {
+    float: left;
+}
+
+.comments-view .content-footer .button-remove {
+    float: none;
+}
+
+.likes,
+.comments {
     border: 0;
     font-size: 1.1em;
     background-color: transparent;
     color: #7f7f7f;
-}
-
-.activity-details-view .activity-comments {
-    margin-left: -1em;
 }
 
 .activity-photo-upload,
