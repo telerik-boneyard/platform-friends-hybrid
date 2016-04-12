@@ -144,6 +144,11 @@
                                 app.notify.success('You are not logged in');
                             }
                         }, function (err) {
+                            var message = (err && err.message) || err;
+                            if (message === 'User Cancelled dialog') {
+                                return;
+                            }
+
                             app.notify.error(err);
                         });
                 }
