@@ -173,7 +173,8 @@ textarea:-ms-input-placeholder {
 }
 
 #friendsApp.km-flat .profile-view .km-list textarea {
-    padding: 0;
+    height: 40px;
+    overflow: hidden;
 }
 
 #friendsApp.km-flat textarea {
@@ -225,8 +226,7 @@ textarea:-ms-input-placeholder {
 
 #friendsApp .button-icon,
 #friendsApp .icon,
-#friendsApp .button-facebook,
-#friendsApp .button-adsf {
+#friendsApp .button-social {
     width: 42px;
     min-width: 0;
     height: 42px;
@@ -242,15 +242,17 @@ textarea:-ms-input-placeholder {
     background-color: transparent;
 }
 
-#friendsApp .button-facebook,
-#friendsApp .button-adsf {
+#friendsApp .button-social {
     margin: 0 .5em;
     background-color: #7ed321;
 }
 
-#friendsApp .button-facebook.km-state-active,
-#friendsApp .button-adsf.km-state-active {
+#friendsApp .button-social.km-state-active {
     background-color: #68b811;
+}
+
+#friendsApp .button-social[disabled] {
+    opacity: .5;
 }
 
 #friendsApp .button-icon {

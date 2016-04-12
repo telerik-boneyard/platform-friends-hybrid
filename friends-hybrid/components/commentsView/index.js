@@ -108,11 +108,10 @@
                 commentsData.getById(this.commentId)
                     .then(function (res) {
                         this.set('fields.comment', res.result.Comment);
+                        app.utils.autoSizeTextarea(textarea);
                     }.bind(this))
                     .catch(app.notify.error);
             }
-            
-            app.utils.autoSizeTextarea(textarea);
 
             textarea.on('input keypress', function () {
                 app.utils.autoSizeTextarea(textarea);
