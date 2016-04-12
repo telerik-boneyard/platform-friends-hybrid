@@ -29,9 +29,10 @@
                     </div>
                 </div>
                 <p class="content-text">#: data['Comment'] #</p>
-
-                <a class="button-icon button-edit-dark" data-role="button" style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: editComment }" ></a>
-                <a class="button-icon button-remove" data-role="button" style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: removeComment }" ></a>
+                <div class="content-footer">
+                    <a class="button-icon button-edit-dark" data-role="button" style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: editComment }" ></a>
+                    <a class="button-icon button-remove" data-role="button" style="display: #: data['Meta']['Permissions']['CanUpdate'] ? '' : 'none' #" data-bind="events: {click: removeComment }" ></a>
+                </div>
             </div>
         </script>
     </div>

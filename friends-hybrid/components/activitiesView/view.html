@@ -33,8 +33,8 @@
                 <span style="display: none">#= app.utils.processImage(data.Id) #</span>
             </div>
             <p class="content-text">#: data['Text'] #</p>
-            <div class="activity-footer">
-                <button data-bind="events: { click: activitiesViewModel.likeActivity }" class="activity-likes">
+            <div class="content-footer">
+                <button data-bind="events: { click: activitiesViewModel.likeActivity }" class="likes">
                     # if (data['Liked']) { #
                     <span class="icon icon-like"></span>
                     # } else { #
@@ -43,7 +43,7 @@
                     <span class="count">#= data['Likes']['length'] #</span>
                 </button>
 
-                <button data-bind="events: { click: activitiesViewModel.openComments }" class="activity-comments">
+                <button data-bind="events: { click: activitiesViewModel.openComments }" class="comments">
                 # if (data['CommentsCount']) { #
                     <span class="icon icon-comments"></span>
                 # } else { #
