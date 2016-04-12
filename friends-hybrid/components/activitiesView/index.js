@@ -140,7 +140,7 @@
 
             app.utils.loading(true);
 
-            if (this.imageChanged && this.activity.PictureUrl) {
+            if (this.imageChanged && this.activity.PictureUrl && this.activity.PictureUrl !== app.constants.defaultPicture) {
                 this.uploader.upload()
                     .then(function (id) {
                         return this._handleActivityOperation(id)
@@ -155,6 +155,8 @@
             app.utils.autoSizeTextarea(textarea);
         },
         onShow: function (e) {
+            this.imageChanged = false;
+
             var id = e.view.params.id;
             var textarea = $('#activity-text');
 
@@ -231,8 +233,14 @@
                     $commentsIcon.addClass('icon-comments-o');
                 });
 
-            app.utils.processElement($('#current-activity-photo'));
-            app.utils.processElement($('#current-activity-author-photo'));
+            var $activityPhoto = $('#current-activity-photo');
+            var $authorPhoto = $('#current-activity-author-photo');
+
+            $activityPhoto.prop('src', '');
+            $authorPhoto.prop('src', '');
+
+            app.utils.processElement($activityPhoto);
+            app.utils.processElement($authorPhoto);
         },
         editActivity: function () {
             app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);

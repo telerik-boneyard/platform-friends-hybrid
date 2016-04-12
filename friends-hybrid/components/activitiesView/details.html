@@ -1,7 +1,7 @@
 <div data-layout="main-nonav" data-role="view" data-title="Details" data-model="app.activitiesView.activityDetailsViewModel" data-bind="events: { show: onShow }" id="activitiesViewModelDetailsView" class="activity-details-view">
     <div class="content">
         <div class="content-picture">
-            <img id="current-activity-photo" data-bind="attr: { src: currentActivity.PictureUrl }" width="100%" height="250" style="max-height: 250px;">
+            <img id="current-activity-photo" data-bind="attr: { data-src: currentActivity.PictureUrl }" data-responsive width="100%" height="250" style="max-height: 250px;">
         </div>
         <div class="content-header">
             <div class="author-avatar large">
