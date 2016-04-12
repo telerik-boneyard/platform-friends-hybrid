@@ -49,7 +49,7 @@
         } else {
             init();
         }
-    };
+    }
 
     var vm = kendo.observable({
         displayName: '',
