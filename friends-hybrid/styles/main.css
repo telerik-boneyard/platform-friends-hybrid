@@ -173,7 +173,8 @@ textarea:-ms-input-placeholder {
 }
 
 #friendsApp.km-flat .profile-view .km-list textarea {
-    padding: 0;
+    height: 40px;
+    overflow: hidden;
 }
 
 #friendsApp.km-flat textarea {
