@@ -10,10 +10,6 @@
         </activity>
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/fb_app_id" />
         <activity android:label="@string/fb_app_name" android:name="com.facebook.LoginActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity android:label="@string/title_activity_send_feedback" android:name="com.telerik.widget.feedback.SendFeedbackActivity" android:theme="@style/AppCompatTheme" />
-        <activity android:label="@string/title_activity_view_feedback" android:name="com.telerik.widget.feedback.ViewFeedbackActivity" android:theme="@style/AppCompatTheme" />
-        <activity android:label="@string/title_activity_view_feedback" android:name="com.telerik.widget.feedback.ViewFeedbackItemActivity" android:theme="@style/AppCompatTheme" />
-        <activity android:label="@string/title_activity_edit_details" android:name="com.telerik.widget.feedback.EditDetailsActivity" android:theme="@style/AppCompatTheme" />
         <receiver android:name="com.telerik.LiveSync.IsLiveSyncSupportedReceiver">
             <intent-filter>
                 <action android:name="com.telerik.IsLiveSyncSupported" />
@@ -24,12 +20,16 @@
                 <action android:name="com.telerik.LiveSync" />
             </intent-filter>
         </receiver>
+        <activity android:label="@string/title_activity_send_feedback" android:name="com.telerik.widget.feedback.SendFeedbackActivity" android:theme="@style/AppCompatTheme" />
+        <activity android:label="@string/title_activity_view_feedback" android:name="com.telerik.widget.feedback.ViewFeedbackActivity" android:theme="@style/AppCompatTheme" />
+        <activity android:label="@string/title_activity_view_feedback" android:name="com.telerik.widget.feedback.ViewFeedbackItemActivity" android:theme="@style/AppCompatTheme" />
+        <activity android:label="@string/title_activity_edit_details" android:name="com.telerik.widget.feedback.EditDetailsActivity" android:theme="@style/AppCompatTheme" />
     </application>
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="21" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -39,5 +39,4 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECORD_VIDEO" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 </manifest>
