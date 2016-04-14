@@ -181,7 +181,7 @@
                 addEditActivityViewModel.set('imageChanged', true);
                 addEditActivityViewModel.set('activity.PictureUrl', uri);
             });
-            
+
             app.utils.autoSizeTextarea(textarea);
 
             textarea.on('input keypress', function () {
@@ -245,20 +245,21 @@
             app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);
         },
         removeActivity: function () {
-            var confirmed = app.notify.confirmation();
-            if (!confirmed) {
-                return;
-            }
-
-            var activities = activitiesDataSource.data();
-            for (var i = 0; i < activities.length; i++) {
-                var activity = activities[i];
-                if (activity.Id === this.currentActivity.Id) {
-                    activitiesDataSource.remove(activity);
-                    activitiesDataSource.sync();
-                    return this.goBack();
+            var confirmed = app.notify.confirmation(null, 'Delete activity', function (confirmed) {
+                if (!confirmed) {
+                    return;
                 }
-            }
+
+                var activities = activitiesDataSource.data();
+                for (var i = 0; i < activities.length; i++) {
+                    var activity = activities[i];
+                    if (activity.Id === this.currentActivity.Id) {
+                        activitiesDataSource.remove(activity);
+                        activitiesDataSource.sync();
+                        return this.goBack();
+                    }
+                }
+            }.bind(this));
         },
         openComments: function () {
             var activityId = this.currentActivity.Id;

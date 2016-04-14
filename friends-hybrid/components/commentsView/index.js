@@ -39,7 +39,7 @@
                         }
 
                     });
-                    
+
                     commentsLstScroller.reset();
                 },
                 filter: filter || {},
@@ -49,7 +49,7 @@
         },
         onShow: function (e) {
             var activityId = e.view.params.activityId;
-            
+
             commentsLstScroller = e.view.scroller;
             commentsLstScroller.reset();
 
@@ -69,16 +69,17 @@
         },
         removeComment: function (e) {
             app.activitiesView.shouldRefresh = true;
-            var confirmed = app.notify.confirmation();
-            if (!confirmed) {
-                return;
-            }
-
-            app.activitiesView.activitiesViewModel.dataSource.read();
             var commentId = e.data.Id;
-            var comment = this.commentsDataSource.get(commentId);
-            this.commentsDataSource.remove(comment);
-            this.commentsDataSource.sync().then(null, app.notify.error);
+            var confirmed = app.notify.confirmation(null, 'Remove comment', function (confirmed) {
+                if (!confirmed) {
+                    return;
+                }
+
+                app.activitiesView.activitiesViewModel.dataSource.read();
+                var comment = this.commentsDataSource.get(commentId);
+                this.commentsDataSource.remove(comment);
+                this.commentsDataSource.sync().then(null, app.notify.error);
+            }.bind(this));
         },
         addComment: function () {
             app.activitiesView.shouldRefresh = true;
