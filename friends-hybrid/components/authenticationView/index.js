@@ -61,7 +61,7 @@
         signin: function (username, password) {
             var model = vm;
             if (typeof username !== 'string') {
-                username = model.username.toLowerCase();
+                username = model.username;
             }
 
             if (typeof password !== 'string') {
