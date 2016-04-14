@@ -165,6 +165,7 @@ textarea:-ms-input-placeholder {
 #friendsApp.km-flat .profile-view .km-list input[type='email'],
 #friendsApp.km-flat .profile-view .km-list input[type='date'],
 #friendsApp.km-flat .profile-view .km-list textarea {
+    display: block;
     padding: 1em 0;
     border: 1px solid #e5e5e5;
     border-width: 0 0 1px;
@@ -172,9 +173,20 @@ textarea:-ms-input-placeholder {
     color: #000;
 }
 
+#friendsApp.km-flat .profile-view .km-list select {
+    color: #000;
+}
+
 #friendsApp.km-flat .profile-view .km-list textarea {
     height: 40px;
+    padding-top: 0;
     overflow: hidden;
+}
+
+#friendsApp.km-flat .profile-view .km-list label span {
+    display: block;
+    margin: 0 0 .5em;
+    font-size: .75rem;
 }
 
 #friendsApp.km-flat textarea {

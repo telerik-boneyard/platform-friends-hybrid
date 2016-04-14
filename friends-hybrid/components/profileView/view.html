@@ -25,27 +25,33 @@
                 </li>
                 <li>
                     <label>
-                        <input name="user-name" type="text" placeholder="Username" data-bind="value: profile.Username" required>
+                        <span>Username</span>
+                        <input name="user-name" type="text" data-bind="value: profile.Username" required>
                     </label>
                 </li>
                 <li>
                     <label>
-                        <input name="display-name" type="text" placeholder="Display Name" data-bind="value: profile.DisplayName">
+                        <span>Display Name</span>
+                        <input name="display-name" type="text" data-bind="value: profile.DisplayName">
                     </label>
                 </li>
                 <li>
                     <label>
-                        <input name="email" type="text" placeholder="Email" data-bind="value: profile.Email">
+                        <span>Email</span>
+                        <input name="email" type="text" data-bind="value: profile.Email">
                     </label>
                 </li>
                 <li>
-                    <label>Birth Date
+                    <label>
+                        <span>Birth Date</span>
                         <input name="birth-date" type="date" id="birth" placeholder="Birth Date" data-bind="value: profile.BirthDate">
                     </label>
                 </li>
                 <li>
-                    <label>Gender
+                    <label>
+                        <span>Gender</span>
                         <select name="gender" id="gender" data-bind="value: profile.Gender">
+                            <option value="0" selected disabled>gender</option>
                             <option value="1">Male</option>
                             <option value="2">Female</option>
                         </select>
@@ -53,7 +59,8 @@
                 </li>
                 <li>
                     <label>
-                        <textarea placeholder="About" name="about" id="about" data-bind="value: profile.About"></textarea>
+                        <span>About</span>
+                        <textarea name="about" id="about" data-bind="value: profile.About"></textarea>
                     </label>
                 </li>
             </ul>
