@@ -34,7 +34,7 @@
 	"WP8Requirements": [],
 	"WP8PublisherID": "{f7fadb9c-8be4-403d-a26c-9f5965634cdf}",
 	"WP8ProductID": "{962d7f20-d007-46d0-a712-50b5ab37caa8}",
-	"WPSdk": "8.0",
+	"WPSdk": "8.1",
 	"WP8PackageIdentityName": "1234Telerik.com.telerik.friendshybrid",
 	"WP8WindowsPublisherName": "CN=Telerik",
 	"WP8SupportedResolutions": [
