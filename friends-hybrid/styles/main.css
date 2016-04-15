@@ -385,6 +385,11 @@ textarea:-ms-input-placeholder {
     text-align: center;
 }
 
+#friendsApp .signin-view,
+#friendsApp .signup-view {
+    padding-bottom: 4em;
+}
+
 #friendsApp .signin-view .km-button.primary,
 #friendsApp .signup-view .km-button.primary {
     margin: 1em 0 0;
