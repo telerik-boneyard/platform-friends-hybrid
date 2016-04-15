@@ -98,10 +98,10 @@
         serverFiltering: true,
         serverPaging: true,
         serverSorting: true,
-        sort: {
-            field: 'CreatedAt',
-            dir: 'desc'
-        },
+        sort: [
+            { field: 'CreatedAt', dir: 'desc' },
+            { field: 'Text', dir: 'desc' }
+        ],
         pageSize: 50
     });
 
