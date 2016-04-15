@@ -19,17 +19,23 @@ The Telerik Friends sample app showcases these features and SDKs:
 - [Cloud data](http://docs.telerik.com/platform/backend-services/javascript/data/introduction) access (Telerik Backend Services)
 - Working with [files](http://docs.telerik.com/platform/backend-services/javascript/files/introduction) (Telerik Backend Services)
 - User [registration](http://docs.telerik.com/platform/backend-services/javascript/users/users-register) and [authentication](http://docs.telerik.com/platform/backend-services/javascript/users/users-authenticate) (Telerik Backend Services)
-- Authentication with [social login](http://docs.telerik.com/platform/backend-services/javascript/users/social-login/introduction) providers (Facebook, Google, etc.) (Telerik Backend Services)
+- Authentication with [social login](http://docs.telerik.com/platform/backend-services/javascript/users/social-login/introduction) providers (Facebook) (Telerik Backend Services)
 - Authentication with [AD FS](http://docs.telerik.com/platform/backend-services/javascript/users/adfs-login/introduction) (Telerik Backend Services)
+- Using [data relations](http://docs.telerik.com/platform/backend-services/javascript/data/relations/introduction)
+- Using [data aggregation and grouping](http://docs.telerik.com/platform/backend-services/javascript/queries/queries-aggregate)
+- Using [Responsive Images](http://docs.telerik.com/platform/backend-services/javascript/responsive-images/introduction)
 - Using custom user account fields (Telerik Backend Services)
 - Basic [app analytics](http://docs.telerik.com/platform/analytics/getting-started/introduction) (Telerik Analytics)
 - Tracking [feature use](http://docs.telerik.com/platform/analytics/client/reports/feature-use) (Telerik Analytics)
+- Collecting feedback about the application using [Feedback](http://docs.telerik.com/platform/appfeedback/)
 
 To implement all the features listed above, the sample app utilizes the following Telerik products and SDKs:
 
 - [Telerik Backend Services JavaScript SDK](http://docs.telerik.com/platform/backend-services/javascript/getting-started-javascript-sdk)&mdash;to connect the app to Telerik Platform
 - [Telerik Analytics JavaScript SDK](http://docs.telerik.com/platform/analytics/sdk/js/)&mdash;to connect the app to Telerik Platform
 - [Telerik Analytics Cordova plugin](http://plugins.telerik.com/cordova/plugin/telerik-analytics)&mdash;to collect data needed for analyses
+- [Telerik AppFeedback Cordova plugin](http://plugins.telerik.com/cordova/plugin/telerik-appfeedback)&mdash;to allow users to send feedback to the backend
+- [Telerik KendoUI Mobile](http://www.telerik.com/kendo-ui)&mdash;provides the UI components used throughout the app
 
 # Screenshots
 
@@ -51,7 +57,7 @@ The Friends sample app comes fully functional, but to see it in action you must 
 
 1. Click the **Run in the Platform** button to clone the repository in AppBuilder.<br>
 	A new Telerik Platform app is created for you. You can view the app source code on the **Code** tab.
-2. Click the **Data** tab and then click **Enable and populate with sample data**.<br>
+2. Click the **Data** tab and then click **Enable and use sample data**.<br>
 	Sample content types with data required for the app to run is automatically created for you. The button also enables the **Users** service where user accounts for the app are precreated.
 3. Click the **Settings** tab.
 4. Take note of your **App ID**.
@@ -63,80 +69,73 @@ The Friends sample app comes fully functional, but to see it in action you must 
 
 This is a unique string that links the sample mobile app to your Telerik Platform account where all the data is read from/saved. To set it in the app code:
 
-1. Open the `platform-friends-hybrid/scripts/app/settings.js` file.
-2. Replace `$TELERIK_APP_ID$` with the App ID of your Telerik Platform app.
+1. Open the `friends-hybrid/settings.js` file.
+2. Replace `$YOUR_TELERIK_APP_ID$` with the App ID of your Telerik Platform app.
 
-## (Optional) Project Key for Telerik Analytics
+## (Optional) Enable Telerik Analytics
 
-This is a unique string that links the sample mobile app to the Analytics part of your Telerik Platform app. If you do not set this the sample will still work, but no analytics data will be collected.
-	
+If you want to collect analytics data from your Friends sample app, you need to enable the Analytics service.
+
 1. In the Telerik Platform portal, go to your app.
 2. Click the **Analytics** tab and then click **Enable**.
-3. Go to **Analytics > Settings > Options** and take note of your **Project Key**.
-4. Open the `platform-friends-hybrid/scripts/app/settings.js` file.
-5. Replace `$EQATEC_PROJECT_KEY$` with the **Project Key** that you acquired earlier.
+
+> Analytics only works on physical devices or emulators. It does not work in the AppBuilder simulator.
 
 ## (Optional) Facebook App ID
+
 To demonstrate social login, we have preinitialized the sample to use a purpose-built Facebook app by Telerik. However, you still need to enable Facebook integration in the Telerik Platform portal:
 
 1. In the Telerik Platform portal, go to your app.
 3. Navigate to **Users > Authentication**.
 4. Ensure that the **Facebook** box is checked.
 
-> Note that if you intend to use the code for a production app you need to set up your own Facebook application and adjust the Facebook app ID as follows:
+> Note that if you intend to use the sample app code for a production app you need to set up your own Facebook application and adjust the Facebook app ID as follows:
 	
-1. Open the `platform-friends-hybrid/scripts/app/settings.js` file.
-2. Find the `appId: '1408629486049918'` line.
-3. Replace the number with your Facebook app ID.
-
-## (Optional) Google Client ID
-
-To demonstrate social login, we have preinitialized the sample to use a Google Client ID owned by Telerik. However, you still need to enable Google integration in the Telerik Platform portal:
-
 1. In the Telerik Platform portal, go to your app.
-2. Navigate to **Users > Authentication**.
-3. Ensure that the **Google** box is checked.
+2. Click the **Code** tab.
+3. In the **Project Navigator**, double-click **Plugins**.
+5. Under **Other Plugins**, find the **Facebook** plugin.
+7. Click the expand arrow in front of the plugin and then click **Configuration Variables**.
+9. In the **APP_ID** text box, enter your Facebook app ID.
+10. Click **Done**.
 
-> Note that if you intend to use the code for a production app you need to set up your own Google Client ID and adjust the code as follows:
-
-1. Open the `platform-friends-hybrid/scripts/app/settings.js` file.
-2. Find the `clientId: '406987471724-q1sorfhhcbulk6r5r317l482u9f62ti8.apps.googleusercontent.com'` line.
-3. Replace the number with your Google Client ID.
-	
-## (Optional) Microsoft Account
-
-To demonstrate social login, we have preinitialized the sample to use a  Microsoft Account Client ID owned by Telerik. However, you still need to enable Microsoft Account integration in the Telerik Platform portal:
-
-1. In the Telerik Platform portal, go to your app.
-2. Navigate to **Users > Authentication**.
-3. Ensure that the **Windows Live** box is checked.
-
-> Note that if you intend to use the code for a production app you need to set up your own Microsoft Account Client ID and adjust the code as follows:
-
-1. Open the `platform-friends-hybrid/scripts/app/settings.js` file.
-2. Find the `clientId: '000000004C10D1AF'` line.
-3. Replace the number with your Microsoft Account Client ID.
+> Facebook integration only works on physical devices or emulators. It does not work in the AppBuilder simulator.
 
 ## (Optional) Active Directory Federation Services (AD FS)
 
 The sample app allows users to [register using AD FS](http://docs.telerik.com/platform/backend-services/javascript/users/adfs-login/introduction). To try this integration, configure the following:
 
-1. Replace the default setting in `platform-friends-hybrid/scripts/app/settings.js`:
+1. Replace the default setting in `friends-hybrid/settings.js`:
 
 	```
-	adfsRealm: '$ADFS_REALM$'
-	adfsEndpoint: '$ADFS_ENDPOINT$'
+	endpoint: '$ADFS_ENDPOINT$',
+	realm: '$ADFS_REALM$'
 	```
 2. In the Telerik Platform portal, go to your app.
 5. Navigate to **Users > Authentication**.
 6. Ensure that the **Active Directory** box is checked.
 7. Fill in **ADFS metadata URL** with your AD FS server's metadata URL.
 
-> Note that AD FS authentication can only be accomplished over HTTPS.
+> AD FS authentication can only be accomplished over HTTPS.
+
+## (Optional) Enable Telerik Feedback
+
+If you want to solicit app feedback from your users, you need to enable the Feedback service.
+
+1. In the Telerik Platform portal, go to your app.
+2. Click the **Feedback** tab and then click **Enable**.
+3. Click the **Code** tab.
+3. In the **Project Navigator**, double-click **Plugins**.
+5. Under **Other Plugins**, find the **Telerik AppFeedback** plugin.
+7. Click the expand arrow in front of the plugin and then click **Configuration Variables**.
+9. In the **API_KEY** text box, enter the App ID of your Telerik Platform app.
+10. Click **Done**.
+
+> Feedback only works on physical devices or emulators. It does not work in the AppBuilder simulator.
 
 ## HTTPS Connections
 
-By default the Friends Sample is configured to use HTTP. If you want to switch to HTTPS, update the `appSettings.everlive.scheme` setting in `platform-friends-hybrid/scripts/app/settings.js` to `https`.
+By default the Friends Sample is configured to use HTTP. If you want to switch to HTTPS, update the `app.settings.scheme` setting in `friends-hybrid/settings.js` to `https`.
 
 # Running the Sample
 
@@ -145,4 +144,6 @@ Once the app is configured, you can run it either on a real device or in the Tel
 To run it, follow the steps in the product's documentation: [Running Apps on Devices](http://docs.telerik.com/platform/appbuilder/testing-your-app/running-on-devices/working-with-devices).
 
 > Ensure that the emulator or the device that you are using has Internet connectivity when running the sample.
+<br>
+> Image uploading only works on physical devices. It does not work in the AppBuilder simulator or in emulators.
 

@@ -3,10 +3,11 @@
 (function () {
     app.settings = {
         appId: '$YOUR_TELERIK_APP_ID$',
-        scheme: 'http',
+        scheme: 'http', // possible values: http, https
         social: {
             facebook: {
-                //check out .debug.abproject and .release.abproject
+                // set up through the Cordova Facebook plugin
+                // or check out .debug.abproject and .release.abproject
             },
             adfs: {
                 endpoint: '$ADFS_ENDPOINT$', // Put your ADFS endpoint here
