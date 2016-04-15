@@ -10,7 +10,10 @@
         profile: null,
         uploader: null,
         photoChanged: false,
-        onShow: function () {
+        onShow: function (e) {
+            var profileScroller = e.view.scroller;
+            profileScroller.reset();
+
             var user = app.user;
             var textarea = $('#about');
             var profile = kendo.observable({
@@ -36,7 +39,7 @@
             }.bind(this));
 
             this.set('profile', profile);
-            
+
             app.utils.autoSizeTextarea(textarea);
 
             textarea.on('input keypress', function () {
