@@ -35,7 +35,8 @@
     <div data-role="layout" data-id="main">
     </div>
 
-    <div id="appDrawer" data-role="drawer" data-title="Navigation" data-model="app.drawerModel">
+    <div id="appDrawer" data-role="drawer" data-title="Navigation" data-model="app.drawerModel"
+        data-swipe-to-open-views="['activities-view', 'activities-details-view', 'activities-add-edit-view', 'comments-view', 'comments-add-edit-view', 'profile-view']">
         <ul id="navigation-container" data-role="listview">
             <li>
                 <a data-bind="events: { click: logout }">Logout</a>

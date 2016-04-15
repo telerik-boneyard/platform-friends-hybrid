@@ -1,4 +1,4 @@
-<div data-role="view" data-title="Profile" data-layout="main-nonav" data-model="app.profileView.profileViewModel" data-bind="events: { show: onShow, hide: onHide }" class="profile-view">
+<div id="profile-view" data-role="view" data-title="Profile" data-layout="main-nonav" data-model="app.profileView.profileViewModel" data-bind="events: { show: onShow, hide: onHide }" class="profile-view">
     <header data-role="header">
         <div data-role="navbar" class="header-text">
             <span data-role="view-title"></span>
@@ -13,7 +13,7 @@
             <ul data-role="listview" data-style="inset">
                 <li class="content-picture">
                     <img data-bind="attr: { src: profile.PictureUrl }" id="preview" width="100%" height="auto" style="max-height: 300px;">
-                    
+
                     <div class="activity-photo-upload">
                         <label for="profile-activity-photo">
                             <button id="profile-choose-file-button">

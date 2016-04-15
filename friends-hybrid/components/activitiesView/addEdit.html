@@ -1,4 +1,4 @@
-<div data-role="view" data-title="Activity" data-model="app.activitiesView.addEditActivityViewModel" data-bind="events: { show: onShow, hide: onHide }" id="activitiesViewModelAddItemView" class="add-edit-activity-view">
+<div id='activities-add-edit-view' data-role="view" data-title="Activity" data-model="app.activitiesView.addEditActivityViewModel" data-bind="events: { show: onShow, hide: onHide }" id="activitiesViewModelAddItemView" class="add-edit-activity-view">
 
     <header data-role="header">
         <div data-role="navbar" class="header-text">
@@ -7,10 +7,10 @@
             <a class="button-icon button-save" data-role="button" data-align="right" data-bind="events: {click: applyActivity }"></a>
         </div>
     </header>
-    
+
     <div class="content-picture" style="max-height: 280px;">
         <img data-bind="attr: { src: activity.PictureUrl }" id="preview" width="100%" height="250" style="max-height: 250px">
-    </div>    
+    </div>
 
     <div id="editableListForm2" class="form-view">
         <form id="activity-form">
