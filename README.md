@@ -99,6 +99,7 @@ To demonstrate social login, we have preinitialized the sample to use a purpose-
 5. Under **Other Plugins**, find the **Facebook** plugin.
 7. Click the expand arrow in front of the plugin and then click **Configuration Variables**.
 9. In the **APP_ID** text box, enter your Facebook app ID.
+10. In the **APP_NAME** text box, enter you Facebook app name.
 10. Click **Done**.
 
 > Facebook integration only works on physical devices or emulators. It does not work in the AppBuilder simulator.
