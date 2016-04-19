@@ -69,7 +69,7 @@ The Friends sample app comes fully functional, but to see it in action you must 
 
 This is a unique string that links the sample mobile app to your Telerik Platform account where all the data is read from/saved. To set it in the app code:
 
-1. Open the `friends-hybrid/settings.js` file.
+1. Open the `friends-hybrid/common/settings.js` file.
 2. Replace `$YOUR_TELERIK_APP_ID$` with the App ID of your Telerik Platform app.
 
 ## (Optional) Enable Telerik Analytics
@@ -110,7 +110,7 @@ To demonstrate social login, we have preinitialized the sample to use a purpose-
 
 The sample app allows users to [register using AD FS](http://docs.telerik.com/platform/backend-services/javascript/users/adfs-login/introduction). To try this integration, configure the following:
 
-1. Replace the default setting in `friends-hybrid/settings.js`:
+1. Replace the default setting in `friends-hybrid/common/settings.js`:
 
 	```
 	endpoint: '$ADFS_ENDPOINT$',
@@ -142,7 +142,7 @@ If you want to solicit app feedback from your users, you need to enable the Feed
 
 ## HTTPS Connections
 
-By default the Friends Sample is configured to use HTTP. If you want to switch to HTTPS, update the `app.settings.scheme` setting in `friends-hybrid/settings.js` to `https`.
+By default the Friends Sample is configured to use HTTP. If you want to switch to HTTPS, update the `app.settings.scheme` setting in `friends-hybrid/common/settings.js` to `https`.
 
 # Running the Sample
 
