@@ -33,9 +33,21 @@
         that.file = null;
 
         this._chooseFileClickCordova = function () {
-            navigator.camera.getPicture(that.callback, app.notify.error, {
+            var destinationType;
+            var callback = that.callback;
+            if (app.utils.isInSimulator()) {
+                destinationType = navigator.camera.DestinationType.DATA_URL;
+                callback = function (uri) {
+                    uri = 'data:image/jpeg;base64,' + uri;
+                    that.callback(uri);
+                };
+            } else {
+                destinationType = navigator.camera.DestinationType.FILE_URI;
+            }
+
+            navigator.camera.getPicture(callback, app.notify.error, {
                 quality: 50,
-                destinationType: navigator.camera.DestinationType.FILE_URI,
+                destinationType: destinationType,
                 sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
             });
         };
@@ -97,13 +109,16 @@
             }
 
             var filename = app.user.Id + '_' + new Date().valueOf();
-            if (window.cordova) {
+            if (window.cordova && !app.utils.isInSimulator()) {
                 uploadImagePromise = provider.files.upload(picture, {
                     fileName: filename,
-                    mimeType: 'image/png'
+                    mimeType: 'image/jpeg'
                 });
             } else {
-                var file = that.file;
+                var file = that.file || {
+                        type: 'image/jpeg'
+                    };
+
                 var cleanBase64 = picture.split(',')[1];
                 uploadImagePromise = provider.files.create({
                     Filename: filename,
@@ -113,16 +128,17 @@
             }
 
             return uploadImagePromise.then(function (res) {
-                var id;
-                if (res.response) {
-                    var responseObject = JSON.parse(res.response);
-                    id = responseObject.Result[0].Id
-                } else {
-                    id = res.result.Id;
-                }
+                    var id;
+                    if (res.response) {
+                        var responseObject = JSON.parse(res.response);
+                        id = responseObject.Result[0].Id
+                    } else {
+                        id = res.result.Id;
+                    }
 
-                return id;
-            });
+                    return id;
+                })
+                .catch(app.notify.error);
         };
 
         $(formSelector).submit(that._formSubmit);
