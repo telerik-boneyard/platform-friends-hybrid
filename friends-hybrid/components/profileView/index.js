@@ -26,8 +26,13 @@
                 Username: user.Username
             });
 
+            profile.PictureUrl = app.constants.whitePicture;
             if (profile.Picture) {
-                profile.PictureUrl = provider.files.getDownloadUrl(profile.Picture);
+                provider.files.getDownloadUrlById(profile.Picture)
+                    .then(function (res) {
+                        this.set('profile.PictureUrl', res);
+                    }.bind(this))
+                    .catch(app.notify.error);
             } else {
                 profile.PictureUrl = app.constants.defaultPicture;
             }
@@ -103,9 +108,10 @@
             promise.then(function () {
                 provider.users.updateSingle(model)
                     .then(function () {
-                        return app.authentication.loadCachedAccessToken();
+                        return app.data.defaultProvider.users.currentUser();
                     })
-                    .then(function () {
+                    .then(function (res) {
+                        app.user = res.result;
                         app.mobileApp.navigate('components/activitiesView/view.html');
                         app.utils.loading(false);
                     })

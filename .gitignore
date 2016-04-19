@@ -2,3 +2,5 @@ friendshybrid.apk
 */bin
 */obj
 *.user-settings.xml
+.idea/*
+friends-hybrid/.ab/*
