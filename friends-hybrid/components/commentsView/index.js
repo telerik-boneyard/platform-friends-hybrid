@@ -4,7 +4,7 @@
     var view = app.commentsView = kendo.observable();
     var provider = app.data.defaultProvider;
     var commentsData = provider.data('Comments');
-    var commentsLstScroller;
+    var commentsListScroller;
 
     var commentsViewModel = kendo.observable({
         commentsDataSource: [],
@@ -39,13 +39,10 @@
                     data.forEach(function (comment) {
                         comment.CreatedAt = kendo.toString(new Date(comment.CreatedAt), app.constants.dateFormat);
                         comment.User = comment.User || {DisplayName: 'Anonymous'};
-                        if (!comment.User.PictureUrl) {
-                            comment.User.PictureUrl = app.constants.defaultPicture;
-                        }
-
+                        comment.User.PictureUrl = comment.User.PictureUrl || app.constants.defaultPicture;
                     });
 
-                    commentsLstScroller.reset();
+                    commentsListScroller.reset();
                 },
                 filter: filter || {},
                 serverFiltering: true,
@@ -53,10 +50,12 @@
             });
         },
         onShow: function (e) {
+            app.utils.loading(true);
+
             var activityId = e.view.params.activityId;
 
-            commentsLstScroller = e.view.scroller;
-            commentsLstScroller.reset();
+            commentsListScroller = e.view.scroller;
+            commentsListScroller.reset();
 
             this.set('currentActivityId', activityId);
 
@@ -67,6 +66,14 @@
             });
 
             this.set('commentsDataSource', commentsDataSource);
+
+            commentsDataSource.one('change', function () {
+                if (!commentsDataSource.data().length) {
+                    this.addComment(true);
+                }
+
+                app.utils.loading(false);
+            }.bind(this));
         },
         editComment: function (e) {
             var commentId = e.data.Id;
@@ -75,20 +82,24 @@
         removeComment: function (e) {
             app.activitiesView.shouldRefresh = true;
             var commentId = e.data.Id;
-            var confirmed = app.notify.confirmation(null, 'Remove comment', function (confirmed) {
+            app.notify.confirmation(null, 'Remove comment', function (confirmed) {
                 if (!confirmed) {
                     return;
                 }
 
-                //app.activitiesView.activitiesViewModel.dataSource.read();
                 var comment = this.commentsDataSource.get(commentId);
                 this.commentsDataSource.remove(comment);
                 this.commentsDataSource.sync().then(null, app.notify.error);
             }.bind(this));
         },
-        addComment: function () {
+        addComment: function (replace) {
             app.activitiesView.shouldRefresh = true;
-            app.mobileApp.navigate('#components/commentsView/addEdit.html?activityId=' + this.currentActivityId);
+            var view = '#components/commentsView/addEdit.html?activityId=' + this.currentActivityId;
+            if (replace) {
+                app.mobileApp.replace(view);
+            } else {
+                app.mobileApp.navigate(view);
+            }
         }
     });
 
@@ -149,7 +160,7 @@
 
             promise.then(function () {
                 app.activitiesView.activitiesViewModel.dataSource.read();
-                app.utils.goBack();
+                app.mobileApp.replace('components/commentsView/view.html?activityId=' + this.activityId);
             }.bind(this), app.notify.error);
         }
     });
