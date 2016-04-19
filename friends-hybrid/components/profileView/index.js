@@ -26,11 +26,14 @@
                 Username: user.Username
             });
 
-            profile.PictureUrl = app.constants.whitePicture;
+            $('#preview').show();
+            $('#local-preview').hide();
             if (profile.Picture) {
+                profile.PictureUrl = app.constants.whitePicture;
                 provider.files.getDownloadUrlById(profile.Picture)
                     .then(function (res) {
                         this.set('profile.PictureUrl', res);
+                        app.utils.processElement($('#preview'));
                     }.bind(this))
                     .catch(app.notify.error);
             } else {
@@ -41,6 +44,8 @@
             this.uploader.onImage(function (uri) {
                 this.set('photoChanged', true);
                 this.set('profile.PictureUrl', uri);
+                $('#preview').hide();
+                $('#local-preview').show();
             }.bind(this));
 
             this.set('profile', profile);
@@ -57,6 +62,8 @@
             var textarea = $('#about');
             this.uploader.detach();
             app.utils.autoSizeTextarea(textarea);
+            $('#preview').attr('src', app.constants.whitePicture);
+            $('#local-preview').attr('src', app.constants.whitePicture);
         },
         updateProfile: function () {
             if (!validator.validate()) {
