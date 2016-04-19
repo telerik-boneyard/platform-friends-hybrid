@@ -103,7 +103,7 @@
             { field: 'CreatedAt', dir: 'desc' },
             { field: 'Text', dir: 'desc' }
         ],
-        pageSize: 30
+        pageSize: 10
     });
 
     var activityValidator;

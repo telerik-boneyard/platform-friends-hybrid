@@ -48,7 +48,7 @@
                 serverFiltering: true,
                 serverPaging: true,
                 error: app.notify.error,
-                pageSize: 30
+                pageSize: 10
             });
         },
         onShow: function (e) {

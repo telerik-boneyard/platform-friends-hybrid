@@ -2,7 +2,7 @@
 
 (function () {
     app.settings = {
-        appId: 'g7ixt3j1omo88ljw',
+        appId: '$YOUR_TELERIK_APP_ID$',
         scheme: 'http',
         social: {
             facebook: {
