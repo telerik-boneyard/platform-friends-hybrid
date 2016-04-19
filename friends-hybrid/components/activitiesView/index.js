@@ -78,18 +78,19 @@
                     return user.Id === app.user.Id;
                 });
 
+                activity.User = activity.User || {DisplayName: 'Anonymous'};
                 var pictureUrl = activity.User.PictureUrl;
                 if (!pictureUrl) {
                     activity.User.PictureUrl = app.constants.defaultPicture;
                 }
+
+                activity.Author = activity.User.DisplayName || activity.User.Username;
 
                 if (activity.Comments.length) {
                     activity.CommentsCount = activity.Comments[0].Count;
                 } else {
                     activity.CommentsCount = 0;
                 }
-
-                activity.Author = activity.User.DisplayName || activity.User.Username;
             });
 
             app.utils.loading(false);
@@ -194,9 +195,9 @@
 
     var activityDetailsViewModel = kendo.observable({
         currentActivity: null,
+        commentsCount: 0,
         canEdit: false,
         canDelete: false,
-        commentsDataSource: [],
         onShow: function (e) {
             app.utils.loading(true);
             var currentActivity = activitiesDataSource.get(e.view.params.id);
@@ -225,8 +226,9 @@
                         $commentsIcon.addClass('icon-comments-o');
                     }
 
+                    $('#comments-count').text(count);
                     app.utils.loading(false);
-                })
+                }.bind(this))
                 .catch(function (err) {
                     app.notify.error(err);
                     $commentsIcon.addClass('icon-comments-o');

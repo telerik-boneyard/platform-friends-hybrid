@@ -5,10 +5,10 @@
             <h2>Login</h2>
             <ul data-role="listview">
                 <li>
-                    <input name="username" type="text" placeholder="Username" data-bind="value: authenticationViewModel.username" required autofocus>
+                    <input name="username" type="text" placeholder="Username" data-bind="value: authenticationViewModel.user.username" required autofocus>
                 </li>
                 <li>
-                    <input name="password" type="password" placeholder="Password" data-bind="value: authenticationViewModel.password" required>
+                    <input name="password" type="password" placeholder="Password" data-bind="value: authenticationViewModel.user.password" required>
                 </li>
             </ul>
             <a data-role="button" class="primary" data-bind="events: { click: authenticationViewModel.signin }">Login</a>
@@ -27,16 +27,16 @@
             <h2>Create New Account</h2>
             <ul data-role="listview">
                 <li>
-                    <input name="username" type="text" placeholder="Username" data-bind="value: authenticationViewModel.username" required>
+                    <input name="username" type="text" placeholder="Username" data-bind="value: authenticationViewModel.user.username" required>
                 </li>
                 <li>
-                    <input name="password" type="password" placeholder="Password" data-bind="value: authenticationViewModel.password" required>
+                    <input name="password" type="password" placeholder="Password" data-bind="value: authenticationViewModel.user.password" required>
                 </li>
                 <li>
-                    <input name="email" type="email" placeholder="Email" data-bind="value: authenticationViewModel.email">
+                    <input name="email" type="email" placeholder="Email" data-bind="value: authenticationViewModel.user.email">
                 </li>
                 <li>
-                    <input name="name" type="text" placeholder="Display Name" data-bind="value: authenticationViewModel.displayName">
+                    <input name="name" type="text" placeholder="Display Name" data-bind="value: authenticationViewModel.user.displayName">
                 </li>
             </ul>
             <a class="primary" data-role="button"data-bind="events: { click: authenticationViewModel.register }">Sign Up</a>

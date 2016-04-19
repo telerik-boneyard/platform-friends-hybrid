@@ -20,7 +20,14 @@
                             'X-Everlive-Expand': JSON.stringify({
                                 CreatedBy: {
                                     TargetTypeName: 'Users',
-                                    ReturnAs: 'User'
+                                    ReturnAs: 'User',
+                                    Expand: {
+                                        Picture: {
+                                            TargetTypeName: 'System.Files',
+                                            ReturnAs: 'PictureUrl',
+                                            SingleField: 'Uri'
+                                        }
+                                    }
                                 }
                             })
                         }
@@ -31,10 +38,8 @@
 
                     data.forEach(function (comment) {
                         comment.CreatedAt = kendo.toString(new Date(comment.CreatedAt), app.constants.dateFormat);
-                        var picture = comment.User.Picture;
-                        if (picture) {
-                            comment.User.PictureUrl = app.data.defaultProvider.files.getDownloadUrl(picture);
-                        } else {
+                        comment.User = comment.User || {DisplayName: 'Anonymous'};
+                        if (!comment.User.PictureUrl) {
                             comment.User.PictureUrl = app.constants.defaultPicture;
                         }
 
@@ -75,7 +80,7 @@
                     return;
                 }
 
-                app.activitiesView.activitiesViewModel.dataSource.read();
+                //app.activitiesView.activitiesViewModel.dataSource.read();
                 var comment = this.commentsDataSource.get(commentId);
                 this.commentsDataSource.remove(comment);
                 this.commentsDataSource.sync().then(null, app.notify.error);

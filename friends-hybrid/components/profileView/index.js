@@ -103,9 +103,10 @@
             promise.then(function () {
                 provider.users.updateSingle(model)
                     .then(function () {
-                        return app.authentication.loadCachedAccessToken();
+                        return app.data.defaultProvider.users.currentUser();
                     })
-                    .then(function () {
+                    .then(function (res) {
+                        app.user = res.result;
                         app.mobileApp.navigate('components/activitiesView/view.html');
                         app.utils.loading(false);
                     })

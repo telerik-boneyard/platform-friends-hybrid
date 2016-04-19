@@ -7,11 +7,11 @@
         social: {
             facebook: {
                 //check out .debug.abproject and .release.abproject
-            },
-            adfs: {
-                endpoint: '$ADFS_ENDPOINT$', // Put your ADFS endpoint here
-                realm: '$ADFS_REALM$' // Put your ADFS realm here
             }
+        },
+        adfs: {
+            endpoint: '$ADFS_ENDPOINT$', // Put your ADFS endpoint here
+            realm: '$ADFS_REALM$' // Put your ADFS realm here
         },
         analytics: {
             //check out .debug.abproject and .release.abproject

@@ -33,10 +33,6 @@
         that.file = null;
 
         this._chooseFileClickCordova = function () {
-            if (app.utils.isInSimulator()) {
-                return app.notify.info('Activity photos can only be uploaded from a device or a browser supporting FileReader');
-            }
-
             navigator.camera.getPicture(that.callback, app.notify.error, {
                 quality: 50,
                 destinationType: navigator.camera.DestinationType.FILE_URI,

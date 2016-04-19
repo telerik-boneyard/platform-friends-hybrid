@@ -3,37 +3,33 @@
 
     var bootstrap = function () {
         $(function () {
-            var initialViewPromise;
-
             app.mobileApp = new kendo.mobile.Application(document.body, {
                 skin: 'flat',
                 initial: 'components/emptyView/view.html',
                 init: function () {
                     if (app.settings.appId.length !== 16) {
-                        initialViewPromise = new Everlive._common.rsvp.Promise(function (resolve) {
-                            return resolve('components/missingSettingsView/noappidView.html');
-                        })
+                        app.mobileApp.navigate('components/missingSettingsView/noappidView.html');
                     } else {
-                        initialViewPromise = new Everlive._common.rsvp.Promise(function (resolve) {
-                            app.authentication.loadCachedAccessToken()
-                                .then(function () {
-                                    if (app.authentication.getCachedAccessToken()) {
-                                        //we are logged in
-                                        return resolve('components/activitiesView/view.html');
-                                    }
-
+                        app.data.defaultProvider.authentication.getAuthenticationStatus()
+                            .then(function (res) {
+                                var status = res.status;
+                                if (status === Everlive.Constants.AuthStatus.unauthenticated) {
                                     throw 'not logged in';
-                                })
-                                .catch(function () {
-                                    //we are not logged in
-                                    return resolve('components/authenticationView/view.html');
-                                });
-                        });
-                    }
+                                }
 
-                    initialViewPromise.then(function (view) {
-                        app.mobileApp.navigate(view);
-                    });
+                                return app.data.defaultProvider.users.currentUser()
+                                    .then(function (res) {
+                                        app.user = res.result;
+
+                                        //we are logged in
+                                        app.mobileApp.navigate('components/activitiesView/view.html');
+                                    });
+                            })
+                            .catch(function () {
+                                //we are not logged in
+                                app.mobileApp.navigate('components/authenticationView/view.html');
+                            });
+                    }
                 }
             });
         });

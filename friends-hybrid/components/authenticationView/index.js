@@ -3,7 +3,7 @@
 (function () {
     var view = app.authenticationView = kendo.observable({
         onShow: function () {
-            var shouldDisableAdfsButton = app.settings.social.adfs.endpoint === '$ADFS_ENDPOINT$' && app.settings.social.adfs.realm === '$ADFS_REALM$';
+            var shouldDisableAdfsButton = app.settings.adfs.endpoint === '$ADFS_ENDPOINT$' && app.settings.adfs.realm === '$ADFS_REALM$';
             if (shouldDisableAdfsButton) {
                 $('#adfs-btn').prop('disabled', shouldDisableAdfsButton);
             }
@@ -41,8 +41,9 @@
         var redirect = mode === 'signin' ? signinRedirect : registerRedirect;
 
         if (data && data.result) {
-            app.authentication.loadCachedAccessToken()
-                .then(function () {
+            app.data.defaultProvider.users.currentUser()
+                .then(function (res) {
+                    app.user = res.result;
                     app.mobileApp.navigate('components/' + redirect + '/view.html');
                     app.utils.loading(false);
                 });
@@ -52,14 +53,16 @@
     }
 
     var vm = kendo.observable({
-        displayName: '',
-        username: '',
-        password: '',
-        email: '',
+        user: {
+            displayName: '',
+            username: '',
+            password: '',
+            email: ''
+        },
         loginValidator: null,
         registerValidator: null,
         signin: function (username, password) {
-            var model = vm;
+            var model = vm.user;
             if (typeof username !== 'string') {
                 username = model.username;
             }
@@ -75,8 +78,8 @@
 
             app.utils.loading(true);
             provider.users.login(username, password, function (data) {
-                vm.set('username', '');
-                vm.set('password', '');
+                vm.set('user.username', '');
+                vm.set('user.password', '');
 
                 successHandler(data);
             }, init);
@@ -87,10 +90,11 @@
                 return;
             }
 
-            var username = vm.username;
-            var password = vm.password;
-            var displayName = vm.displayName;
-            var email = vm.email;
+            var model = vm.user;
+            var username = model.username;
+            var password = model.password;
+            var displayName = model.displayName;
+            var email = model.email;
 
             var attrs = {
                 DisplayName: displayName,
@@ -99,8 +103,8 @@
 
             app.utils.loading(true);
             provider.users.register(username, password, attrs, function () {
-                vm.set('displayName', '');
-                vm.set('email', '');
+                vm.set('user.displayName', '');
+                vm.set('user.email', '');
 
                 app.notify.success('Registration successful');
                 vm.signin(username, password);
@@ -108,10 +112,10 @@
         },
         toggleView: function () {
             mode = mode === 'signin' ? 'register' : 'signin';
-            vm.set('username', '');
-            vm.set('password', '');
-            vm.set('displayName', '');
-            vm.set('email', '');
+            vm.set('user.username', '');
+            vm.set('user.password', '');
+            vm.set('user.displayName', '');
+            vm.set('user.email', '');
             if (this.loginValidator) {
                 this.loginValidator.hideMessages();
             }
@@ -188,9 +192,9 @@
             var adfsConfig = {
                 name: 'ADFS',
                 loginMethodName: 'loginWithADFS',
-                endpoint: app.settings.social.adfs.endpoint,
+                endpoint: app.settings.adfs.endpoint,
                 wa: 'wsignin1.0',
-                wtrealm: app.settings.social.adfs.realm
+                wtrealm: app.settings.adfs.realm
             };
 
             var authorize_url = adfsConfig.endpoint
@@ -198,7 +202,6 @@
                 + '&wreply=' + adfsConfig.wtrealm + '/adfs/token'
                 + '&wtrealm=' + adfsConfig.wtrealm;
 
-            // open the InAppBrowser with the link
             var ref = window.open(authorize_url, '_blank', 'location=no');
 
             ref.addEventListener('loadstop', function(event) {
@@ -209,8 +212,6 @@
                 app.notify.error('Load error: ' + event.message);
             });
 
-            // The following is required in iPhone as the loadstop event is never fired.
-            // The check for Google is required to parse the access token of the redirect Uri
             ref.addEventListener('loadstart', function(event) {
                 onLocationChanged(event.url, onResponse);
             });
