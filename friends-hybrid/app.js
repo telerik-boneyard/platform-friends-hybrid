@@ -10,20 +10,15 @@
                     if (app.settings.appId.length !== 16) {
                         app.mobileApp.navigate('components/missingSettingsView/noappidView.html');
                     } else {
-                        app.data.defaultProvider.authentication.getAuthenticationStatus()
+                        app.data.defaultProvider.users.currentUser()
                             .then(function (res) {
-                                var status = res.status;
-                                if (status === Everlive.Constants.AuthStatus.unauthenticated) {
-                                    throw 'not logged in';
+                                if (res.result) {
+                                    app.user = res.result;
+                                    //we are logged in
+                                    app.mobileApp.navigate('components/activitiesView/view.html');
+                                } else {
+                                    throw new Error('not authenticated');
                                 }
-
-                                return app.data.defaultProvider.users.currentUser()
-                                    .then(function (res) {
-                                        app.user = res.result;
-
-                                        //we are logged in
-                                        app.mobileApp.navigate('components/activitiesView/view.html');
-                                    });
                             })
                             .catch(function () {
                                 //we are not logged in

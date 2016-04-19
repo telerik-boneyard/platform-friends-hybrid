@@ -46,7 +46,9 @@
                 },
                 filter: filter || {},
                 serverFiltering: true,
-                error: app.notify.error
+                serverPaging: true,
+                error: app.notify.error,
+                pageSize: 30
             });
         },
         onShow: function (e) {

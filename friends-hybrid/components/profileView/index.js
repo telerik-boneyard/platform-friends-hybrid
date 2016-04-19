@@ -26,8 +26,13 @@
                 Username: user.Username
             });
 
+            profile.PictureUrl = app.constants.whitePicture;
             if (profile.Picture) {
-                profile.PictureUrl = provider.files.getDownloadUrl(profile.Picture);
+                provider.files.getDownloadUrlById(profile.Picture)
+                    .then(function (res) {
+                        this.set('profile.PictureUrl', res);
+                    }.bind(this))
+                    .catch(app.notify.error);
             } else {
                 profile.PictureUrl = app.constants.defaultPicture;
             }

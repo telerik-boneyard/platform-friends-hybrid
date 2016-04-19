@@ -2,11 +2,11 @@
 
 (function () {
     app.settings = {
-        appId: '$YOUR_TELERIK_APP_ID$',
+        appId: 'g7ixt3j1omo88ljw',
         scheme: 'http',
         social: {
             facebook: {
-                //check out .debug.abproject and .release.abproject
+                //check README.md
             }
         },
         adfs: {
@@ -14,10 +14,10 @@
             realm: '$ADFS_REALM$' // Put your ADFS realm here
         },
         analytics: {
-            //check out .debug.abproject and .release.abproject
+            //check README.md
         },
         feedback: {
-            //check out .debug.abproject and .release.abproject
+            //check README.md
         }
     };
 }());

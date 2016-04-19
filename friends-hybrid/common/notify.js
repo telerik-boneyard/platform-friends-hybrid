@@ -22,7 +22,6 @@
         confirmation: function (text, title, callback) {
             text = text || 'Are you sure?';
 
-            var confirmationFunction;
             if (navigator && navigator.notification && navigator.notification.confirm) {
                 navigator.notification.confirm(text, function(res) {
                     return callback(res === 1);

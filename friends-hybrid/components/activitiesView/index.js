@@ -103,7 +103,7 @@
             { field: 'CreatedAt', dir: 'desc' },
             { field: 'Text', dir: 'desc' }
         ],
-        pageSize: 50
+        pageSize: 30
     });
 
     var activityValidator;
@@ -247,20 +247,16 @@
             app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);
         },
         removeActivity: function () {
-            var confirmed = app.notify.confirmation(null, 'Delete activity', function (confirmed) {
+            app.notify.confirmation(null, 'Delete activity', function (confirmed) {
                 if (!confirmed) {
                     return;
                 }
 
                 var activities = activitiesDataSource.data();
-                for (var i = 0; i < activities.length; i++) {
-                    var activity = activities[i];
-                    if (activity.Id === this.currentActivity.Id) {
-                        activitiesDataSource.remove(activity);
-                        activitiesDataSource.sync();
-                        return this.goBack();
-                    }
-                }
+                var activity = _.find(activities, {Id: this.currentActivity.Id});
+                activitiesDataSource.remove(activity);
+                activitiesDataSource.sync();
+                return this.goBack();
             }.bind(this));
         },
         openComments: function () {

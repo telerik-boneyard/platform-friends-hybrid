@@ -19,7 +19,7 @@
     };
 
     app.utils.isInSimulator = function () {
-        return location.href.indexOf('local://simulator') !== -1 || location.href.indexOf('icenium') !== -1;
+        return !!window.navigator.simulator;
     };
 
     app.utils.imageUploader = function (chooseFileSelector, formSelector, fileInputSelector) {
