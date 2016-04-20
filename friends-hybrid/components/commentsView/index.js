@@ -80,16 +80,22 @@
             app.mobileApp.navigate('#components/commentsView/addEdit.html?commentId=' + commentId);
         },
         removeComment: function (e) {
-            app.activitiesView.shouldRefresh = true;
             var commentId = e.data.Id;
             app.notify.confirmation(null, 'Remove comment', function (confirmed) {
+                app.activitiesView.shouldRefresh = true;
                 if (!confirmed) {
                     return;
                 }
 
                 var comment = this.commentsDataSource.get(commentId);
                 this.commentsDataSource.remove(comment);
-                this.commentsDataSource.sync().then(null, app.notify.error);
+                this.commentsDataSource.sync().then(function () {
+                    return this.commentsDataSource.read();
+                }.bind(this), app.notify.error).then(function () {
+                    if (!this.commentsDataSource.data().length) {
+                        app.mobileApp.navigate('#components/activitiesView/view.html');
+                    }
+                }.bind(this), app.notify.error);
             }.bind(this));
         },
         addComment: function (replace) {
