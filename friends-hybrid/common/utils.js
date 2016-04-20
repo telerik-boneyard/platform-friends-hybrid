@@ -38,6 +38,10 @@
             if (app.utils.isInSimulator()) {
                 destinationType = navigator.camera.DestinationType.DATA_URL;
                 callback = function (uri) {
+                    if (uri.length > app.constants.simulatorFileSizeLimit) {
+                        return app.notify.info('Please select smaller image, up to 2.5MB.');
+                    }
+
                     uri = 'data:image/jpeg;base64,' + uri;
                     that.callback(uri);
                 };
