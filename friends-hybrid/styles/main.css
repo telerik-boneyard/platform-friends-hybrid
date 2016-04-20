@@ -476,23 +476,17 @@ textarea:-ms-input-placeholder {
 }
 
 .author-avatar {
-    width: 3em;
-    height: 3em;
+    width: 2.65em;
+    height: 2.65em;
     margin: 0 .5em 0 0;
-}
-
-.author-avatar img {
-    border-radius: 1.5em;
+    border-radius: 50%;
+    overflow: hidden;
 }
 
 .author-avatar.large {
-    width: 6em;
-    height: 6em;
+    width: 5.7em;
+    height: 5.7em;
     margin: -3.25em 1em 0 0;
-}
-
-.author-avatar.large img {
-    border-radius: 3em;
 }
 
 .author-name {
