@@ -105,7 +105,7 @@
             var uploadImagePromise;
 
             if (!picture) {
-                return Everlive._utils.rejectedPromise();
+                return Everlive._utils.successfulPromise();
             }
 
             var filename = app.user.Id + '_' + new Date().valueOf();

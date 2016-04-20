@@ -105,8 +105,10 @@
             if (this.photoChanged) {
                 promise = this.uploader.upload()
                     .then(function (id) {
-                        model.Picture = id;
-                        app.activitiesView.activitiesViewModel.dataSource.read();
+                        if (id) {
+                            model.Picture = id;
+                            app.activitiesView.activitiesViewModel.dataSource.read();
+                        }
                     }, app.notify.error);
             } else {
                 promise = Everlive._utils.successfulPromise();
