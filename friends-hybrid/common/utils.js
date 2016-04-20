@@ -120,7 +120,7 @@
                     };
 
                 var cleanBase64 = picture.split(',')[1];
-                uploadImagePromise = provider.files.create({
+                uploadImagePromise = provider.files.applyOffline(false).create({
                     Filename: filename,
                     ContentType: file.type,
                     base64: cleanBase64
