@@ -26,6 +26,8 @@
                 Username: user.Username
             });
 
+            this.set('profile', profile);
+
             $('#preview').show();
             $('#local-preview').hide();
             if (profile.Picture) {
@@ -37,7 +39,7 @@
                     }.bind(this))
                     .catch(app.notify.error);
             } else {
-                profile.PictureUrl = app.constants.defaultPicture;
+                $('#preview').attr('src', app.constants.defaultPicture);
             }
 
             this.uploader = new app.utils.imageUploader('#profile-choose-file-button', '#edit-profile-form', '#profile-activity-photo');
@@ -47,8 +49,6 @@
                 $('#preview').hide();
                 $('#local-preview').show();
             }.bind(this));
-
-            this.set('profile', profile);
 
             app.utils.autoSizeTextarea(textarea);
 
