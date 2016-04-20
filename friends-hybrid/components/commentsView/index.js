@@ -82,6 +82,7 @@
         removeComment: function (e) {
             var commentId = e.data.Id;
             app.notify.confirmation(null, 'Remove comment', function (confirmed) {
+                app.utils.loading(true);
                 app.activitiesView.shouldRefresh = true;
                 if (!confirmed) {
                     return;
@@ -93,8 +94,9 @@
                     return this.commentsDataSource.read();
                 }.bind(this), app.notify.error).then(function () {
                     if (!this.commentsDataSource.data().length) {
-                        app.mobileApp.navigate('#components/activitiesView/view.html');
+                        app.mobileApp.navigate('#components/activitiesView/details.html?id=' + this.currentActivityId);
                     }
+                    app.utils.loading(false);
                 }.bind(this), app.notify.error);
             }.bind(this));
         },
