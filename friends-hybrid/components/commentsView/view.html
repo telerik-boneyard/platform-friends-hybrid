@@ -12,7 +12,7 @@
 
     <div id="view-comments" class="form-view">
         <ul id="comments-list-view" data-role="listview" data-template="comments-template"
-            data-bind="{ source: commentsDataSource }" data-use-native-scrolling="true">
+            data-bind="{ source: commentsDataSource }" data-pull-to-refresh="true" data-endless-scroll="true">
         </ul>
 
         <script id="comments-template" type="text/x-kendo-template">

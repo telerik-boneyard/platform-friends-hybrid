@@ -41,14 +41,12 @@
                         comment.User = comment.User || {DisplayName: 'Anonymous'};
                         comment.User.PictureUrl = comment.User.PictureUrl || app.constants.defaultPicture;
                     });
-
-                    commentsListScroller.reset();
                 },
                 filter: filter || {},
                 serverFiltering: true,
                 serverPaging: true,
                 error: app.notify.error,
-                pageSize: 10
+                pageSize: 20
             });
         },
         onShow: function (e) {
