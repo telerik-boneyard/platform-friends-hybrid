@@ -120,7 +120,7 @@ textarea:-ms-input-placeholder {
     background-color: transparent;
 }
 
-#friendsApp.km-flat .activities-view .km-list > li {
+#friendsApp.km-flat .activities-view .km-list > li:not(.km-scroller-refresh) {
     height: 32em;
 }
 
