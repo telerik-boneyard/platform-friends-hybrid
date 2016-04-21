@@ -94,7 +94,7 @@
                     return this.commentsDataSource.read();
                 }.bind(this), app.notify.error).then(function () {
                     if (!this.commentsDataSource.data().length) {
-                        app.mobileApp.navigate('#components/activitiesView/details.html?id=' + this.currentActivityId);
+                        app.mobileApp.replace('#components/activitiesView/details.html?id=' + this.currentActivityId);
                     }
                     app.utils.loading(false);
                 }.bind(this), app.notify.error);
