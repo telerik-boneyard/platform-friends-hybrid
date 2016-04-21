@@ -82,12 +82,12 @@
         removeComment: function (e) {
             var commentId = e.data.Id;
             app.notify.confirmation(null, 'Remove comment', function (confirmed) {
-                app.utils.loading(true);
-                app.activitiesView.shouldRefresh = true;
                 if (!confirmed) {
                     return;
                 }
 
+                app.activitiesView.shouldRefresh = true;
+                app.utils.loading(true);
                 var comment = this.commentsDataSource.get(commentId);
                 this.commentsDataSource.remove(comment);
                 this.commentsDataSource.sync().then(function () {
@@ -96,6 +96,7 @@
                     if (!this.commentsDataSource.data().length) {
                         app.mobileApp.replace('#components/activitiesView/details.html?id=' + this.currentActivityId);
                     }
+
                     app.utils.loading(false);
                 }.bind(this), app.notify.error);
             }.bind(this));
