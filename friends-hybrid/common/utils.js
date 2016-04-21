@@ -36,7 +36,7 @@
             var destinationType;
             var callback = that.callback;
             if (app.utils.isInSimulator()) {
-                destinationType = navigator.camera.DestinationType.DATA_URL;
+                destinationType = Camera.DestinationType.DATA_URL;
                 callback = function (uri) {
                     if (uri.length > app.constants.simulatorFileSizeLimit) {
                         return app.notify.info('Please select smaller image, up to 2.5MB.');
@@ -46,7 +46,7 @@
                     that.callback(uri);
                 };
             } else {
-                destinationType = navigator.camera.DestinationType.NATIVE_URI;
+                destinationType = Camera.DestinationType.NATIVE_URI;
                 callback = function (uri) {
                     window.resolveLocalFileSystemURL(uri, function (fileEntry) {
                         fileEntry.file(function (file) {
