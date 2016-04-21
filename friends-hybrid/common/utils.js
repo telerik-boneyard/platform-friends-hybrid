@@ -46,7 +46,7 @@
                     that.callback(uri);
                 };
             } else {
-                destinationType = Camera.DestinationType.NATIVE_URI;
+                destinationType = Camera.DestinationType.FILE_URI;
                 callback = function (uri) {
                     window.resolveLocalFileSystemURL(uri, function (fileEntry) {
                         fileEntry.file(function (file) {
