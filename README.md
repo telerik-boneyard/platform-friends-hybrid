@@ -139,6 +139,8 @@ If you want to solicit app feedback from your users, you need to enable the Feed
 > Feedback only works on physical devices or emulators. It does not work in the AppBuilder simulator.
 <br>
 > The Telerik AppFeedback plugin is not supported on Windows Phone.
+<br>
+> If you are working in the Universal, Windows, or Visual Studio AppBuilder client, you need to restart it for the setting to be reflected.
 
 ## HTTPS Connections
 
