@@ -476,16 +476,20 @@ textarea:-ms-input-placeholder {
 }
 
 .author-avatar {
-    width: 2.65em;
-    height: 2.65em;
+    width: 2.6em;
+    height: 2.6em;
     margin: 0 .5em 0 0;
     border-radius: 50%;
     overflow: hidden;
 }
 
+.author-avatar img {
+    margin: -1px 0 0 -1px;
+}
+
 .author-avatar.large {
-    width: 5.7em;
-    height: 5.7em;
+    width: 5.6em;
+    height: 5.6em;
     margin: -3.25em 1em 0 0;
 }
 
