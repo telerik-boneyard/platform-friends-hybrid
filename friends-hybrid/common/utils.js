@@ -46,13 +46,24 @@
                     that.callback(uri);
                 };
             } else {
-                destinationType = navigator.camera.DestinationType.FILE_URI;
+                destinationType = navigator.camera.DestinationType.NATIVE_URI;
+                callback = function (uri) {
+                    window.resolveLocalFileSystemURL(uri, function (fileEntry) {
+                        fileEntry.file(function (file) {
+                            if (file.size > app.constants.deviceFileSizeLimit) {
+                                return app.notify.info('The upload file limit is 10mb, try taking a picture with the front camera.');
+                            }
+
+                            return that.callback(uri);
+                        }, app.notify.error);
+                    }, app.notify.error);
+                }
             }
 
             navigator.camera.getPicture(callback, app.notify.error, {
                 quality: 50,
                 destinationType: destinationType,
-                sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+                sourceType: navigator.camera.PictureSourceType.CAMERA
             });
         };
 
