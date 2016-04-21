@@ -252,6 +252,7 @@
                     return;
                 }
 
+                app.activitiesView.shouldRefresh = true;
                 var activities = activitiesDataSource.data();
                 var activity = _.find(activities, {Id: this.currentActivity.Id});
                 activitiesDataSource.remove(activity);
