@@ -161,7 +161,7 @@
             $(chooseFileSelector).click(that._chooseFileClickCordova);
         } else {
             $(chooseFileSelector).click(that._chooseFileClickDesktop);
-            $(fileInputChangeSelector).change(that._fileChange);
+            $(document).on('change', fileInputChangeSelector, that._fileChange);
         }
     };
 

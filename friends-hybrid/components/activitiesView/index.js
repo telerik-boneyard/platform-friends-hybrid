@@ -154,6 +154,8 @@
             var textarea = $('#activity-text');
             this.uploader.detach();
             app.utils.autoSizeTextarea(textarea);
+            $('#preview-create').css('display', 'none');
+            $('#preview-edit').css('display', 'none');
         },
         onShow: function (e) {
             this.imageChanged = false;
@@ -190,6 +192,14 @@
             });
 
             activityValidator = app.validate.getValidator('#activity-form');
+
+            if (this.isEdit) {
+                var $previewEdit = $('#preview-edit');
+                $previewEdit.css('display', '');
+                app.utils.processElement($previewEdit);
+            } else {
+                $('#preview-create').css('display', '');
+            }
         }
     });
 
