@@ -123,6 +123,7 @@
                         app.user = res.result;
                         app.mobileApp.navigate('components/activitiesView/view.html');
                         app.utils.loading(false);
+                        app.activitiesView.shouldRefresh = true;
                     })
                     .catch(app.notify.error);
             });
