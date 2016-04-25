@@ -156,6 +156,7 @@
             app.utils.autoSizeTextarea(textarea);
             $('#preview-create').css('display', 'none');
             $('#preview-edit').css('display', 'none');
+            this.set('activity.PictureUrl', app.constants.whitePicture);
         },
         onShow: function (e) {
             this.imageChanged = false;
@@ -181,6 +182,8 @@
 
             this.uploader = new app.utils.imageUploader('#choose-file-button', '#activity-form', '#activityPhoto');
             this.uploader.onImage(function (uri) {
+                $('#preview-edit').css('display', 'none');
+                $('#preview-create').css('display', '');
                 addEditActivityViewModel.set('imageChanged', true);
                 addEditActivityViewModel.set('activity.PictureUrl', uri);
             });
