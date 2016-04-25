@@ -131,7 +131,7 @@
 
             return promise.then(function () {
                 return activitiesDataSource.read();
-            }).then(app.utils.goBack).catch(app.notify.error);
+            }).then(app.navigation.back).catch(app.notify.error);
         },
 
         applyActivity: function () {
@@ -211,7 +211,6 @@
         onShow: function (e) {
             app.utils.loading(true);
             var currentActivity = activitiesDataSource.get(e.view.params.id);
-            this.set('currentActivity', null);
             this.set('currentActivity', currentActivity);
 
             this.set('canEdit', currentActivity.Meta.Permissions.CanUpdate);
@@ -254,7 +253,7 @@
             app.utils.processElement($authorPhoto);
         },
         editActivity: function () {
-            app.mobileApp.navigate('#components/activitiesView/addEdit.html?id=' + this.currentActivity.Id);
+            app.navigation.navigateActivitiesEdit(this.currentActivity.Id);
         },
         removeActivity: function () {
             app.notify.confirmation(null, 'Delete activity', function (confirmed) {
@@ -272,7 +271,7 @@
         },
         openComments: function () {
             var activityId = this.currentActivity.Id;
-            app.mobileApp.navigate('#components/commentsView/view.html?activityId=' + activityId);
+            app.navigation.navigateComments(activityId);
         },
         likeActivity: function (e) {
             return likeActivity.call({activityId: this.currentActivity.Id}, e)
@@ -290,7 +289,7 @@
                     app.utils.loading(false);
                 }.bind(this));
         },
-        goBack: app.utils.goBack
+        goBack: app.navigation.back
     });
 
     var activitiesViewModel = kendo.observable({
@@ -307,10 +306,10 @@
         },
         activityClick: function (e) {
             var activityId = e.data.Id;
-            app.mobileApp.navigate('#components/activitiesView/details.html?id=' + activityId);
+            app.navigation.navigateActivitiesDetails(activityId);
         },
         addActivityClick: function () {
-            app.mobileApp.navigate('#components/activitiesView/addEdit.html');
+            app.navigation.navigateActivitiesAdd();
         },
         likeActivity: function (e) {
             return likeActivity.call({activityId: e.data.Id}, e).then(function () {
@@ -320,7 +319,7 @@
         openComments: function (e) {
             e.stopPropagation();
             var activityId = e.data.Id;
-            app.mobileApp.navigate('#components/commentsView/view.html?activityId=' + activityId);
+            app.navigation.navigateComments(activityId);
         }
     });
 

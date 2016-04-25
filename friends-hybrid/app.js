@@ -8,21 +8,21 @@
                 initial: 'components/emptyView/view.html',
                 init: function () {
                     if (app.settings.appId.length !== 16) {
-                        app.mobileApp.navigate('components/missingSettingsView/noappidView.html');
+                        app.navigation.navigateNoAppId();
                     } else {
                         app.data.defaultProvider.users.currentUser()
                             .then(function (res) {
                                 if (res.result) {
                                     app.user = res.result;
                                     //we are logged in
-                                    app.mobileApp.navigate('components/activitiesView/view.html');
+                                    app.navigation.navigateActivities();
                                 } else {
                                     throw new Error('not authenticated');
                                 }
                             })
                             .catch(function () {
                                 //we are not logged in
-                                app.mobileApp.navigate('components/authenticationView/view.html');
+                                app.navigation.navigateAuthentication();
                             });
                     }
                 }
@@ -31,6 +31,12 @@
     };
 
     app.isCordova = !!window.cordova;
+
+    app.keepActiveState = function _keepActiveState(item) {
+        var currentItem = item;
+        $('#navigation-container li a.active').removeClass('active');
+        currentItem.addClass('active');
+    };
 
     if (app.isCordova) {
         document.addEventListener('deviceready', function() {
@@ -57,30 +63,24 @@
         bootstrap();
     }
 
-    app.keepActiveState = function _keepActiveState(item) {
-        var currentItem = item;
-        $('#navigation-container li a.active').removeClass('active');
-        currentItem.addClass('active');
-    };
-
     app.drawerModel = kendo.observable({
         logout: function () {
             app.activitiesView.shouldRefresh = true;
             app.data.defaultProvider.users.logout()
                 .then(function () {
                     localStorage.clear();
-                    app.mobileApp.navigate('components/authenticationView/view.html');
+                    app.navigation.navigateAuthentication();
                 })
                 .catch(function (err) {
                     if (err.code === 301 || err.code === 302) {
-                       app.mobileApp.navigate('components/authenticationView/view.html');
+                        app.navigation.navigateAuthentication();
                     } else {
                         app.notify.error(err);
                     }
                 });
         },
         goToProfile: function () {
-            app.mobileApp.navigate('components/profileView/view.html');
+            app.navigation.navigateProfile();
         },
         showFeedback: function () {
             if (app.utils.isInSimulator() || !window.feedback) {

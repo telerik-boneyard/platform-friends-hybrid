@@ -1,5 +1,7 @@
 (function () {
     app.constants = {
+        authenticationModeSignin: 'signin',
+        authenticationModeRegister: 'register',
         defaultPicture: 'styles/img/default.jpg',
         whitePicture: 'styles/img/white.png',
         dateFormat: 'MMM d, yyyy',

@@ -9,11 +9,6 @@
         return kendo.mobile.application.hideLoading();
     };
 
-    app.utils.goBack = function () {
-        app.mobileApp.navigate('#:back');
-        app.utils.loading(false);
-    };
-
     app.utils.isOwner = function (dataItem) {
         return app.user.Id === dataItem.CreatedBy;
     };
@@ -167,7 +162,6 @@
 
     app.utils.autoSizeTextarea = function (element) {
         element.css({
-            height: 'auto',
             height: element[0].scrollHeight
         });
     };

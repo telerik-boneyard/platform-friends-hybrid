@@ -77,7 +77,7 @@
         },
         editComment: function (e) {
             var commentId = e.data.Id;
-            app.mobileApp.navigate('#components/commentsView/addEdit.html?commentId=' + commentId);
+            app.navigation.navigateEditComment(commentId);
         },
         removeComment: function (e) {
             var commentId = e.data.Id;
@@ -103,11 +103,10 @@
         },
         addComment: function (replace) {
             app.activitiesView.shouldRefresh = true;
-            var view = '#components/commentsView/addEdit.html?activityId=' + this.currentActivityId;
             if (replace) {
-                app.mobileApp.replace(view);
+                app.navigation.replaceAddComment(this.currentActivityId);
             } else {
-                app.mobileApp.navigate(view);
+                app.navigation.navigateAddComment(this.currentActivityId);
             }
         }
     });
@@ -158,7 +157,6 @@
             var comment = {
                 Comment: this.fields.comment
             };
-
             if (this.isEdit) {
                 comment.Id = this.commentId;
                 promise = commentsData.updateSingle(comment);

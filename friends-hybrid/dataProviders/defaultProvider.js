@@ -11,7 +11,7 @@
             persist: true,
             onAuthenticationRequired: function () {
                 app.notify.error('Your access token has expired, please log in.');
-                app.mobileApp.navigate('components/authenticationView/view.html');
+                app.navigation.navigateAuthentication();
             }
         }
     });

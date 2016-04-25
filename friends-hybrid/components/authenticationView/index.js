@@ -8,7 +8,7 @@
                 $('#adfs-btn').prop('disabled', shouldDisableAdfsButton);
             }
 
-            mode = 'signin'; //reset the view mode
+            mode = app.constants.authenticationModeSignin; //reset the view mode
             init();
         },
         afterShow: function () {
@@ -17,7 +17,7 @@
     });
 
     var provider = app.data.defaultProvider;
-    var mode = 'signin';
+    var mode = app.constants.authenticationModeSignin;
     var registerRedirect = 'activitiesView';
     var signinRedirect = 'activitiesView';
 
@@ -28,7 +28,7 @@
             return false;
         }
 
-        var activeView = mode === 'signin' ? '.signin-view' : '.signup-view';
+        var activeView = mode === app.constants.authenticationModeSignin ? '.signin-view' : '.signup-view';
 
         if (provider.setup && provider.setup.offlineStorage && !app.data.defaultProvider.isOnline()) {
             $('.offline').show().siblings().hide();
@@ -38,7 +38,7 @@
     }
 
     function successHandler(data) {
-        var redirect = mode === 'signin' ? signinRedirect : registerRedirect;
+        var redirect = mode === app.constants.authenticationModeSignin ? signinRedirect : registerRedirect;
 
         if (data && data.result) {
             app.data.defaultProvider.users.currentUser()
@@ -111,7 +111,8 @@
             }, init);
         },
         toggleView: function () {
-            mode = mode === 'signin' ? 'register' : 'signin';
+            mode = mode === app.constants.authenticationModeSignin ?
+                app.constants.authenticationModeRegister : app.constants.authenticationModeSignin;
             vm.set('user.username', '');
             vm.set('user.password', '');
             vm.set('user.displayName', '');

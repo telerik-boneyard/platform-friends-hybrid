@@ -13,7 +13,6 @@
         onShow: function (e) {
             var profileScroller = e.view.scroller;
             profileScroller.reset();
-
             var user = app.user;
             var textarea = $('#about');
             var profile = kendo.observable({
@@ -25,7 +24,6 @@
                 Picture: user.Picture,
                 Username: user.Username
             });
-
             this.set('profile', profile);
 
             $('#preview').show();
@@ -51,7 +49,6 @@
             }.bind(this));
 
             app.utils.autoSizeTextarea(textarea);
-
             textarea.on('input keypress', function () {
                 app.utils.autoSizeTextarea(textarea);
             });
@@ -121,7 +118,7 @@
                     })
                     .then(function (res) {
                         app.user = res.result;
-                        app.mobileApp.navigate('components/activitiesView/view.html');
+                        app.navigation.navigateActivities();
                         app.utils.loading(false);
                         app.activitiesView.shouldRefresh = true;
                     })

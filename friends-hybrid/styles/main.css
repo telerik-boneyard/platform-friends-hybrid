@@ -587,6 +587,18 @@ textarea:-ms-input-placeholder {
     background-size: cover;
 }
 
+.content-picture img {
+    min-height: 250px;
+}
+
+.hidden {
+    display: none;
+}
+
+input[type=file] {
+    display: none;
+}
+
 @media only screen
     and (min-resolution: 1.5dppx)
     and (-webkit-min-device-pixel-ratio: 1.5)
