@@ -589,6 +589,12 @@ textarea:-ms-input-placeholder {
 
 .content-picture img {
     min-height: 250px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.non-responsive {
+    object-fit: cover;
 }
 
 .hidden {

@@ -1,4 +1,519 @@
+/*
+The MIT License (MIT)
+
+Copyright (c) 2013 Telerik AD
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.y distributed under the MIT license.
+
+Everlive SDK Version: 1.6.9
+*/
+
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Everlive = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/**
+ * toString ref.
+ */
+
+var toString = Object.prototype.toString;
+
+/**
+ * Return the type of `val`.
+ *
+ * @param {Mixed} val
+ * @return {String}
+ * @api public
+ */
+
+module.exports = function(val){
+  switch (toString.call(val)) {
+    case '[object Date]': return 'date';
+    case '[object RegExp]': return 'regexp';
+    case '[object Arguments]': return 'arguments';
+    case '[object Array]': return 'array';
+    case '[object Error]': return 'error';
+  }
+
+  if (val === null) return 'null';
+  if (val === undefined) return 'undefined';
+  if (val !== val) return 'nan';
+  if (val && val.nodeType === 1) return 'element';
+
+  val = val.valueOf
+    ? val.valueOf()
+    : Object.prototype.valueOf.apply(val)
+
+  return typeof val;
+};
+
+},{}],2:[function(require,module,exports){
+
+/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = require('./debug');
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  return ('WebkitAppearance' in document.documentElement.style) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (window.console && (console.firebug || (console.exception && console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  return JSON.stringify(v);
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs() {
+  var args = arguments;
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return args;
+
+  var c = 'color: ' + this.color;
+  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+  return args;
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    r = exports.storage.debug;
+  } catch(e) {}
+  return r;
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage(){
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+},{"./debug":3}],3:[function(require,module,exports){
+
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = debug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = require('ms');
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lowercased letter, i.e. "n".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previously assigned color.
+ */
+
+var prevColor = 0;
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ *
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor() {
+  return exports.colors[prevColor++ % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function debug(namespace) {
+
+  // define the `disabled` version
+  function disabled() {
+  }
+  disabled.enabled = false;
+
+  // define the `enabled` version
+  function enabled() {
+
+    var self = enabled;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // add the `color` if not set
+    if (null == self.useColors) self.useColors = exports.useColors();
+    if (null == self.color && self.useColors) self.color = selectColor();
+
+    var args = Array.prototype.slice.call(arguments);
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %o
+      args = ['%o'].concat(args);
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    if ('function' === typeof exports.formatArgs) {
+      args = exports.formatArgs.apply(self, args);
+    }
+    var logFn = enabled.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+  enabled.enabled = true;
+
+  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+  fn.namespace = namespace;
+
+  return fn;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  var split = (namespaces || '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+},{"ms":19}],4:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var type = require('type-component');
+
+/**
+ * Gets a certain `path` from the `obj`.
+ *
+ * @param {Object} target
+ * @param {String} key
+ * @return {Object} found object, or `undefined
+ * @api public
+ */
+
+exports.get = function(obj, path){
+  if (~path.indexOf('.')) {
+    var par = parent(obj, path);
+    var mainKey = path.split('.').pop();
+    var t = type(par);
+    if ('object' == t || 'array' == t) return par[mainKey];
+  } else {
+    return obj[path];
+  }
+};
+
+/**
+ * Sets the given `path` to `val` in `obj`.
+ *
+ * @param {Object} target
+ * @Param {String} key
+ * @param {Object} value
+ * @api public
+ */
+
+exports.set = function(obj, path, val){
+  if (~path.indexOf('.')) {
+    var par = parent(obj, path, true);
+    var mainKey = path.split('.').pop();
+    if (par && 'object' == type(par)) par[mainKey] = val;
+  } else {
+    obj[path] = val;
+  }
+};
+
+/**
+ * Gets the parent object for a given key (dot notation aware).
+ *
+ * - If a parent object doesn't exist, it's initialized.
+ * - Array index lookup is supported
+ *
+ * @param {Object} target object
+ * @param {String} key
+ * @param {Boolean} true if it should initialize the path
+ * @api public
+ */
+
+exports.parent = parent;
+
+function parent(obj, key, init){
+  if (~key.indexOf('.')) {
+    var pieces = key.split('.');
+    var ret = obj;
+
+    for (var i = 0; i < pieces.length - 1; i++) {
+      // if the key is a number string and parent is an array
+      if (Number(pieces[i]) == pieces[i] && 'array' == type(ret)) {
+        ret = ret[pieces[i]];
+      } else if ('object' == type(ret)) {
+        if (init && !ret.hasOwnProperty(pieces[i])) {
+          ret[pieces[i]] = {};
+        }
+        if (ret) ret = ret[pieces[i]];
+      }
+    }
+
+    return ret;
+  } else {
+    return obj;
+  }
+}
+
+},{"type-component":32}],5:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -301,261 +816,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],2:[function(require,module,exports){
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
-},{}],3:[function(require,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,require('_process'))
-
-},{"_process":4}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -648,605 +909,32 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],5:[function(require,module,exports){
-module.exports = function isBuffer(arg) {
-  return arg && typeof arg === 'object'
-    && typeof arg.copy === 'function'
-    && typeof arg.fill === 'function'
-    && typeof arg.readUInt8 === 'function';
-}
-},{}],6:[function(require,module,exports){
-(function (process,global){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var formatRegExp = /%[sdj%]/g;
-exports.format = function(f) {
-  if (!isString(f)) {
-    var objects = [];
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
-    }
-    return objects.join(' ');
-  }
-
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function(x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-    switch (x) {
-      case '%s': return String(args[i++]);
-      case '%d': return Number(args[i++]);
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-      default:
-        return x;
-    }
-  });
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
-    } else {
-      str += ' ' + inspect(x);
-    }
-  }
-  return str;
-};
-
-
-// Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
-exports.deprecate = function(fn, msg) {
-  // Allow for deprecating things in the process of starting up.
-  if (isUndefined(global.process)) {
-    return function() {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  if (process.noDeprecation === true) {
-    return fn;
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
+},{}],7:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
       }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-};
-
-
-var debugs = {};
-var debugEnviron;
-exports.debuglog = function(set) {
-  if (isUndefined(debugEnviron))
-    debugEnviron = process.env.NODE_DEBUG || '';
-  set = set.toUpperCase();
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-      debugs[set] = function() {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function() {};
-    }
-  }
-  return debugs[set];
-};
-
-
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-/* legacy: obj, showHidden, depth, colors*/
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  };
-  // legacy...
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  }
-  // set default options
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-exports.inspect = inspect;
-
-
-// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-inspect.colors = {
-  'bold' : [1, 22],
-  'italic' : [3, 23],
-  'underline' : [4, 24],
-  'inverse' : [7, 27],
-  'white' : [37, 39],
-  'grey' : [90, 39],
-  'black' : [30, 39],
-  'blue' : [34, 39],
-  'cyan' : [36, 39],
-  'green' : [32, 39],
-  'magenta' : [35, 39],
-  'red' : [31, 39],
-  'yellow' : [33, 39]
-};
-
-// Don't use 'blue' not visible on cmd.exe
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
-           '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-
-function arrayToHash(array) {
-  var hash = {};
-
-  array.forEach(function(val, idx) {
-    hash[val] = true;
-  });
-
-  return hash;
-}
-
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect &&
-      value &&
-      isFunction(value.inspect) &&
-      // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
-      // Also filter out any prototype objects using the circular check.
-      !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-    return ret;
-  }
-
-  // Primitive types cannot have properties
-  var primitive = formatPrimitive(ctx, value);
-  if (primitive) {
-    return primitive;
-  }
-
-  // Look up the keys of the object.
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  }
-
-  // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-  if (isError(value)
-      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  }
-
-  // Some type of object without properties can be shortcutted.
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '', array = false, braces = ['{', '}'];
-
-  // Make Array say that they are Array
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  }
-
-  // Make functions say that they are functions
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  }
-
-  // Make RegExps say that they are RegExps
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  }
-
-  // Make dates with properties first say the date
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  }
-
-  // Make error with message first say the error
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-
-  var output;
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
     });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
   }
-
-  ctx.seen.pop();
-
-  return reduceToSingleString(output, base, braces);
 }
 
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value))
-    return ctx.stylize('undefined', 'undefined');
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
-                                             .replace(/'/g, "\\'")
-                                             .replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-  if (isNumber(value))
-    return ctx.stylize('' + value, 'number');
-  if (isBoolean(value))
-    return ctx.stylize('' + value, 'boolean');
-  // For some reason typeof null is "object", so special case here.
-  if (isNull(value))
-    return ctx.stylize('null', 'null');
-}
-
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-  keys.forEach(function(key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          key, true));
-    }
-  });
-  return output;
-}
-
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-    name = JSON.stringify('' + key);
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'")
-                 .replace(/\\"/g, '"')
-                 .replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function(prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] +
-           (base === '' ? '' : base + '\n ') +
-           ' ' +
-           output.join(',\n  ') +
-           ' ' +
-           braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-}
-
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) &&
-      (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = require('./support/isBuffer');
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'];
-
-// 26 Feb 16:19:34
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()),
-              pad(d.getMinutes()),
-              pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-}
-
-
-// log is just a thin wrapper to console.log that prepends a timestamp
-exports.log = function() {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-
-
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-exports.inherits = require('inherits');
-
-exports._extend = function(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"./support/isBuffer":5,"_process":4,"inherits":2}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var json = typeof JSON !== 'undefined' ? JSON : require('jsonify');
 
 module.exports = function (obj, opts) {
@@ -1331,11 +1019,11 @@ var objectKeys = Object.keys || function (obj) {
     return keys;
 };
 
-},{"jsonify":8}],8:[function(require,module,exports){
+},{"jsonify":9}],9:[function(require,module,exports){
 exports.parse = require('./lib/parse');
 exports.stringify = require('./lib/stringify');
 
-},{"./lib/parse":9,"./lib/stringify":10}],9:[function(require,module,exports){
+},{"./lib/parse":10,"./lib/stringify":11}],10:[function(require,module,exports){
 var at, // The index of the current character
     ch, // The current character
     escapee = {
@@ -1610,7 +1298,7 @@ module.exports = function (source, reviver) {
     }({'': result}, '')) : result;
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
     escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
     gap,
@@ -1766,7 +1454,7 @@ module.exports = function (value, replacer, space) {
     return str('', {'': value});
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
  * This script gives you the zone info key representing your device's time zone setting.
  *
@@ -2127,7 +1815,7 @@ module.exports = function (value, replacer, space) {
 })(this);
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // Mingo.js 0.6.2
 // Copyright (c) 2015 Francis Asante <kofrasa@gmail.com>
 // MIT
@@ -4367,7 +4055,78 @@ module.exports = function (value, replacer, space) {
 
 }(this));
 
-},{"stream":"stream","underscore":35,"util":6}],13:[function(require,module,exports){
+},{"stream":"stream","underscore":33,"util":35}],14:[function(require,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var type = require('component-type');
+
+/**
+ * Module exports.
+ */
+
+module.exports = eql;
+
+/**
+ * MongoDB style value comparisons.
+ *
+ * @param {Object} matcher
+ * @param {Object} value
+ * @return {Boolean} true if they match
+ */
+
+function eql(matcher, val){
+  switch (type(matcher)) {
+    case 'null':
+    case 'undefined':
+      // we treat null as undefined
+      return null == val;
+
+    case 'regexp':
+      return matcher.test(val);
+
+    case 'array':
+      if ('array' == type(val) && matcher.length == val.length) {
+        for (var i = 0; i < matcher.length; i++) {
+          if (!eql(val[i], matcher[i])) return false;
+        }
+        return true;
+      } else {
+        return false;
+      }
+      break;
+
+    case 'object':
+      // object can match keys in any order
+      var keys = {};
+
+      // we match all values of `matcher` in `val`
+      for (var i in matcher) {
+        if (matcher.hasOwnProperty(i)) {
+          if (!val.hasOwnProperty(i) || !eql(matcher[i], val[i])) {
+            return false;
+          }
+        }
+        keys[i] = true;
+      }
+
+      // we make sure `val` doesn't have extra keys
+      for (var i in val) {
+        if (val.hasOwnProperty(i) && !keys.hasOwnProperty(i)) {
+          return false;
+        }
+      }
+
+      return true;
+
+    default:
+      return matcher === val;
+  }
+}
+
+},{"component-type":1}],15:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -4511,7 +4270,7 @@ function compare(matcher, val){
   }
 }
 
-},{"./ops":24,"component-type":16,"debug":17,"dot-component":20,"mongo-eql":22,"object-component":23}],14:[function(require,module,exports){
+},{"./ops":18,"component-type":1,"debug":2,"dot-component":4,"mongo-eql":14,"object-component":28}],16:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -4627,7 +4386,7 @@ function query(obj, query, update, opts){
   return log;
 }
 
-},{"./filter":13,"./mods":15,"component-type":16,"debug":17,"dot-component":20,"object-component":23}],15:[function(require,module,exports){
+},{"./filter":15,"./mods":17,"component-type":1,"debug":2,"dot-component":4,"object-component":28}],17:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -5244,412 +5003,106 @@ function numeric(val){
   return 'number' == type(val) || Number(val) == val;
 }
 
-},{"component-type":16,"debug":17,"dot-component":20,"mongo-eql":22,"object-component":23}],16:[function(require,module,exports){
-/**
- * toString ref.
- */
-
-var toString = Object.prototype.toString;
+},{"component-type":1,"debug":2,"dot-component":4,"mongo-eql":14,"object-component":28}],18:[function(require,module,exports){
 
 /**
- * Return the type of `val`.
- *
- * @param {Mixed} val
- * @return {String}
- * @api public
+ * Module dependencies.
  */
 
-module.exports = function(val){
-  switch (toString.call(val)) {
-    case '[object Date]': return 'date';
-    case '[object RegExp]': return 'regexp';
-    case '[object Arguments]': return 'arguments';
-    case '[object Array]': return 'array';
-    case '[object Error]': return 'error';
-  }
+var eql = require('mongo-eql');
+var type = require('component-type');
 
-  if (val === null) return 'null';
-  if (val === undefined) return 'undefined';
-  if (val !== val) return 'nan';
-  if (val && val.nodeType === 1) return 'element';
+/**
+ * $ne: not equal.
+ */
 
-  val = val.valueOf
-    ? val.valueOf()
-    : Object.prototype.valueOf.apply(val)
-
-  return typeof val;
+exports.$ne = function $ne(matcher, val){
+  return !eql(matcher, val);
 };
 
-},{}],17:[function(require,module,exports){
-
 /**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
+ * $gt: greater than.
  */
 
-exports = module.exports = require('./debug');
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-  'lightseagreen',
-  'forestgreen',
-  'goldenrod',
-  'dodgerblue',
-  'darkorchid',
-  'crimson'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-function useColors() {
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  return ('WebkitAppearance' in document.documentElement.style) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (window.console && (console.firebug || (console.exception && console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
-}
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  return JSON.stringify(v);
+exports.$gt = function $gt(matcher, val){
+  return type(matcher) === 'number' && val > matcher;
 };
 
-
 /**
- * Colorize log arguments if enabled.
- *
- * @api public
+ * $gte: greater than equal.
  */
 
-function formatArgs() {
-  var args = arguments;
-  var useColors = this.useColors;
-
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return args;
-
-  var c = 'color: ' + this.color;
-  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
-
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
-  return args;
-}
+exports.$gte = function $gte(matcher, val){
+  return type(matcher) === 'number' && val >= matcher;
+};
 
 /**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
+ * $lt: less than.
  */
 
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
+exports.$lt = function $lt(matcher, val){
+  return type(matcher) === 'number' && val < matcher;
+};
 
 /**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
+ * $lte: less than equal.
  */
 
-function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
-}
+exports.$lte = function $lte(matcher, val){
+  return type(matcher) === 'number' && val <= matcher;
+};
 
 /**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
+ * $regex: supply a regular expression as a string.
  */
 
-function load() {
-  var r;
-  try {
-    r = exports.storage.debug;
-  } catch(e) {}
-  return r;
-}
+exports.$regex = function $regex(matcher, val){
+  // TODO: add $options support
+  if ('regexp' != type('matcher')) matcher = new RegExp(matcher);
+  return matcher.test(val);
+};
 
 /**
- * Enable namespaces listed in `localStorage.debug` initially.
+ * $exists: key exists.
  */
 
-exports.enable(load());
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage(){
-  try {
-    return window.localStorage;
-  } catch (e) {}
-}
-
-},{"./debug":18}],18:[function(require,module,exports){
-
-/**
- * This is the common logic for both the Node.js and web browser
- * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = debug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = require('ms');
-
-/**
- * The currently active debug mode names, and names to skip.
- */
-
-exports.names = [];
-exports.skips = [];
-
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lowercased letter, i.e. "n".
- */
-
-exports.formatters = {};
-
-/**
- * Previously assigned color.
- */
-
-var prevColor = 0;
-
-/**
- * Previous log timestamp.
- */
-
-var prevTime;
-
-/**
- * Select a color.
- *
- * @return {Number}
- * @api private
- */
-
-function selectColor() {
-  return exports.colors[prevColor++ % exports.colors.length];
-}
-
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
-
-function debug(namespace) {
-
-  // define the `disabled` version
-  function disabled() {
+exports.$exists = function $exists(matcher, val){
+  if (matcher) {
+    return undefined !== val;
+  } else {
+    return undefined === val;
   }
-  disabled.enabled = false;
-
-  // define the `enabled` version
-  function enabled() {
-
-    var self = enabled;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // add the `color` if not set
-    if (null == self.useColors) self.useColors = exports.useColors();
-    if (null == self.color && self.useColors) self.color = selectColor();
-
-    var args = Array.prototype.slice.call(arguments);
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %o
-      args = ['%o'].concat(args);
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
-      }
-      return match;
-    });
-
-    if ('function' === typeof exports.formatArgs) {
-      args = exports.formatArgs.apply(self, args);
-    }
-    var logFn = enabled.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
-  enabled.enabled = true;
-
-  var fn = exports.enabled(namespace) ? enabled : disabled;
-
-  fn.namespace = namespace;
-
-  return fn;
-}
+};
 
 /**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
+ * $in: value in array.
  */
 
-function enable(namespaces) {
-  exports.save(namespaces);
-
-  var split = (namespaces || '').split(/[\s,]+/);
-  var len = split.length;
-
-  for (var i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
-    }
-  }
-}
-
-/**
- * Disable debug output.
- *
- * @api public
- */
-
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
-    }
-  }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
-      return true;
-    }
+exports.$in = function $in(matcher, val){
+  if ('array' != type(matcher)) return false;
+  for (var i = 0; i < matcher.length; i++) {
+    if (eql(matcher[i], val)) return true;
   }
   return false;
-}
+};
 
 /**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
+ * $nin: value not in array.
  */
 
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
+exports.$nin = function $nin(matcher, val){
+  return !exports.$in(matcher, val);
+};
 
-},{"ms":19}],19:[function(require,module,exports){
+/**
+ * @size: array length
+ */
+
+exports.$size = function(matcher, val){
+  return Array.isArray(val) && matcher == val.length;
+};
+
+},{"component-type":1,"mongo-eql":14}],19:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -5777,377 +5230,6 @@ function plural(ms, n, name) {
 }
 
 },{}],20:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var type = require('type-component');
-
-/**
- * Gets a certain `path` from the `obj`.
- *
- * @param {Object} target
- * @param {String} key
- * @return {Object} found object, or `undefined
- * @api public
- */
-
-exports.get = function(obj, path){
-  if (~path.indexOf('.')) {
-    var par = parent(obj, path);
-    var mainKey = path.split('.').pop();
-    var t = type(par);
-    if ('object' == t || 'array' == t) return par[mainKey];
-  } else {
-    return obj[path];
-  }
-};
-
-/**
- * Sets the given `path` to `val` in `obj`.
- *
- * @param {Object} target
- * @Param {String} key
- * @param {Object} value
- * @api public
- */
-
-exports.set = function(obj, path, val){
-  if (~path.indexOf('.')) {
-    var par = parent(obj, path, true);
-    var mainKey = path.split('.').pop();
-    if (par && 'object' == type(par)) par[mainKey] = val;
-  } else {
-    obj[path] = val;
-  }
-};
-
-/**
- * Gets the parent object for a given key (dot notation aware).
- *
- * - If a parent object doesn't exist, it's initialized.
- * - Array index lookup is supported
- *
- * @param {Object} target object
- * @param {String} key
- * @param {Boolean} true if it should initialize the path
- * @api public
- */
-
-exports.parent = parent;
-
-function parent(obj, key, init){
-  if (~key.indexOf('.')) {
-    var pieces = key.split('.');
-    var ret = obj;
-
-    for (var i = 0; i < pieces.length - 1; i++) {
-      // if the key is a number string and parent is an array
-      if (Number(pieces[i]) == pieces[i] && 'array' == type(ret)) {
-        ret = ret[pieces[i]];
-      } else if ('object' == type(ret)) {
-        if (init && !ret.hasOwnProperty(pieces[i])) {
-          ret[pieces[i]] = {};
-        }
-        if (ret) ret = ret[pieces[i]];
-      }
-    }
-
-    return ret;
-  } else {
-    return obj;
-  }
-}
-
-},{"type-component":21}],21:[function(require,module,exports){
-
-/**
- * toString ref.
- */
-
-var toString = Object.prototype.toString;
-
-/**
- * Return the type of `val`.
- *
- * @param {Mixed} val
- * @return {String}
- * @api public
- */
-
-module.exports = function(val){
-  switch (toString.call(val)) {
-    case '[object Function]': return 'function';
-    case '[object Date]': return 'date';
-    case '[object RegExp]': return 'regexp';
-    case '[object Arguments]': return 'arguments';
-    case '[object Array]': return 'array';
-  }
-
-  if (val === null) return 'null';
-  if (val === undefined) return 'undefined';
-  if (val === Object(val)) return 'object';
-
-  return typeof val;
-};
-
-},{}],22:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var type = require('component-type');
-
-/**
- * Module exports.
- */
-
-module.exports = eql;
-
-/**
- * MongoDB style value comparisons.
- *
- * @param {Object} matcher
- * @param {Object} value
- * @return {Boolean} true if they match
- */
-
-function eql(matcher, val){
-  switch (type(matcher)) {
-    case 'null':
-    case 'undefined':
-      // we treat null as undefined
-      return null == val;
-
-    case 'regexp':
-      return matcher.test(val);
-
-    case 'array':
-      if ('array' == type(val) && matcher.length == val.length) {
-        for (var i = 0; i < matcher.length; i++) {
-          if (!eql(val[i], matcher[i])) return false;
-        }
-        return true;
-      } else {
-        return false;
-      }
-      break;
-
-    case 'object':
-      // object can match keys in any order
-      var keys = {};
-
-      // we match all values of `matcher` in `val`
-      for (var i in matcher) {
-        if (matcher.hasOwnProperty(i)) {
-          if (!val.hasOwnProperty(i) || !eql(matcher[i], val[i])) {
-            return false;
-          }
-        }
-        keys[i] = true;
-      }
-
-      // we make sure `val` doesn't have extra keys
-      for (var i in val) {
-        if (val.hasOwnProperty(i) && !keys.hasOwnProperty(i)) {
-          return false;
-        }
-      }
-
-      return true;
-
-    default:
-      return matcher === val;
-  }
-}
-
-},{"component-type":16}],23:[function(require,module,exports){
-
-/**
- * HOP ref.
- */
-
-var has = Object.prototype.hasOwnProperty;
-
-/**
- * Return own keys in `obj`.
- *
- * @param {Object} obj
- * @return {Array}
- * @api public
- */
-
-exports.keys = Object.keys || function(obj){
-  var keys = [];
-  for (var key in obj) {
-    if (has.call(obj, key)) {
-      keys.push(key);
-    }
-  }
-  return keys;
-};
-
-/**
- * Return own values in `obj`.
- *
- * @param {Object} obj
- * @return {Array}
- * @api public
- */
-
-exports.values = function(obj){
-  var vals = [];
-  for (var key in obj) {
-    if (has.call(obj, key)) {
-      vals.push(obj[key]);
-    }
-  }
-  return vals;
-};
-
-/**
- * Merge `b` into `a`.
- *
- * @param {Object} a
- * @param {Object} b
- * @return {Object} a
- * @api public
- */
-
-exports.merge = function(a, b){
-  for (var key in b) {
-    if (has.call(b, key)) {
-      a[key] = b[key];
-    }
-  }
-  return a;
-};
-
-/**
- * Return length of `obj`.
- *
- * @param {Object} obj
- * @return {Number}
- * @api public
- */
-
-exports.length = function(obj){
-  return exports.keys(obj).length;
-};
-
-/**
- * Check if `obj` is empty.
- *
- * @param {Object} obj
- * @return {Boolean}
- * @api public
- */
-
-exports.isEmpty = function(obj){
-  return 0 == exports.length(obj);
-};
-},{}],24:[function(require,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var eql = require('mongo-eql');
-var type = require('component-type');
-
-/**
- * $ne: not equal.
- */
-
-exports.$ne = function $ne(matcher, val){
-  return !eql(matcher, val);
-};
-
-/**
- * $gt: greater than.
- */
-
-exports.$gt = function $gt(matcher, val){
-  return type(matcher) === 'number' && val > matcher;
-};
-
-/**
- * $gte: greater than equal.
- */
-
-exports.$gte = function $gte(matcher, val){
-  return type(matcher) === 'number' && val >= matcher;
-};
-
-/**
- * $lt: less than.
- */
-
-exports.$lt = function $lt(matcher, val){
-  return type(matcher) === 'number' && val < matcher;
-};
-
-/**
- * $lte: less than equal.
- */
-
-exports.$lte = function $lte(matcher, val){
-  return type(matcher) === 'number' && val <= matcher;
-};
-
-/**
- * $regex: supply a regular expression as a string.
- */
-
-exports.$regex = function $regex(matcher, val){
-  // TODO: add $options support
-  if ('regexp' != type('matcher')) matcher = new RegExp(matcher);
-  return matcher.test(val);
-};
-
-/**
- * $exists: key exists.
- */
-
-exports.$exists = function $exists(matcher, val){
-  if (matcher) {
-    return undefined !== val;
-  } else {
-    return undefined === val;
-  }
-};
-
-/**
- * $in: value in array.
- */
-
-exports.$in = function $in(matcher, val){
-  if ('array' != type(matcher)) return false;
-  for (var i = 0; i < matcher.length; i++) {
-    if (eql(matcher[i], val)) return true;
-  }
-  return false;
-};
-
-/**
- * $nin: value not in array.
- */
-
-exports.$nin = function $nin(matcher, val){
-  return !exports.$in(matcher, val);
-};
-
-/**
- * @size: array length
- */
-
-exports.$size = function(matcher, val){
-  return Array.isArray(val) && matcher == val.length;
-};
-
-},{"component-type":16,"mongo-eql":22}],25:[function(require,module,exports){
 var CryptoJS = require('./lib/core').CryptoJS;
 require('./lib/enc-base64');
 require('./lib/md5');
@@ -6158,7 +5240,7 @@ var JsonFormatter = require('./lib/jsonformatter').JsonFormatter;
 
 exports.CryptoJS = CryptoJS;
 exports.JsonFormatter = JsonFormatter;
-},{"./lib/aes":26,"./lib/cipher-core":27,"./lib/core":28,"./lib/enc-base64":29,"./lib/evpkdf":30,"./lib/jsonformatter":31,"./lib/md5":32}],26:[function(require,module,exports){
+},{"./lib/aes":21,"./lib/cipher-core":22,"./lib/core":23,"./lib/enc-base64":24,"./lib/evpkdf":25,"./lib/jsonformatter":26,"./lib/md5":27}],21:[function(require,module,exports){
 var CryptoJS = require('./core').CryptoJS;
 
 /*
@@ -6375,7 +5457,7 @@ code.google.com/p/crypto-js/wiki/License
     C.AES = BlockCipher._createHelper(AES);
 }());
 
-},{"./core":28}],27:[function(require,module,exports){
+},{"./core":23}],22:[function(require,module,exports){
 var CryptoJS = require('./core').CryptoJS;
 
 /*
@@ -7242,7 +6324,7 @@ CryptoJS.lib.Cipher || (function (undefined) {
     });
 }());
 
-},{"./core":28}],28:[function(require,module,exports){
+},{"./core":23}],23:[function(require,module,exports){
 /*
 CryptoJS v3.1.2
 code.google.com/p/crypto-js
@@ -7958,7 +7040,7 @@ var CryptoJS = CryptoJS || (function (Math, undefined) {
 
 exports.CryptoJS = CryptoJS;
 
-},{}],29:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var CryptoJS = require('./core').CryptoJS;
 
 /*
@@ -8071,7 +7153,7 @@ code.google.com/p/crypto-js/wiki/License
     };
 }());
 
-},{"./core":28}],30:[function(require,module,exports){
+},{"./core":23}],25:[function(require,module,exports){
 var CryptoJS = require('./core').CryptoJS;
 
 /*
@@ -8193,7 +7275,7 @@ code.google.com/p/crypto-js/wiki/License
     };
 }());
 
-},{"./core":28}],31:[function(require,module,exports){
+},{"./core":23}],26:[function(require,module,exports){
 var CryptoJS = require('./core').CryptoJS;
 
 // create custom json serialization format
@@ -8240,7 +7322,7 @@ var JsonFormatter = {
 };
 
 exports.JsonFormatter = JsonFormatter;
-},{"./core":28}],32:[function(require,module,exports){
+},{"./core":23}],27:[function(require,module,exports){
 var CryptoJS = require('./core').CryptoJS;
 
 /*
@@ -8498,7 +7580,321 @@ code.google.com/p/crypto-js/wiki/License
     C.HmacMD5 = Hasher._createHmacHelper(MD5);
 }(Math));
 
-},{"./core":28}],33:[function(require,module,exports){
+},{"./core":23}],28:[function(require,module,exports){
+
+/**
+ * HOP ref.
+ */
+
+var has = Object.prototype.hasOwnProperty;
+
+/**
+ * Return own keys in `obj`.
+ *
+ * @param {Object} obj
+ * @return {Array}
+ * @api public
+ */
+
+exports.keys = Object.keys || function(obj){
+  var keys = [];
+  for (var key in obj) {
+    if (has.call(obj, key)) {
+      keys.push(key);
+    }
+  }
+  return keys;
+};
+
+/**
+ * Return own values in `obj`.
+ *
+ * @param {Object} obj
+ * @return {Array}
+ * @api public
+ */
+
+exports.values = function(obj){
+  var vals = [];
+  for (var key in obj) {
+    if (has.call(obj, key)) {
+      vals.push(obj[key]);
+    }
+  }
+  return vals;
+};
+
+/**
+ * Merge `b` into `a`.
+ *
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object} a
+ * @api public
+ */
+
+exports.merge = function(a, b){
+  for (var key in b) {
+    if (has.call(b, key)) {
+      a[key] = b[key];
+    }
+  }
+  return a;
+};
+
+/**
+ * Return length of `obj`.
+ *
+ * @param {Object} obj
+ * @return {Number}
+ * @api public
+ */
+
+exports.length = function(obj){
+  return exports.keys(obj).length;
+};
+
+/**
+ * Check if `obj` is empty.
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api public
+ */
+
+exports.isEmpty = function(obj){
+  return 0 == exports.length(obj);
+};
+},{}],29:[function(require,module,exports){
+(function (process){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+}).call(this,require('_process'))
+
+},{"_process":6}],30:[function(require,module,exports){
 /*!
   * Reqwest! A general purpose XHR connection manager
   * license MIT (c) Dustin Diaz 2014
@@ -9115,7 +8511,7 @@ code.google.com/p/crypto-js/wiki/License
   return reqwest
 });
 
-},{}],34:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 (function (process){
 /*!
  * @overview RSVP - a tiny implementation of Promises/A+.
@@ -10791,7 +10187,39 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this,require('_process'))
 
-},{"_process":4}],35:[function(require,module,exports){
+},{"_process":6}],32:[function(require,module,exports){
+
+/**
+ * toString ref.
+ */
+
+var toString = Object.prototype.toString;
+
+/**
+ * Return the type of `val`.
+ *
+ * @param {Mixed} val
+ * @return {String}
+ * @api public
+ */
+
+module.exports = function(val){
+  switch (toString.call(val)) {
+    case '[object Function]': return 'function';
+    case '[object Date]': return 'date';
+    case '[object RegExp]': return 'regexp';
+    case '[object Arguments]': return 'arguments';
+    case '[object Array]': return 'array';
+  }
+
+  if (val === null) return 'null';
+  if (val === undefined) return 'undefined';
+  if (val === Object(val)) return 'object';
+
+  return typeof val;
+};
+
+},{}],33:[function(require,module,exports){
 //     Underscore.js 1.8.2
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -12329,7 +11757,605 @@ code.google.com/p/crypto-js/wiki/License
   }
 }.call(this));
 
-},{}],36:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],35:[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./support/isBuffer":34,"_process":6,"inherits":7}],36:[function(require,module,exports){
 'use strict';
 
 var AggregationTranslator = {};
@@ -14913,9 +14939,9 @@ module.exports = RelationTreeBuilder;
 
 }).call(this,require('_process'))
 
-},{"_process":4}],44:[function(require,module,exports){
-arguments[4][35][0].apply(exports,arguments)
-},{"dup":35}],45:[function(require,module,exports){
+},{"_process":6}],44:[function(require,module,exports){
+arguments[4][33][0].apply(exports,arguments)
+},{"dup":33}],45:[function(require,module,exports){
 var EverliveError = require('./EverliveError').EverliveError;
 var constants = require('./constants');
 var _ = require('underscore');
@@ -14990,7 +15016,7 @@ module.exports = (function () {
 
     return AutoQueue;
 }());
-},{"./EverliveError":48,"./constants":60,"underscore":35}],46:[function(require,module,exports){
+},{"./EverliveError":48,"./constants":60,"underscore":33}],46:[function(require,module,exports){
 'use strict';
 
 var EventEmitter = require('events').EventEmitter;
@@ -15026,7 +15052,7 @@ var apply = function apply(obj) {
 module.exports = {
     apply: apply
 };
-},{"events":1}],47:[function(require,module,exports){
+},{"events":5}],47:[function(require,module,exports){
 var Setup = require('./Setup');
 var Data = require('./types/Data');
 var usersModule = require('./types/Users');
@@ -15486,6 +15512,10 @@ var EverliveErrors = {
         code: 10004,
         message: 'Synchronization cancelled by user.'
     },
+    syncErrorUnknown: {
+        code: 10005,
+        message: 'An unknown error occurred while synchronizing. Please make sure there is internet connectivity.'
+    },
     operationNotSupportedOffline: {
         code: 20000 // the error message is created dynamically based on the query filter for offline storage
     },
@@ -15584,7 +15614,8 @@ var EverliveError = (function () {
 
 var DeviceRegistrationError = (function () {
     var DeviceRegistrationError = function (errorType, message, additionalInformation) {
-        EverliveError.call(this, message);
+        var errorCode = additionalInformation ? additionalInformation.code : undefined;
+        EverliveError.call(this, message, errorCode);
         this.errorType = errorType;
         this.message = message;
         if (additionalInformation !== undefined) {
@@ -16053,6 +16084,28 @@ module.exports = (function () {
 
             var currentDevice = this.currentDevice();
             return currentDevice.areNotificationsEnabled(options, onSuccess, onError);
+        },
+
+        /**
+         * Currently available only for iOS
+         * Use this method in case you are working with iOS interactive push notifications in background mode, including TextInput, or iOS silent push notifications
+         * Call it once you are done with processing your push notification in notificationCallbackIOS.
+         * @method notificationProcessed
+         * @name notificationProcessed
+         * @memberOf Push.prototype
+         */
+        /**
+         * Use this method in case you are working with iOS interactive push notifications in background mode, including TextInput, or iOS silent push notifications
+         * Call it once you are done with processing your push notification in notificationCallbackIOS.
+         * @method notificationProcessed
+         * @name notificationProcessed
+         * @memberOf Push.prototype
+         */
+        notificationProcessed: function () {
+            this.ensurePushIsAvailable();
+
+            var currentDevice = this.currentDevice();
+            currentDevice.notificationProcessed();
         }
     };
 
@@ -16067,7 +16120,9 @@ var guardUnset = utils.guardUnset;
 var common = require('./common');
 var reqwest = common.reqwest;
 var _ = common._;
-var Headers = require('./constants').Headers;
+var Constants = require('./constants');
+var Headers = Constants.Headers;
+var EncodableHeaders = Constants.EncodableHeaders;
 var isNodejs = require('./everlive.platform').isNodejs;
 var Query = require('./query/Query');
 var AggregateQuery = require('./query/AggregateQuery');
@@ -16124,52 +16179,77 @@ module.exports = (function () {
         buildQueryHeaders: function buildQueryHeaders(query) {
             if (query) {
                 if (query instanceof Query) {
-                    return Request.prototype._buildQueryHeaders(query);
+                    return this._buildQueryHeaders(query);
+                } else {
+                    return this._buildFilterHeader(query.filter);
                 }
-                else {
-                    return Request.prototype._buildFilterHeader(query);
-                }
-            }
-            else {
+            } else {
                 return {};
             }
         },
         // Initialize the Request object by using the passed options
         _init: function (options) {
-            _.extend(this.headers, this.buildAuthHeader(this.setup, options), this.buildQueryHeaders(options.query), options.headers);
+            _.extend(this.headers, this.buildAuthHeader(this.setup, options), this.buildQueryHeaders(options.query));
+            this.clearEmptyHeaders();
+            this.encodeHeaders();
         },
         // Translates an Everlive.Query to request headers
         _buildQueryHeaders: function (query) {
             query = query.build();
             var headers = {};
-            if (query.$where !== null) {
-                headers[Headers.filter] = JSON.stringify(query.$where);
-            }
-            if (query.$select !== null) {
-                headers[Headers.select] = JSON.stringify(query.$select);
-            }
-            if (query.$sort !== null) {
-                headers[Headers.sort] = JSON.stringify(query.$sort);
-            }
-            if (query.$skip !== null) {
-                headers[Headers.skip] = query.$skip;
-            }
-            if (query.$take !== null) {
-                headers[Headers.take] = query.$take;
-            }
-            if (query.$expand !== null) {
-                headers[Headers.expand] = JSON.stringify(query.$expand);
-            }
-            if (query.$aggregate !== null) {
-                headers[Headers.aggregate] = JSON.stringify(query.$aggregate);
-            }
+            this._setHeader(headers, query.$where, Headers.filter);
+            this._setHeader(headers, query.$select, Headers.select);
+            this._setHeader(headers, query.$sort, Headers.sort);
+            this._setHeader(headers, query.$skip, Headers.skip);
+            this._setHeader(headers, query.$take, Headers.take);
+            this._setHeader(headers, query.$expand, Headers.expand);
+            this._setHeader(headers, query.$aggregate, Headers.aggregate);
+            this._setHeader(headers, 'x-everlive-dry-run', 'true');
+
             return headers;
         },
         // Creates a header from a simple filter
         _buildFilterHeader: function (filter) {
             var headers = {};
-            headers[Headers.filter] = JSON.stringify(filter);
+            this._setHeader(headers, filter, Headers.filter);
             return headers;
+        },
+        _setHeader: function _setHeader(headers, inputHeader, targetHeaderName) {
+            //make sure not to put nulls or something of the sort as a header
+            if (inputHeader) {
+                headers[targetHeaderName] = JSON.stringify(inputHeader);
+            }
+        },
+        clearEmptyHeaders: function clearEmptyHeaders() {
+            var headers = this.headers;
+            _.each(headers, function (headerString, key) {
+                var header;
+                try {
+                    //try to parse the header as object
+                    header = JSON.parse(headerString);
+                    //make sure that the header is a string if it is parsed as a number
+                    if (!_.isObject(header)) {
+                        header += '';
+                    }
+                }
+                catch(e) {
+                    //if it is not an object it probably should stay that way
+                    header = headerString;
+                }
+
+                //if the header is an empty string or empty object it will not be sent
+                if (_.isEmpty(header)) {
+                    delete headers[key];
+                }
+            });
+        },
+        encodeHeaders: function encodeHeaders() {
+            var headers = this.headers;
+            _.each(EncodableHeaders, function (headerName) {
+                if (headers[headerName] !== undefined) {
+                    headers[headerName] = encodeURIComponent(headers[headerName]);
+                }
+            });
         }
     };
 
@@ -16864,8 +16944,9 @@ CacheModule.prototype = {
         var ignoreCacheForQuery = dataQuery.ignoreCache;
 
         var isUnsupportedOffline = this.isQueryUnsupportedOffline(dataQuery);
+        var isForCurrentUser = dataQuery.additionalOptions && dataQuery.additionalOptions.id === 'me';
 
-        return operationShouldSkipCache || cacheDisabledForContentType || ignoreCacheForQuery || isUnsupportedOffline;
+        return operationShouldSkipCache || cacheDisabledForContentType || isForCurrentUser || ignoreCacheForQuery || isUnsupportedOffline;
     },
 
     _cacheDataQuery: function (dataQuery) {
@@ -17075,7 +17156,7 @@ CacheModule.prototype = {
 };
 
 module.exports = CacheModule;
-},{"../EverliveError":48,"../common":59,"../constants":60,"../offline/offline":77,"../offline/offlinePersisters":78,"../query/DataQuery":87,"../query/Query":89,"../utils":102,"underscore":35}],58:[function(require,module,exports){
+},{"../EverliveError":48,"../common":59,"../constants":60,"../offline/offline":77,"../offline/offlinePersisters":78,"../query/DataQuery":87,"../query/Query":89,"../utils":102,"underscore":33}],58:[function(require,module,exports){
 'use strict';
 
 var CacheModule = require('./CacheModule');
@@ -17187,7 +17268,7 @@ module.exports = (function () {
 }());
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../scripts/bs-aggregation-translator":36,"../scripts/bs-expand-processor":40,"./everlive.platform":62,"./reqwest.nativescript":93,"./reqwest.nodejs":94,"json-stable-stringify":7,"jstimezonedetect":11,"mingo":12,"mongo-query":14,"reqwest":33,"rsvp":34,"underscore":35}],60:[function(require,module,exports){
+},{"../scripts/bs-aggregation-translator":36,"../scripts/bs-expand-processor":40,"./everlive.platform":62,"./reqwest.nativescript":93,"./reqwest.nodejs":94,"json-stable-stringify":8,"jstimezonedetect":12,"mingo":13,"mongo-query":16,"reqwest":30,"rsvp":31,"underscore":33}],60:[function(require,module,exports){
 /**
  * Constants used by the SDK* @typedef {Object} Everlive.Constants
  */
@@ -17255,7 +17336,8 @@ var constants = {
         overrideSystemFields: 'x-everlive-override-system-fields',
         sdk: 'x-everlive-sdk',
         sync: 'x-everlive-sync',
-        aggregate: 'x-everlive-aggregate'
+        aggregate: 'x-everlive-aggregate',
+        customParameters: 'x-everlive-custom-parameters'
     },
     //Constants for different platforms in Everlive
     Platform: {
@@ -17423,6 +17505,13 @@ constants.Push = {
     DevicesType: 'Push/Devices'
 };
 
+constants.EncodableHeaders = [
+    constants.Headers.filter,
+    constants.Headers.expand,
+    constants.Headers.powerFields,
+    constants.Headers.customParameters
+];
+
 module.exports = constants;
 
 },{}],61:[function(require,module,exports){
@@ -17463,7 +17552,7 @@ module.exports = (function () {
 
     return CryptographicProvider;
 }());
-},{"node-cryptojs-aes":25}],62:[function(require,module,exports){
+},{"node-cryptojs-aes":20}],62:[function(require,module,exports){
 var isNativeScript = Boolean(((typeof android !== 'undefined' && android && android.widget && android.widget.Button)
 || (typeof UIButton !== 'undefined' && UIButton)));
 
@@ -17557,6 +17646,9 @@ module.exports = (function () {
             fileSource: 'data-href',
             enableOffline: 'data-offline',
             enableResponsive: 'data-responsive'
+        },
+        responsiveParams: {
+            //http://docs.telerik.com/platform/backend-services/javascript/responsive-images/responsive-images-parameters
         }
     };
 
@@ -17578,6 +17670,7 @@ module.exports = (function () {
 
         this.options = _.extend({}, defaults, config);
         this.options.attributes = _.extend({}, defaults.attributes, config.attributes);
+        this.options.responsiveParams = _.extend({}, defaults.responsiveParams, config.responsiveParams);
 
         this._responsive = new HtmlHelperResponsiveModule(this);
         this._offline = new HtmlHelperOfflineModule(this);
@@ -17973,7 +18066,7 @@ module.exports = (function () {
 
     return HtmlHelperOfflineModule;
 }());
-},{"../../EverliveError":48,"../../common":59,"../../constants":60,"../../utils":102,"path":3}],66:[function(require,module,exports){
+},{"../../EverliveError":48,"../../common":59,"../../constants":60,"../../utils":102,"path":29}],66:[function(require,module,exports){
 'use strict';
 
 var common = require('../../common');
@@ -17982,6 +18075,13 @@ var rsvp = common.rsvp;
 var EverliveError = require('../../EverliveError').EverliveError;
 var constants = require('../../constants');
 var utils = require('../../utils');
+
+var DEFAULT_RESPONSIVE_OPERATIONS = {
+    params: {
+        resize: {}
+    },
+    isUserResize: false
+};
 
 module.exports = (function () {
     function HtmlHelperResponsiveModule(htmlHelper) {
@@ -17993,52 +18093,72 @@ module.exports = (function () {
             return Math.ceil(el.offsetWidth);
         },
 
+        getBackgroundHeight: function (el) {
+            return Math.ceil(el.offsetHeight);
+        },
+
         parseParamsString: function parseParamsString(str) {
             if (!str || typeof str === 'undefined' || str.length <= 1) {
-                return false;
+                return DEFAULT_RESPONSIVE_OPERATIONS;
             }
 
+            var params = str.split('/');
+
+            var result = {};
             var isUserResize = false;
-            var params = [];
-            var tmp = str.split('/');
-            var ii = tmp.length;
 
-            for (var i = 0; i < ii; i++) {
-                var item = tmp[i].split('='),
-                    tmpObj = {};
-                if (typeof item[1] === 'undefined') {
-                    item[1] = false;
-                } else {
-                    item[1] = unescape(item[1].replace(/\+/g, ' '));
-                }
+            _.chain(params)
+                .filter(function (param) {
+                    return !!param;
+                })
+                .each(function (param) {
+                    var paramPair = param.split('=');
+                    var paramName = paramPair[0];
+                    var paramValues = paramPair[1];
+                    paramValues = unescape(paramValues.replace(/\+/g, ' '));
+                    result[paramName] = paramValues;
 
-                tmpObj[item[0]] = item[1];
-                params.push(tmpObj);
-                if (item[0] === 'resize') {
-                    isUserResize = true;
-                }
-            }
+                    if (paramName === 'resize') {
+                        isUserResize = true;
+                    }
+                });
+
             return {
-                params: params,
+                params: result,
                 isUserResize: isUserResize
             };
         },
 
-        getImgParams: function getImgParams(src) {
+        getImgParams: function getImgParams(src, el) {
+            var self = this;
+
             var operations;
             var imgUrl = src.replace(/.*?resize=[^//]*\//gi, '');
             var protocolRe = new RegExp('https?://', 'gi');
             var serverRe = new RegExp(this.htmlHelper._settings.server, 'gi');
             var apiIdRe = new RegExp(this.htmlHelper._everlive.appId + '/', 'gi');
 
-            operations = src.replace(imgUrl, '').replace(protocolRe, '').replace(serverRe, '').replace(apiIdRe, '').toLowerCase();
-            if (operations !== '') {
-                operations = operations.indexOf('/') ? operations.substring(0, operations.length - 1) : operations;
+            var operationsRaw = src.replace(imgUrl, '').replace(protocolRe, '').replace(serverRe, '').replace(apiIdRe, '').toLowerCase();
+            if (operationsRaw !== '') {
+                var operationsToParse = operationsRaw.indexOf('/') ? operationsRaw.substring(0, operationsRaw.length - 1) : operationsRaw;
+                operations = this.parseParamsString(operationsToParse);
+            } else if (el.dataset.responsiveParams) {
+                operations = DEFAULT_RESPONSIVE_OPERATIONS;
+                _.each(el.dataset.responsiveParams.split(','), function (key) {
+                    var pair = key.split(':');
+                    var param = pair[0];
+                    var value = pair[1];
+                    operations.params.resize[param] = value;
+                });
             } else {
-                operations = false;
+                operations = DEFAULT_RESPONSIVE_OPERATIONS;
             }
 
-            operations = this.parseParamsString(operations);
+            _.chain(this.htmlHelper.options.responsiveParams).keys().each(function (key) {
+                var value = self.htmlHelper.options.responsiveParams[key];
+                operations.params.resize[key] = value;
+            });
+
             // If it's a user resize operation, use the passed url in the data-src property
             if (operations.isUserResize) {
                 imgUrl = src;
@@ -18058,14 +18178,34 @@ module.exports = (function () {
 
         getImageWidth: function getImageWidth(el) {
             var parentEl = el.parentNode;
-            var parentWidth = parentEl.offsetWidth;
-            var itemStyle = window.getComputedStyle(parentEl, null);
-            var pl = parseFloat(itemStyle.getPropertyValue('padding-left'));
-            var pr = parseFloat(itemStyle.getPropertyValue('padding-right'));
-            var bl = parseFloat(itemStyle.getPropertyValue('border-left-width'));
-            var br = parseFloat(itemStyle.getPropertyValue('border-right-width'));
+            if (parentEl) {
+                var parentWidth = parentEl.offsetWidth;
+                var itemStyle = window.getComputedStyle(parentEl, null);
+                var pl = parseFloat(itemStyle.getPropertyValue('padding-left'));
+                var pr = parseFloat(itemStyle.getPropertyValue('padding-right'));
+                var bl = parseFloat(itemStyle.getPropertyValue('border-left-width'));
+                var br = parseFloat(itemStyle.getPropertyValue('border-right-width'));
 
-            return Math.abs(parentWidth - Math.ceil(pl + pr + bl + br));
+                return Math.abs(parentWidth - Math.ceil(pl + pr + bl + br));
+            }
+
+            return 0;
+        },
+
+        getImageHeight: function (el) {
+            var parentEl = el.parentNode;
+            if (parentEl) {
+                var parentHeight = parentEl.offsetHeight;
+                var itemStyle = window.getComputedStyle(parentEl, null);
+                var pt = parseFloat(itemStyle.getPropertyValue('padding-top'));
+                var pb = parseFloat(itemStyle.getPropertyValue('padding-bottom'));
+                var bt = parseFloat(itemStyle.getPropertyValue('border-top-width'));
+                var bb = parseFloat(itemStyle.getPropertyValue('border-bottom-width'));
+
+                return Math.abs(parentHeight - Math.ceil(pt + pb + bt + bb));
+            }
+
+            return 0;
         },
 
         getDevicePixelRatio: function getDevicePixelRatio() {
@@ -18077,27 +18217,17 @@ module.exports = (function () {
             return pixelDensity !== '' ? _.isNumber(pixelDensity) ? parseFloat(pixelDensity) : false : this.getDevicePixelRatio();
         },
 
-        getImgParamsString: function getImgParamsString(image, params) {
-            var paramsStr = '';
-            var i = 0;
-            var ii = params.length;
-            for (; i < ii; i++) {
-                var item = params[i];
-                var key = _.keys(item)[0];
-                var value;
+        getImgParamsString: function getImgParamsString(params) {
+            var paramsStr = 'resize=';
 
-                if (!utils.isElement.image(image) && key === 'resize') {
-                    continue;
+            _.chain(params['resize']).keys().each(function (paramName, index, arr) {
+                paramsStr += (paramName + ':' + params['resize'][paramName]);
+                if (index < arr.length - 1) {
+                    paramsStr += ',';
+                } else {
+                    paramsStr += '/';
                 }
-
-                var pixelDensity = this.getPixelRatio(image.item);
-                pixelDensity = (pixelDensity) ? ',pd:' + pixelDensity : '';
-                for (var k in item) {
-                    value = (key === 'resize') ? item[k] + pixelDensity : item[k];
-                }
-
-                paramsStr += key + '=' + value + '/';
-            }
+            });
 
             return paramsStr;
         },
@@ -18111,10 +18241,10 @@ module.exports = (function () {
             var isImage = utils.isElement.image(tag);
             var imgWidth;
 
-            image = _.extend({}, image, self.getImgParams(dataSrc));
+            image = _.extend({}, image, self.getImgParams(dataSrc, item.item));
 
             if (!image.isUserResize) {
-                imgWidth = (!isImage) ? self.getBackgroundWidth(element) : self.getImageWidth(element);
+                imgWidth = isImage ? self.getImageWidth(element) : self.getBackgroundWidth(element);
             }
 
             imgWidth = imgWidth ? imgWidth : false;
@@ -18138,26 +18268,35 @@ module.exports = (function () {
             var url = this.htmlHelper._settings.urlTemplate;
             var pixelDensity = this.getPixelRatio(image.item);
 
-            pixelDensity = pixelDensity ? ',pd:' + pixelDensity : '';
-
             url = url.replace('[protocol]', protocol);
-            url = url.replace('[appid]', appId ? appId : '');
+            url = url.replace('[appid]', appId || '');
             url = url.replace('[hostname]', server);
 
             var params = image.operations || false;
+            var paramsString;
             if (params) {
                 var operations = '';
-                params = this.getImgParamsString(image, params);
-                if (utils.isElement.image(image.tag)) {
-                    operations = imgWidth ? 'resize=w:' + imgWidth + pixelDensity + '/' + params : params;
-                } else {
-                    operations = 'resize=w:' + imgWidth + pixelDensity + '/' + params;
+                params.resize = params.resize || {};
+                params.resize.w = imgWidth;
+                params.resize.pd = pixelDensity;
+                var fill = params.resize.fill;
+                if (fill === 'cover' || fill === 'contain') {
+                    //for fill:cover, we need both the width and height of the image
+                    params.resize.h = this.getImageHeight(image.item) || this.getBackgroundHeight(image.item);
                 }
-                url = url.replace('[operations]', operations);
+
+                paramsString = this.getImgParamsString(params);
             } else {
-                url = url.replace('[operations]', 'resize=w:' + imgWidth + pixelDensity + '/');
+                var defaultParams = {
+                    resize: {
+                        w: imgWidth,
+                        pd: pixelDensity
+                    }
+                };
+                paramsString = this.getImgParamsString(defaultParams);
             }
 
+            url = url.replace('[operations]', paramsString);
             url = url.replace('[url]', image.imgUrl);
             return url;
         }
@@ -18165,32 +18304,12 @@ module.exports = (function () {
 
     return HtmlHelperResponsiveModule;
 }());
+
 },{"../../EverliveError":48,"../../common":59,"../../constants":60,"../../utils":102}],67:[function(require,module,exports){
-/*!
- The MIT License (MIT)
- Copyright (c) 2013 Telerik AD
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.y distributed under the MIT license.
- */
-/*!
- Everlive SDK
- Version 1.6.4
- */
 (function () {
     var Everlive = require('./Everlive');
+    Everlive.version = '1.6.9';
+
     var platform = require('./everlive.platform');
 
     if (!platform.isNativeScript && !platform.isNodejs) {
@@ -18510,16 +18629,13 @@ var operations = {
             return filter.logic === 'and';
         },
         _and: function (filter) {
-            var i, l, term, result = {};
+            var i, l, term, result = { $and: []};
             var operands = filter.filters;
             for (i = 0, l = operands.length; i < l; i++) {
                 term = filterBuilder._build(operands[i]);
-                result = filterBuilder._andAppend(result, term);
+                result.$and.push(term);
             }
             return result;
-        },
-        _andAppend: function (andObj, newObj) {
-            return QueryBuilder.prototype._andAppend.call(this, andObj, newObj);
         },
         _isOr: function (filter) {
             return filter.logic === 'or';
@@ -18853,7 +18969,7 @@ module.exports = function compactObject(o) {
     return newObject;
 };
 
-},{"underscore":35}],71:[function(require,module,exports){
+},{"underscore":33}],71:[function(require,module,exports){
 /*  Copyright (C) 2012-2014  Kurt Milam - http://xioup.com | Source: https://gist.github.com/1868955
  *   
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -19432,7 +19548,7 @@ OfflineFilesModule.prototype = {
 };
 
 module.exports = OfflineFilesModule;
-},{"../AutoQueue":45,"../EverliveError":48,"../Request":53,"../common":59,"../utils":102,"node-cryptojs-aes":25,"path":3}],74:[function(require,module,exports){
+},{"../AutoQueue":45,"../EverliveError":48,"../Request":53,"../common":59,"../utils":102,"node-cryptojs-aes":20,"path":29}],74:[function(require,module,exports){
 'use strict';
 
 var EverliveErrorModule = require('../EverliveError');
@@ -19649,7 +19765,7 @@ OfflineFilesProcessor.prototype = {
 };
 
 module.exports = OfflineFilesProcessor;
-},{"../EverliveError":48,"../common":59,"../constants":60,"../everlive.platform":62,"../storages/FileStore":95,"../utils":102,"path":3}],75:[function(require,module,exports){
+},{"../EverliveError":48,"../common":59,"../constants":60,"../everlive.platform":62,"../storages/FileStore":95,"../utils":102,"path":29}],75:[function(require,module,exports){
 'use strict';
 
 var DataQuery = require('../query/DataQuery');
@@ -19778,8 +19894,9 @@ OfflineQueryProcessor.prototype = {
             case DataQuery.operations.Delete:
                 return this.remove(dataQuery, queryParams.filter);
             case DataQuery.operations.DeleteById:
-                queryParams.filter._id = dataQuery.additionalOptions.id;
-                return this.remove(dataQuery, queryParams.filter);
+                return this.remove(dataQuery, {
+                    _id: dataQuery.additionalOptions.id
+                });
             case DataQuery.operations.Aggregate:
                 return this.aggregate(dataQuery, queryParams);
             default:
@@ -20549,7 +20666,7 @@ OfflineQueryProcessor.prototype = {
 };
 
 module.exports = OfflineQueryProcessor;
-},{"../EverliveError":48,"../ExpandProcessor":49,"../common":59,"../constants":60,"../everlive.platform":62,"../query/DataQuery":87,"../query/Query":89,"../utils":102,"./offlineTransformations":79,"path":3}],76:[function(require,module,exports){
+},{"../EverliveError":48,"../ExpandProcessor":49,"../common":59,"../constants":60,"../everlive.platform":62,"../query/DataQuery":87,"../query/Query":89,"../utils":102,"./offlineTransformations":79,"path":29}],76:[function(require,module,exports){
 var DataQuery = require('../query/DataQuery');
 var everliveErrorModule = require('../EverliveError');
 var EverliveError = everliveErrorModule.EverliveError;
@@ -21081,6 +21198,9 @@ module.exports = (function() {
                     }
                 })
                 .catch(function(err) {
+                    if (!err) {
+                        err = new EverliveError(EverliveErrors.syncErrorUnknown);
+                    }
                     self._syncResultInfo.error = err;
                     self._fireSyncEnd();
                 });
@@ -21530,6 +21650,9 @@ module.exports = (function() {
 
             var getFailedItem = function(id) {
                 var pickedObject = _.pick(results, 'storage', 'type', 'error');
+                if (!pickedObject.error) {
+                    pickedObject.error = new EverliveError(EverliveErrors.syncErrorUnknown);
+                }
                 return _.extend({
                     itemId: id,
                     contentType: targetType
@@ -22160,7 +22283,7 @@ module.exports = (function() {
 
     return OfflineModule;
 })();
-},{"../EverliveError":48,"../Request":53,"../common":59,"../constants":60,"../query/DataQuery":87,"../query/Query":89,"../query/RequestOptionsBuilder":91,"../utils":102,"./OfflineFilesModule":73,"./OfflineFilesProcessor":74,"./OfflineQueryProcessor":75,"./offlineTransformations":79,"path":3}],77:[function(require,module,exports){
+},{"../EverliveError":48,"../Request":53,"../common":59,"../constants":60,"../query/DataQuery":87,"../query/Query":89,"../query/RequestOptionsBuilder":91,"../utils":102,"./OfflineFilesModule":73,"./OfflineFilesProcessor":74,"./OfflineQueryProcessor":75,"./offlineTransformations":79,"path":29}],77:[function(require,module,exports){
 var constants = require('../constants');
 var persisters = require('./offlinePersisters');
 var LocalStoragePersister = persisters.LocalStoragePersister;
@@ -22644,7 +22767,7 @@ var FileSystemPersister = (function () {
 }());
 
 module.exports = FileSystemPersister;
-},{"../../EverliveError":48,"../../common":59,"../../everlive.platform":62,"../../storages/FileStore":95,"../../utils":102,"./BasePersister":80,"path":3,"util":6}],82:[function(require,module,exports){
+},{"../../EverliveError":48,"../../common":59,"../../everlive.platform":62,"../../storages/FileStore":95,"../../utils":102,"./BasePersister":80,"path":29,"util":35}],82:[function(require,module,exports){
 'use strict';
 
 var common = require('../../common');
@@ -22771,7 +22894,7 @@ var LocalStoragePersister = (function () {
 }());
 
 module.exports = LocalStoragePersister;
-},{"../../common":59,"../../storages/LocalStore":96,"./BasePersister":80,"util":6}],83:[function(require,module,exports){
+},{"../../common":59,"../../storages/LocalStore":96,"./BasePersister":80,"util":35}],83:[function(require,module,exports){
 var buildPromise = require('../utils').buildPromise;
 var EverliveError = require('../EverliveError').EverliveError;
 var Platform = require('../constants').Platform;
@@ -22791,7 +22914,7 @@ module.exports = (function () {
     var CurrentDevice = function (pushHandler) {
 
         if (!window.cordova) {
-                throw new EverliveError('Error: currentDevice() can only be called from within a hybrid mobile app, after \'deviceready\' event has been fired.');
+            throw new EverliveError('Error: currentDevice() can only be called from within a hybrid mobile app, after \'deviceready\' event has been fired.');
         }
 
         this._pushHandler = pushHandler;
@@ -22809,12 +22932,12 @@ module.exports = (function () {
         this.emulatorMode = false;
     };
 
-    CurrentDevice.ensurePushIsAvailable = function() {
+    CurrentDevice.ensurePushIsAvailable = function () {
         var isPushNotificationPluginAvailable = (typeof window !== 'undefined' && window.plugins && window.plugins.pushNotification);
 
         if (!isPushNotificationPluginAvailable && !utils._inAppBuilderSimulator()) {
             throw new EverliveError('The push notification plugin is not available. Ensure that the pushNotification plugin is included ' +
-            'and use after `deviceready` event has been fired.');
+                'and use after `deviceready` event has been fired.');
         }
     };
 
@@ -23029,6 +23152,27 @@ module.exports = (function () {
             return buildPromise(function (successCb, errorCb) {
                 pushNotification.areNotificationsEnabled(successCb, errorCb, options);
             }, onSuccess, onError);
+        },
+
+        /**
+         * Currently available only for iOS
+         * Use this method in case you are working with iOS interactive push notifications in background mode, including TextInput, or iOS silent push notifications
+         * Call it once you are done with processing your push notification in notificationCallbackIOS.
+         * @method notificationProcessed
+         * @name notificationProcessed
+         * @memberOf Push.prototype
+         */
+        /**
+         * Currently available only for iOS
+         * Use this method in case you are working with iOS interactive push notifications in background mode, including TextInput, or iOS silent push notifications
+         * Call it once you are done with processing your push notification in notificationCallbackIOS.
+         * @method notificationProcessed
+         * @name notificationProcessed
+         * @memberOf Push.prototype
+         */
+        notificationProcessed: function () {
+            var pushPlugin = window.plugins.pushNotification;
+            pushPlugin.notificationProcessed();
         },
 
         _initializeInteractivePush: function (iOSSettings, success, error) {
@@ -23934,6 +24078,10 @@ module.exports = (function () {
             this._deviceRegistrationFailed(error);
         },
 
+        notificationProcessed: function () {
+            throw new Error('Not implemented');
+        },
+
         //This function receives all notification events from APN
         _onNotificationAPN: function (e) {
             this._raiseNotificationEventIOS(e);
@@ -24101,27 +24249,16 @@ AggregateQuery.prototype.sum = function () {
     return this._aggregateFunc.apply(this, arguments);
 };
 
-AggregateQuery.prototype.select = function () {
-    throw new EverliveError('select() is not supported for aggregations.');
-};
-
-AggregateQuery.prototype.skip = function () {
-    throw new EverliveError('skip() is not supported for aggregations.');
-};
-
-AggregateQuery.prototype.take = function () {
-    throw new EverliveError('take() is not supported for aggregations.');
-};
-
-AggregateQuery.prototype.order = function () {
-    throw new EverliveError('order() is not supported for aggregations.');
-};
+AggregateQuery.prototype.select = undefined;
+AggregateQuery.prototype.skip  = undefined;
+AggregateQuery.prototype.take = undefined;
+AggregateQuery.prototype.order = undefined;
 
 AggregateQuery.prototype.average = AggregateQuery.prototype.avg;
 
 module.exports = AggregateQuery;
 
-},{"../EverliveError":48,"../common":59,"./Query":89,"util":6}],87:[function(require,module,exports){
+},{"../EverliveError":48,"../common":59,"./Query":89,"util":35}],87:[function(require,module,exports){
 var _ = require('../common')._;
 var constants = require('../constants');
 var Query = require('../query/Query');
@@ -24201,9 +24338,9 @@ module.exports = (function () {
             var queryParams = {};
 
             if (this.operation === DataQuery.operations.ReadById) {
-                queryParams.filter = this.additionalOptions.id;
                 queryParams.expand = this.getHeaderAsJSON(Headers.expand);
-            } else {
+                queryParams.select = this.getHeaderAsJSON(Headers.select);
+            } else if (!this.additionalOptions || this.additionalOptions.id === undefined) {
                 var sort = this.getHeaderAsJSON(Headers.sort);
                 var limit = this.getHeaderAsJSON(Headers.take);
                 var skip = this.getHeaderAsJSON(Headers.skip);
@@ -24263,16 +24400,21 @@ module.exports = (function () {
         },
 
         _applyEventQueryParams: function (eventQuery) {
-            if (eventQuery.filter && !this.query) {
-                this.query = {};
+            if (eventQuery.filter) {
+                this.query = this.query || {};
+                this.query.filter = eventQuery.filter;
             }
-            this.query.filter = eventQuery.filter;
+
+            if (eventQuery.aggregate) {
+                this.query = this.query || {};
+                this.query.aggregateExpression = eventQuery.aggregate;
+            }
+
             this.fields = eventQuery.select;
             this.sort = eventQuery.sort;
             this.skip = eventQuery.skip;
             this.take = eventQuery.take;
             this.expand = eventQuery.expand;
-            this.aggregate = eventQuery.aggregate;
         },
 
         _applyEventQuerySettings: function (eventQuery) {
@@ -24299,8 +24441,85 @@ module.exports = (function () {
 
 var constants = require('../constants');
 
+/**
+ * @class EventQuery
+ * @classdesc A query which is passed in the 'beforeExecute' event of [Everlive]{@link Everlive}. Allows changing the parameters of
+ * a query before executing it.
+ */
 var EventQuery = function () {
 };
+
+/** The name of the content type, e.g. EmailSubcrbers.
+ * @memberOf EventQuery.prototype
+ * @member {string} contentTypeName
+ */
+
+/** The query data which will be send to the server.
+ * @memberOf EventQuery.prototype
+ * @member {Object} data
+ */
+
+/** The query headers which will be send with the HTTP request.
+ * @memberOf EventQuery.prototype
+ * @member {Object} headers
+ */
+
+/** The Id of the item.
+ * @memberOf EventQuery.prototype
+ * @member {string} itemId
+ */
+
+/** The type of the operation--read, write, update, delete.
+ * @memberOf EventQuery.prototype
+ * @member {string} operation
+ */
+
+/** A power fields expression.
+ * @memberOf EventQuery.prototype
+ * @member {string} powerfields
+ * @deprecated
+ */
+
+/** A custom settings object.
+ * @memberOf EventQuery.prototype
+ * @member {string} settings
+ */
+
+/** A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+ * @memberOf EventQuery.prototype
+ * @member {Object} filter
+ */
+
+/** A [fields expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-subset-fields) definition.
+ * @memberOf EventQuery.prototype
+ * @member {Object} fields
+ */
+
+/** A [sort expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-sorting) definition.
+ * @memberOf EventQuery.prototype
+ * @member {Object} sort
+ */
+
+/** The number of result items to skip. Used for paging.
+ * @memberOf EventQuery.prototype
+ * @member {Number} skip
+ */
+
+/** The number of result items to take. Used for paging.
+ * @memberOf EventQuery.prototype
+ * @member {Number} take
+ */
+
+/** An [expand expression](http://docs.telerik.com/platform/backend-services/javascript/data/relations/relations-defining) definition.
+ * @memberOf EventQuery.prototype
+ * @member {Object} expand
+ */
+
+/** Indicates whether the query is a synchronization query. Used with Offline Support.
+ * @memberOf EventQuery.prototype
+ * @member {boolean} isSync
+ * @readonly
+ */
 
 function applyDataQueryParameters(eventQuery, dataQuery) {
     var queryParameters = dataQuery.getQueryParameters();
@@ -24313,6 +24532,15 @@ function applyDataQueryParameters(eventQuery, dataQuery) {
     eventQuery.aggregate = queryParameters.aggregate;
     return queryParameters;
 }
+
+/** An object allowing to modify the settings of the EventQuery.
+ * @memberOf EventQuery.prototype
+ * @member {Object} settings
+ * @property {boolean} useOffline - Modifies whether the query should be invoked on the offline storage.
+ * @property {boolean} applyOffline - Modifies whether the query should be applied offline if the SDK is currently working online. Default is true. Only valid when offlineStorage is enabled.
+ * @property {boolean} ignoreCache - Does not use the cache when retrieving the data. Only valid when caching is enabled.
+ * @property {boolean} forceCache - Forces the request to get the data from the cache even if the data is already expired. Only valid when caching is enabled.
+ */
 
 function applyDataQuerySettings(eventQuery, dataQuery) {
     eventQuery.settings = {
@@ -24355,6 +24583,19 @@ EventQuery.fromDataQuery = function (dataQuery) {
 
     return eventQuery;
 };
+
+/**
+ * Cancels the query.
+ * @memberOf EventQuery.prototype
+ * @method cancel
+ */
+
+/**
+ * Indicates whether the query has been canceled.
+ * @memberOf EventQuery.prototype
+ * @method isCanceled
+ * @returns {boolean}
+ */
 
 EventQuery.prototype = {
     cancel: function () {
@@ -24865,14 +25106,20 @@ var DataQuery = require('./DataQuery');
 var Request = require('../Request');
 var _ = require('../common')._;
 var constants = require('../constants');
+var path = require('path');
 
 module.exports = (function () {
     var RequestOptionsBuilder = {};
 
     RequestOptionsBuilder._buildEndpointUrl = function (dataQuery) {
         var endpoint = dataQuery.collectionName;
-        if (dataQuery.additionalOptions && dataQuery.additionalOptions.id) {
-            endpoint += '/' + dataQuery.additionalOptions.id;
+        var isQueryById = dataQuery.additionalOptions && dataQuery.additionalOptions.id !== undefined;
+        var queryType = typeof dataQuery.query;
+
+        if (isQueryById) {
+            endpoint = path.join(endpoint, dataQuery.additionalOptions.id.toString());
+        } else if (queryType === 'string' || queryType === 'number') {
+            endpoint = path.join(endpoint, dataQuery.query);
         }
 
         return endpoint;
@@ -24896,7 +25143,13 @@ module.exports = (function () {
     };
 
     RequestOptionsBuilder._build = function (dataQuery, additionalOptions) {
-        return _.extend(RequestOptionsBuilder._buildBaseObject(dataQuery), additionalOptions);
+        var options = _.extend(RequestOptionsBuilder._buildBaseObject(dataQuery), additionalOptions);
+
+        if (additionalOptions.endpointSupplement) {
+            options.endpoint = path.join(options.endpoint, additionalOptions.endpointSupplement);
+        }
+
+        return options;
     };
 
     RequestOptionsBuilder[DataQuery.operations.Read] = function (dataQuery) {
@@ -24925,19 +25178,11 @@ module.exports = (function () {
     };
 
     RequestOptionsBuilder[DataQuery.operations.RawUpdate] = function (dataQuery) {
-        var endpoint = dataQuery.collectionName;
         var query = dataQuery.query;
-        var ofilter = null; // request options filter
-
-        if (typeof query === 'string') {
-            endpoint += '/' + query; // send the filter as string
-        } else if (typeof query === 'object') {
-            ofilter = query; // send the filter as filter headers
-        }
+        var ofilter = typeof query === 'object' ? query : null; // request options filter
 
         return RequestOptionsBuilder._build(dataQuery, {
             method: 'PUT',
-            endpoint: endpoint,
             query: ofilter
         });
     };
@@ -24957,43 +25202,24 @@ module.exports = (function () {
     RequestOptionsBuilder[DataQuery.operations.DeleteById] = RequestOptionsBuilder[DataQuery.operations.Delete];
 
     RequestOptionsBuilder[DataQuery.operations.SetAcl] = function (dataQuery) {
-        var endpoint = dataQuery.collectionName;
-        var query = dataQuery.query;
-
-        if (typeof query === 'string') { // if query is string than will update a single item using the query as an identifier
-            endpoint += '/' + query;
-        } else if (typeof query === 'object') { // else if it is an object than we will use it's id property
-            endpoint += '/' + query[constants.idField];
-        }
-        endpoint += '/_acl';
-        var method, data;
-        if (dataQuery.additionalOptions.acl === null) {
+        var method;
+        if (dataQuery.data === null) {
             method = 'DELETE';
+            dataQuery.data = undefined;
         } else {
             method = 'PUT';
-            data = dataQuery.additionalOptions.acl;
         }
 
         return RequestOptionsBuilder._build(dataQuery, {
             method: method,
-            endpoint: endpoint,
-            data: data
+            endpointSupplement: '/_acl'
         });
     };
 
     RequestOptionsBuilder[DataQuery.operations.SetOwner] = function (dataQuery) {
-        var endpoint = dataQuery.collectionName;
-        var query = dataQuery.query;
-        if (typeof query === 'string') { // if query is string than will update a single item using the query as an identifier
-            endpoint += '/' + query;
-        } else if (typeof query === 'object') { // else if it is an object than we will use it's id property
-            endpoint += '/' + query[constants.idField];
-        }
-        endpoint += '/_owner';
-
         return RequestOptionsBuilder._build(dataQuery, {
             method: 'PUT',
-            endpoint: endpoint
+            endpointSupplement: '/_owner'
         });
     };
 
@@ -25023,7 +25249,6 @@ module.exports = (function () {
         return RequestOptionsBuilder._build(dataQuery, {
             method: 'POST',
             endpoint: endpoint,
-            authHeaders: false,
             parse: Request.parsers.single
         });
     };
@@ -25085,7 +25310,7 @@ module.exports = (function () {
 
     return RequestOptionsBuilder;
 }());
-},{"../Request":53,"../common":59,"../constants":60,"./DataQuery":87}],92:[function(require,module,exports){
+},{"../Request":53,"../common":59,"../constants":60,"./DataQuery":87,"path":29}],92:[function(require,module,exports){
 var Expression = require('../Expression');
 var OperatorType = require('../constants').OperatorType;
 
@@ -25526,7 +25751,7 @@ module.exports = (function () {
 }());
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":"buffer","http":"http","https":"https","rsvp":34,"underscore":35,"url":"url","zlib":"zlib"}],95:[function(require,module,exports){
+},{"buffer":"buffer","http":"http","https":"https","rsvp":31,"underscore":33,"url":"url","zlib":"zlib"}],95:[function(require,module,exports){
 var platform = require('../everlive.platform');
 var WebFileStore = require('./WebFileStore');
 var NativeScriptFileStore = require('./NativeScriptFileStore');
@@ -26042,7 +26267,7 @@ WebFileStore.prototype = {
 };
 
 module.exports = WebFileStore;
-},{"../EverliveError":48,"../common":59,"../everlive.platform":62,"../utils":102,"path":3}],99:[function(require,module,exports){
+},{"../EverliveError":48,"../common":59,"../everlive.platform":62,"../utils":102,"path":29}],99:[function(require,module,exports){
 var buildPromise = require('../utils').buildPromise;
 var constants = require('../constants');
 var idField = constants.idField;
@@ -26332,7 +26557,10 @@ module.exports = (function () {
                         .then(function () {
                             originalSuccess.apply(this, args);
                         }, function (err) {
-                            if (online && err.code === EverliveErrors.operationNotSupportedOffline.code) {
+                            var notSupported = EverliveErrors.operationNotSupportedOffline.code;
+                            var notFound = EverliveErrors.itemNotFound.code;
+
+                            if (online && (err.code === notSupported || err.code === notFound)) {
                                 originalSuccess.apply(this, args);
                             } else {
                                 query.onError.apply(this, arguments);
@@ -26673,16 +26901,26 @@ module.exports = (function () {
          * @param {Function} [success] A success callback.
          * @param {Function} [error] An error callback.
          */
-        rawUpdate: function (attrs, filter, success, error) {
+        rawUpdate: function (attrs, filterOrId, success, error) {
             var self = this;
+            var isSingleUpdate = typeof filterOrId === 'string' || typeof filterOrId === 'number';
+
+            if (isSingleUpdate && !utils.modelHasValidId(filterOrId)) {
+                return self._invalidIdRejectedPromise();
+            }
+
+            var query = isSingleUpdate ? filterOrId : self._generateQueryFromFilter(filterOrId);
 
             return buildPromise(function (success, error) {
                 var dataQuery = new DataQuery({
                     operation: DataQuery.operations.RawUpdate,
                     collectionName: self.collectionName,
                     parse: Request.parsers.update,
-                    query: filter,
+                    query: query,
                     data: attrs,
+                    additionalOptions: {
+                        id: isSingleUpdate ? filterOrId : undefined
+                    },
                     onSuccess: success,
                     onError: error
                 });
@@ -26734,24 +26972,16 @@ module.exports = (function () {
          * @param {Function} [error] An error callback.
          */
         updateSingle: function (model, success, error) {
-            var err = this._validateIdForModel(model);
-            if (err) {
-                return buildPromise(function (success, error) {
-                    return error(err);
-                }, success, error);
+            if (!utils.modelHasValidId(model)) {
+                return this._invalidIdRejectedPromise();
             }
+
             return this._update(model, null, true, false, success, error);
         },
 
-        _validateIdForModel: function (model, isDestroy) {
-            // validation for destroySingle('id-as-string') scenario
-            if ((typeof model === 'string' || typeof model === 'number') && isDestroy) {
-                return;
-            }
-
-            if (!model || model.Id === undefined || model.Id === null) {
-                return new EverliveError(EverliveErrors.invalidId)
-            }
+        _invalidIdRejectedPromise: function () {
+            var err = new EverliveError(EverliveErrors.invalidId);
+            return utils.rejectedPromise(err);
         },
 
         /**
@@ -26832,11 +27062,8 @@ module.exports = (function () {
          * @param {Function} [error] An error callback.
          */
         destroySingle: function (model, success, error) {
-            var err = this._validateIdForModel(model, true);
-            if (err) {
-                return buildPromise(function (success, error) {
-                    return error(err);
-                }, success, error);
+            if (!utils.modelHasValidId(model)) {
+                return this._invalidIdRejectedPromise();
             }
 
             return this._destroy(model, null, true, success, error);
@@ -26902,17 +27129,22 @@ module.exports = (function () {
          * @param {Function} [success] A success callback.
          * @param {Function} [error] An error callback.
          */
-        setAcl: function (acl, filter, success, error) {
+        setAcl: function (acl, itemOrId, success, error) {
+            if (!utils.modelHasValidId(itemOrId)) {
+                return this._invalidIdRejectedPromise();
+            }
+
             var self = this;
+            var id = _.isObject(itemOrId) ? itemOrId[idField] : itemOrId;
 
             return buildPromise(function (success, error) {
                 var dataQuery = new DataQuery({
                     operation: DataQuery.operations.SetAcl,
                     collectionName: self.collectionName,
                     parse: Request.parsers.single,
-                    query: filter,
+                    data: acl,
                     additionalOptions: {
-                        acl: acl
+                        id: id
                     },
                     onSuccess: success,
                     onError: error
@@ -26963,20 +27195,28 @@ module.exports = (function () {
          * @param {Function} [success] A success callback.
          * @param {Function} [error] An error callback.
          */
-        setOwner: function (ownerId, filter, success, error) {
+        setOwner: function (ownerId, itemOrId, success, error) {
+            if (!utils.modelHasValidId(itemOrId)) {
+                return this._invalidIdRejectedPromise();
+            }
+
             var self = this;
+            var id = _.isObject(itemOrId) ? itemOrId[idField] : itemOrId;
 
             return buildPromise(function (success, error) {
                 var dataQuery = new DataQuery({
                     operation: DataQuery.operations.SetOwner,
                     collectionName: self.collectionName,
-                    query: filter,
                     data: {
                         Owner: ownerId
+                    },
+                    additionalOptions: {
+                        id: id
                     },
                     onSuccess: success,
                     onError: error
                 });
+
                 return self.processDataQuery(dataQuery);
             }, success, error);
         },
@@ -27390,7 +27630,6 @@ module.exports.addUsersFunctions = function addUsersFunctions(ns, everlive) {
                 additionalOptions: {
                     keepTokens: keepTokens
                 },
-                skipAuth: true,
                 onSuccess: success,
                 onError: error
             });
@@ -28460,8 +28699,20 @@ utils._inAppBuilderSimulator = function () {
     return typeof window !== undefined && window.navigator && window.navigator.simulator;
 };
 
+utils.isValidId = function (input) {
+    var isValidString = typeof input === 'string' && input !== '';
+    var isValidNumber = typeof input === 'number' && !_.isNaN(input);
+
+    return isValidString || isValidNumber;
+};
+
+utils.modelHasValidId = function (model) {
+    var idToValidate = (typeof model === 'object' && model !== null) ? model.Id : model;
+    return utils.isValidId(idToValidate);
+};
+
 module.exports = utils;
 
-},{"./Everlive":47,"./EverliveError":48,"./common":59,"./constants":60,"./everlive.platform":62,"path":3}]},{},[67])(67)
+},{"./Everlive":47,"./EverliveError":48,"./common":59,"./constants":60,"./everlive.platform":62,"path":29}]},{},[67])(67)
 });
 //# sourceMappingURL=everlive.map

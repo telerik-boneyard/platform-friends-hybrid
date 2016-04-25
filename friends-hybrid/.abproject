@@ -19,8 +19,7 @@
 		"android.permission.INTERNET"
 	],
 	"DeviceOrientations": [
-		"Portrait",
-		"Landscape"
+		"Portrait"
 	],
 	"AndroidHardwareAcceleration": "true",
 	"iOSStatusBarStyle": "Default",
