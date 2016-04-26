@@ -154,9 +154,8 @@
             var textarea = $('#activity-text');
             this.uploader.detach();
             app.utils.autoSizeTextarea(textarea);
-            $('#preview-create').css('display', 'none');
-            $('#preview-edit').css('display', 'none');
-            this.set('activity.PictureUrl', app.constants.whitePicture);
+            $('#preview-create').css('display', 'none').attr('src', app.constants.whitePicture);
+            $('#preview-edit').css('display', 'none').attr('src', app.constants.whitePicture);
         },
         onShow: function (e) {
             this.imageChanged = false;
