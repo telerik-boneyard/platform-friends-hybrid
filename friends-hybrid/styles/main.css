@@ -120,10 +120,6 @@ textarea:-ms-input-placeholder {
     background-color: transparent;
 }
 
-#friendsApp.km-flat .activities-view .km-list > li:not(.km-scroller-refresh) {
-    height: 32em;
-}
-
 #friendsApp .k-invalid-msg {
     padding: .5em 2em .5em 1.5em;
     color: #e84c3d;
@@ -422,10 +418,7 @@ textarea:-ms-input-placeholder {
     white-space: normal;
 }
 
-#friendsApp .activities-view .km-listview li:not(.km-load-more) {
-    padding: 1em 2em 0;
-}
-
+#friendsApp .activities-view .km-listview li:not(.km-load-more),
 #friendsApp .comments-view .km-listview li:not(.km-load-more),
 #friendsApp .profile-view .km-listview li:not(.km-load-more):not(.content-picture) {
     padding: 1em 2em;
