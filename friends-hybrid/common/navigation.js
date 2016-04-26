@@ -42,7 +42,7 @@
         },
 
         replaceAddComment: function (activityId) {
-            return app.mobileApp.navigate('components/commentsView/addEdit.html?activityId=' + activityId);
+            return app.mobileApp.replace('components/commentsView/addEdit.html?activityId=' + activityId);
         },
 
         navigateEditComment: function (commentId) {
