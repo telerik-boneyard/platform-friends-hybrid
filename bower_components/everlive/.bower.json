@@ -16,6 +16,7 @@
     "commit": "77abf1655145a019c1ebdca1380f3060f0d286dd"
   },
   "_source": "https://github.com/telerik/backend-services-js-sdk.git",
-  "_target": "1.6.10",
-  "_originalSource": "everlive"
+  "_target": "~1.6.10",
+  "_originalSource": "everlive",
+  "_direct": true
 }

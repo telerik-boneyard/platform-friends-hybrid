@@ -14,12 +14,12 @@
     "tests"
   ],
   "dependencies": {
-    "everlive": "1.6.4",
+    "everlive": "1.6.10",
     "kendo-ui": "kendo-ui-core#~2016.1.217",
     "lodash": "~4.5.1",
     "noty": "~2.3.8"
   },
   "resolutions": {
-    "everlive": "1.6.4"
+    "everlive": "1.6.10"
   }
 }
