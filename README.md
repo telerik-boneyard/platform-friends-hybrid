@@ -82,9 +82,8 @@ If you want to collect analytics data from your Friends sample app, you need to 
 	* **Automatic exceptions tracking**
 	* **Automatic app feature tracking**
 
-> Analytics only works on physical devices or emulators. It does not work in the AppBuilder simulator.
-<br>
-> If you are working in the Universal, Windows, or Visual Studio AppBuilder client, you need to restart it for the setting to be reflected.  
+> * Analytics only works on physical devices or emulators. It does not work in the AppBuilder simulator.
+> * If you are working in the Universal, Windows, or Visual Studio AppBuilder client, you need to restart it for the setting to be reflected.  
 
 ## (Optional) Facebook App ID
 
@@ -105,9 +104,8 @@ To demonstrate social login, we have preinitialized the sample to use a purpose-
 10. In the **APP_NAME** text box, enter you Facebook app name.
 10. Click **Done**.
 
-> Facebook integration only works on physical devices or emulators. It does not work in the AppBuilder simulator.
-<br>
-> The Facebook Cordova plugin is not supported on Windows Phone.
+> * Facebook integration only works on physical devices or emulators. It does not work in the AppBuilder simulator.
+> * The Facebook Cordova plugin is not supported on Windows Phone.
 
 ## (Optional) Active Directory Federation Services (AD FS)
 
@@ -139,11 +137,9 @@ If you want to solicit app feedback from your users, you need to enable the Feed
 9. In the **API_KEY** text box, enter the App ID of your Telerik Platform app.
 10. Click **Done**.
 
-> Feedback only works on physical devices or emulators. It does not work in the AppBuilder simulator.
-<br>
-> The Telerik AppFeedback plugin is not supported on Windows Phone.
-<br>
-> If you are working in the Universal, Windows, or Visual Studio AppBuilder client, you need to restart it for the setting to be reflected.
+> * Feedback only works on physical devices or emulators. It does not work in the AppBuilder simulator.
+> * The Telerik AppFeedback plugin is not supported on Windows Phone.
+> * If you are working in the Universal, Windows, or Visual Studio AppBuilder client, you need to restart it for the setting to be reflected.
 
 ## HTTPS Connections
 
@@ -155,7 +151,6 @@ Once the app is configured, you can run it either on a real device or in the Tel
 
 To run it, follow the steps in the product's documentation: [Running Apps on Devices](http://docs.telerik.com/platform/appbuilder/testing-your-app/running-on-devices/working-with-devices).
 
-> Ensure that the emulator or the device that you are using has Internet connectivity when running the sample.
-<br>
-> Image uploading only works on physical devices. It does not work in the AppBuilder simulator or in emulators.
+> * Ensure that the emulator or the device that you are using has Internet connectivity when running the sample.
+> * Image uploading only works on physical devices. It does not work in the AppBuilder simulator or in emulators.
 
