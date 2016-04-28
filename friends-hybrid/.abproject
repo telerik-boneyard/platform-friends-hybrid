@@ -47,5 +47,16 @@
       "APP_ID": "1709291469331027",
       "APP_NAME": "FriendsHybrid"
     }
-  }
+  },
+  "CorePlugins": [
+    "com.phonegap.plugins.facebookconnect@1.0.1.1",
+    "com.telerik.feedback@2.0.0",
+    "cordova-plugin-camera",
+    "cordova-plugin-file",
+    "cordova-plugin-file-transfer",
+    "cordova-plugin-network-information",
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-statusbar",
+    "cordova-plugin-whitelist"
+  ]
 }
