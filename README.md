@@ -78,6 +78,9 @@ If you want to collect analytics data from your Friends sample app, you need to 
 
 1. In the Telerik Platform portal, go to your app.
 2. Click the **Analytics** tab and then click **Enable**.
+3. In the **Configure tracking settings** dialog box that appears, select these check-boxes before clicking **Done**:
+	* **Automatic exceptions tracking**
+	* **Automatic app feature tracking**
 
 > Analytics only works on physical devices or emulators. It does not work in the AppBuilder simulator.
 <br>
