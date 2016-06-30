@@ -5,7 +5,7 @@ publish: true
 page_title: Telerik Friends Sample App for PhoneGap/Cordova | Telerik Platform
 description: A full-featured social demo app that demonstrates how to integrate a large gamut of Telerik Platform services into a hybrid mobile application.
 tags: Hybrid, Sample App, Application, iOS, Android, Windows Phone, Apache Cordova, JavaScript, BaaS, mBaaS, Social, Analytics, Social Login, AD FS
-apis: kendo.application everlive.constructor kendo.observable feedback.showFeedback everlive.offlineStorage authentication.onAuthenticationRequired authentication.persist helpers.html cordova.camera.getPicture data.applyOffline files.upload kendo.ui.validator kendo.datasource users.currentUser users.register authentication.loginWithFacebook authentication.loginWithADFS data.expand data.getById data.updateSingle data.create
+apis: kendo.application everlive.constructor kendo.observable feedback.showFeedback everlive.offlineStorage everlive.authentication.onAuthenticationRequired everlive.authentication.persist everlive.helpers.html cordova.camera.getPicture everlive.data.applyOffline everlive.files.upload kendo.ui.validator kendo.datasource everlive.users.currentUser everlive.users.register everlive.authentication.loginWithFacebook everlive.authentication.loginWithADFS everlive.data.expand everlive.data.getById everlive.data.updateSingle everlive.data.create
 related_resources:
 - "[Getting Started with the Backend Services JavaScript SDK](http://docs.telerik.com/platform/backend-services/javascript/getting-started-javascript-sdk)"
 - "[Getting Started with Hybrid Development](http://docs.telerik.com/platform/appbuilder/cordova/getting-started)"
