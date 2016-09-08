@@ -1,4 +1,5 @@
 {
+    "Sections": ["data", "users", "push", "cloud-code"],
     "Types": [
         {
             "Id": "$guid:ActivitiesTypeId",
