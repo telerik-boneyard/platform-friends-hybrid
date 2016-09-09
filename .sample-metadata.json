@@ -1,185 +1,193 @@
 {
     "backend": {
-        "Sections": [
-            "data",
-            "users",
-            "push",
-            "cloud-code"
-        ],
-        "Types": [
+        "AppId": "${AppId}",
+        "Templates": [
             {
-                "Id": "$guid:ActivitiesTypeId",
-                "Name": "Activities",
-                "Title": "Activities",
-                "SecurityPolicy": "shared",
-                "DisplayFieldName": "Text",
-                "Fields": [
-                    {
-                        "Name": "Text",
-                        "Title": "Text",
-                        "DataType": "text",
-                        "IsArray": false,
-                        "TargetTypeId": null
+                "BaseUrl": "${BaseUrl}",
+                "Template": {
+                    "Sections": [
+                        "data",
+                        "users",
+                        "push",
+                        "cloud-code"
+                    ],
+                    "Types": [
+                        {
+                            "Id": "$guid:ActivitiesTypeId",
+                            "Name": "Activities",
+                            "Title": "Activities",
+                            "SecurityPolicy": "shared",
+                            "DisplayFieldName": "Text",
+                            "Fields": [
+                                {
+                                    "Name": "Text",
+                                    "Title": "Text",
+                                    "DataType": "text",
+                                    "IsArray": false,
+                                    "TargetTypeId": null
+                                },
+                                {
+                                    "Name": "Picture",
+                                    "Title": "Picture",
+                                    "DataType": "file",
+                                    "IsArray": false,
+                                    "TargetTypeId": null
+                                },
+                                {
+                                    "Name": "Location",
+                                    "Title": "Location",
+                                    "DataType": "geopoint",
+                                    "IsArray": false,
+                                    "TargetTypeId": null
+                                },
+                                {
+                                    "Name": "Likes",
+                                    "Title": "Likes",
+                                    "DataType": "relation",
+                                    "IsArray": true,
+                                    "TargetTypeId": "$typeId:Users"
+                                }
+                            ]
+                        },
+                        {
+                            "Id": "$guid:CommentsTypeId",
+                            "Name": "Comments",
+                            "Title": "Comments",
+                            "SecurityPolicy": "shared",
+                            "Fields": [
+                                {
+                                    "Name": "Comment",
+                                    "Title": "Comment",
+                                    "DataType": "text",
+                                    "IsArray": false,
+                                    "TargetTypeId": null
+                                },
+                                {
+                                    "Name": "ActivityId",
+                                    "Title": "ActivityId",
+                                    "DataType": "relation",
+                                    "IsArray": false,
+                                    "TargetTypeId": "$var:ActivitiesTypeId"
+                                }
+                            ]
+                        }
+                    ],
+                    "Files": [
+                        {
+                            "Source": "Images/Profiles/Seth Peterson.jpg",
+                            "Id": "$guid:ProfileImageId_Seth",
+                            "Filename": "Seth Peterson.jpg",
+                            "ContentType": "image/jpeg"
+                        },
+                        {
+                            "Source": "Images/Profiles/Michael Taylor.jpg",
+                            "Id": "$guid:ProfileImageId_Michael",
+                            "Filename": "Michael Taylor.jpg",
+                            "ContentType": "image/jpeg"
+                        },
+                        {
+                            "Source": "Images/Profiles/Andy Gerald.jpg",
+                            "Id": "$guid:ProfileImageId_Andy",
+                            "Filename": "Andy Gerald.jpg",
+                            "ContentType": "image/jpeg"
+                        },
+                        {
+                            "Source": "Images/Activities/sunset.jpg",
+                            "Id": "$guid:ActivityImageId_Sunset",
+                            "Filename": "sunset.jpg",
+                            "ContentType": "image/jpeg",
+                            "CreatedBy": "$guid:UserId_Seth",
+                            "Owner": "$guid:UserId_Seth"
+                        },
+                        {
+                            "Source": "Images/Activities/graduation.jpg",
+                            "Id": "$guid:ActivityImageId_Graduation",
+                            "Filename": "graduation.jpg",
+                            "ContentType": "image/jpeg",
+                            "CreatedBy": "$guid:UserId_Michael",
+                            "Owner": "$guid:UserId_Michael"
+                        }
+                    ],
+                    "Data": {
+                        "Users": [
+                            {
+                                "Id": "$guid:UserId_Seth",
+                                "Username": "seth",
+                                "Password": "333333",
+                                "DisplayName": "Seth Peterson",
+                                "Email": "seth.peterson@example.com",
+                                "Gender": "1",
+                                "BirthDate": "1982-12-02T22:00:00.000Z",
+                                "Picture": "$var:ProfileImageId_Seth"
+                            },
+                            {
+                                "Id": "$guid:UserId_Michael",
+                                "Username": "michael",
+                                "Password": "333333",
+                                "DisplayName": "Michael Taylor",
+                                "Email": "michael.taylor@example.com",
+                                "Gender": "1",
+                                "BirthDate": "1963-12-02T22:00:00.000Z",
+                                "Picture": "$var:ProfileImageId_Michael"
+                            },
+                            {
+                                "Id": "$guid:UserId_Andy",
+                                "Username": "andy",
+                                "Password": "333333",
+                                "DisplayName": "Andy Gerald",
+                                "Email": "andy.gerald@example.com",
+                                "Gender": "1",
+                                "BirthDate": "1990-12-02T22:00:00.000Z",
+                                "Picture": "$var:ProfileImageId_Andy"
+                            }
+                        ],
+                        "Activities": [
+                            {
+                                "Id": "$guid:ActivityId_Graduation",
+                                "Text": "It is finally time for graduation! Good job everyone, we made it.",
+                                "CreatedBy": "$var:UserId_Michael",
+                                "Owner": "$var:UserId_Michael",
+                                "Picture": "$var:ActivityImageId_Graduation",
+                                "Likes": [
+                                    "$var:UserId_Seth"
+                                ]
+                            },
+                            {
+                                "Id": "$guid:ActivityId_Sunset",
+                                "Text": "The most amazing sunset I have ever seen at Phuket, Thailand",
+                                "CreatedBy": "$var:UserId_Seth",
+                                "Owner": "$var:UserId_Seth",
+                                "Picture": "$var:ActivityImageId_Sunset"
+                            }
+                        ],
+                        "Comments": [
+                            {
+                                "Comment": "Congratulations!",
+                                "ActivityId": "$var:ActivityId_Graduation",
+                                "CreatedBy": "$var:UserId_Seth",
+                                "Owner": "$var:UserId_Seth"
+                            },
+                            {
+                                "Comment": "Thanks :)",
+                                "ActivityId": "$var:ActivityId_Graduation",
+                                "CreatedBy": "$var:UserId_Michael",
+                                "Owner": "$var:UserId_Michael"
+                            },
+                            {
+                                "Comment": "It is beautiful.",
+                                "ActivityId": "$var:ActivityId_Sunset",
+                                "CreatedBy": "$var:UserId_Andy",
+                                "Owner": "$var:UserId_Andy"
+                            }
+                        ]
                     },
-                    {
-                        "Name": "Picture",
-                        "Title": "Picture",
-                        "DataType": "file",
-                        "IsArray": false,
-                        "TargetTypeId": null
-                    },
-                    {
-                        "Name": "Location",
-                        "Title": "Location",
-                        "DataType": "geopoint",
-                        "IsArray": false,
-                        "TargetTypeId": null
-                    },
-                    {
-                        "Name": "Likes",
-                        "Title": "Likes",
-                        "DataType": "relation",
-                        "IsArray": true,
-                        "TargetTypeId": "$typeId:Users"
+                    "CloudCode": {
+                        "CloudFunctions": {
+                            "likeActivity": "CloudCode/CloudFunctions/likeActivity.js"
+                        }
                     }
-                ]
-            },
-            {
-                "Id": "$guid:CommentsTypeId",
-                "Name": "Comments",
-                "Title": "Comments",
-                "SecurityPolicy": "shared",
-                "Fields": [
-                    {
-                        "Name": "Comment",
-                        "Title": "Comment",
-                        "DataType": "text",
-                        "IsArray": false,
-                        "TargetTypeId": null
-                    },
-                    {
-                        "Name": "ActivityId",
-                        "Title": "ActivityId",
-                        "DataType": "relation",
-                        "IsArray": false,
-                        "TargetTypeId": "$var:ActivitiesTypeId"
-                    }
-                ]
-            }
-        ],
-        "Files": [
-            {
-                "Source": "Images/Profiles/Seth Peterson.jpg",
-                "Id": "$guid:ProfileImageId_Seth",
-                "Filename": "Seth Peterson.jpg",
-                "ContentType": "image/jpeg"
-            },
-            {
-                "Source": "Images/Profiles/Michael Taylor.jpg",
-                "Id": "$guid:ProfileImageId_Michael",
-                "Filename": "Michael Taylor.jpg",
-                "ContentType": "image/jpeg"
-            },
-            {
-                "Source": "Images/Profiles/Andy Gerald.jpg",
-                "Id": "$guid:ProfileImageId_Andy",
-                "Filename": "Andy Gerald.jpg",
-                "ContentType": "image/jpeg"
-            },
-            {
-                "Source": "Images/Activities/sunset.jpg",
-                "Id": "$guid:ActivityImageId_Sunset",
-                "Filename": "sunset.jpg",
-                "ContentType": "image/jpeg",
-                "CreatedBy": "$guid:UserId_Seth",
-                "Owner": "$guid:UserId_Seth"
-            },
-            {
-                "Source": "Images/Activities/graduation.jpg",
-                "Id": "$guid:ActivityImageId_Graduation",
-                "Filename": "graduation.jpg",
-                "ContentType": "image/jpeg",
-                "CreatedBy": "$guid:UserId_Michael",
-                "Owner": "$guid:UserId_Michael"
-            }
-        ],
-        "Data": {
-            "Users": [
-                {
-                    "Id": "$guid:UserId_Seth",
-                    "Username": "seth",
-                    "Password": "333333",
-                    "DisplayName": "Seth Peterson",
-                    "Email": "seth.peterson@example.com",
-                    "Gender": "1",
-                    "BirthDate": "1982-12-02T22:00:00.000Z",
-                    "Picture": "$var:ProfileImageId_Seth"
-                },
-                {
-                    "Id": "$guid:UserId_Michael",
-                    "Username": "michael",
-                    "Password": "333333",
-                    "DisplayName": "Michael Taylor",
-                    "Email": "michael.taylor@example.com",
-                    "Gender": "1",
-                    "BirthDate": "1963-12-02T22:00:00.000Z",
-                    "Picture": "$var:ProfileImageId_Michael"
-                },
-                {
-                    "Id": "$guid:UserId_Andy",
-                    "Username": "andy",
-                    "Password": "333333",
-                    "DisplayName": "Andy Gerald",
-                    "Email": "andy.gerald@example.com",
-                    "Gender": "1",
-                    "BirthDate": "1990-12-02T22:00:00.000Z",
-                    "Picture": "$var:ProfileImageId_Andy"
                 }
-            ],
-            "Activities": [
-                {
-                    "Id": "$guid:ActivityId_Graduation",
-                    "Text": "It is finally time for graduation! Good job everyone, we made it.",
-                    "CreatedBy": "$var:UserId_Michael",
-                    "Owner": "$var:UserId_Michael",
-                    "Picture": "$var:ActivityImageId_Graduation",
-                    "Likes": [
-                        "$var:UserId_Seth"
-                    ]
-                },
-                {
-                    "Id": "$guid:ActivityId_Sunset",
-                    "Text": "The most amazing sunset I have ever seen at Phuket, Thailand",
-                    "CreatedBy": "$var:UserId_Seth",
-                    "Owner": "$var:UserId_Seth",
-                    "Picture": "$var:ActivityImageId_Sunset"
-                }
-            ],
-            "Comments": [
-                {
-                    "Comment": "Congratulations!",
-                    "ActivityId": "$var:ActivityId_Graduation",
-                    "CreatedBy": "$var:UserId_Seth",
-                    "Owner": "$var:UserId_Seth"
-                },
-                {
-                    "Comment": "Thanks :)",
-                    "ActivityId": "$var:ActivityId_Graduation",
-                    "CreatedBy": "$var:UserId_Michael",
-                    "Owner": "$var:UserId_Michael"
-                },
-                {
-                    "Comment": "It is beautiful.",
-                    "ActivityId": "$var:ActivityId_Sunset",
-                    "CreatedBy": "$var:UserId_Andy",
-                    "Owner": "$var:UserId_Andy"
-                }
-            ]
-        },
-        "CloudCode": {
-            "CloudFunctions": {
-                "likeActivity": "CloudCode/CloudFunctions/likeActivity.js"
             }
-        }
+        ]
     }
 }
