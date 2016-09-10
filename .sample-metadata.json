@@ -1,6 +1,6 @@
 {
     "services": {
-        "backend": {
+        "backendservices": {
             "AppId": "${AppId}",
             "Templates": [
                 {
@@ -75,25 +75,25 @@
                         ],
                         "Files": [
                             {
-                                "Source": "Images/Profiles/Seth Peterson.jpg",
+                                "Source": "template/backednservices/Images/Profiles/Seth Peterson.jpg",
                                 "Id": "$guid:ProfileImageId_Seth",
                                 "Filename": "Seth Peterson.jpg",
                                 "ContentType": "image/jpeg"
                             },
                             {
-                                "Source": "Images/Profiles/Michael Taylor.jpg",
+                                "Source": "template/backednservices/Images/Profiles/Michael Taylor.jpg",
                                 "Id": "$guid:ProfileImageId_Michael",
                                 "Filename": "Michael Taylor.jpg",
                                 "ContentType": "image/jpeg"
                             },
                             {
-                                "Source": "Images/Profiles/Andy Gerald.jpg",
+                                "Source": "template/backednservices/Images/Profiles/Andy Gerald.jpg",
                                 "Id": "$guid:ProfileImageId_Andy",
                                 "Filename": "Andy Gerald.jpg",
                                 "ContentType": "image/jpeg"
                             },
                             {
-                                "Source": "Images/Activities/sunset.jpg",
+                                "Source": "template/backednservices/Images/Activities/sunset.jpg",
                                 "Id": "$guid:ActivityImageId_Sunset",
                                 "Filename": "sunset.jpg",
                                 "ContentType": "image/jpeg",
@@ -101,7 +101,7 @@
                                 "Owner": "$guid:UserId_Seth"
                             },
                             {
-                                "Source": "Images/Activities/graduation.jpg",
+                                "Source": "template/backednservices/Images/Activities/graduation.jpg",
                                 "Id": "$guid:ActivityImageId_Graduation",
                                 "Filename": "graduation.jpg",
                                 "ContentType": "image/jpeg",
@@ -184,7 +184,7 @@
                         },
                         "CloudCode": {
                             "CloudFunctions": {
-                                "likeActivity": "CloudCode/CloudFunctions/likeActivity.js"
+                                "likeActivity": "template/backednservices/CloudCode/CloudFunctions/likeActivity.js"
                             }
                         }
                     }
