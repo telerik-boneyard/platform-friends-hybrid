@@ -192,5 +192,7 @@
             ]
         }
     },
-    "templateFiles": []
+    "templateFiles": [
+    	"common/settings.js"
+    ]
 }
