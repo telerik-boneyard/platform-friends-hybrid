@@ -70,7 +70,7 @@ The Friends sample app comes fully functional, but to see it in action you must 
 This is a unique string that links the sample mobile app to your Telerik Platform account where all the data is read from/saved. To set it in the app code:
 
 1. Open the `friends-hybrid/common/settings.js` file.
-2. Replace `$YOUR_TELERIK_APP_ID$` with the App ID of your Telerik Platform app.
+2. Set the value of `app.settings.appId` with the App ID of your Telerik Platform app.
 
 ## (Optional) Enable Telerik Analytics
 
@@ -83,7 +83,7 @@ If you want to collect analytics data from your Friends sample app, you need to 
 	* **Automatic app feature tracking**
 
 > * Analytics only works on physical devices or emulators. It does not work in the AppBuilder simulator.
-> * If you are working in the Universal, Windows, or Visual Studio AppBuilder client, you need to restart it for the setting to be reflected.  
+> * If you are working in the Universal, Windows, or Visual Studio AppBuilder client, you need to restart it for the setting to be reflected.
 
 ## (Optional) Facebook App ID
 
@@ -94,7 +94,7 @@ To demonstrate social login, we have preinitialized the sample to use a purpose-
 4. Ensure that the **Facebook** box is checked.
 
 > Note that if you intend to use the sample app code for a production app you need to set up your own Facebook application and adjust the Facebook app ID as follows:
-	
+
 1. In the Telerik Platform portal, go to your app.
 2. Click the **Code** tab.
 3. In the **Project Navigator**, double-click **Plugins**.
