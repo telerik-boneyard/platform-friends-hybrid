@@ -193,6 +193,6 @@
         }
     },
     "templateFiles": [
-    	"common/settings.js"
+    	"friends-hybrid/common/settings.js"
     ]
 }
