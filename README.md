@@ -49,28 +49,17 @@ Before you begin, you need to ensure that you have the following:
 
 - **An active Telerik Platform account**
 Ensure that you can log in to a Telerik Platform account. This can be a free trial account. Depending on your license you may not be able to use all app features. For more information on what is included in the different editions, check out the pricing page. All features included in the sample app work during the free trial period.
-- **Telerik AppBuilder** The sample app requires Telerik AppBuilder to run. This can be the in-browser client, the desktop client or the extension for Visual Studio.
+- **Telerik AppBuilder** The sample app requires Telerik AppBuilder to run. This can be the in-browser client, the desktop client, or the extension for Visual Studio.
 
 # Configuration
 
-The Friends sample app comes fully functional, but to see it in action you must link it to your own Telerik Platform account.
+To set up Friends in your Telerik Platform account, click the **Run in the Platform** button.
 
-1. Click the **Run in the Platform** button to clone the repository in AppBuilder.<br>
-	A new Telerik Platform app is created for you. You can view the app source code on the **Code** tab.
-2. Click the **Data** tab and then click **Enable and use sample data**.<br>
-	Sample content types with data required for the app to run is automatically created for you. The button also enables the **Users** service where user accounts for the app are precreated.
-3. Click the **Settings** tab.
-4. Take note of your **App ID**.
-5. Go back to the **Code** tab and continue setting up as explained in the next sections.
+This creates a new Telerik Platform app for you and clones the repository in AppBuilder. All required content types with data, users, and files are also automatically created.
+
+You can view the app's source code on the **Code** tab.
 
 > If you happen to break the structure of the automatically generated Friends data, you can delete the app and start over.
-
-## App ID for Telerik Platform
-
-This is a unique string that links the sample mobile app to your Telerik Platform account where all the data is read from/saved. To set it in the app code:
-
-1. Open the `friends-hybrid/common/settings.js` file.
-2. Set the value of `app.settings.appId` with the App ID of your Telerik Platform app.
 
 ## (Optional) Enable Telerik Analytics
 
@@ -153,4 +142,3 @@ To run it, follow the steps in the product's documentation: [Running Apps on Dev
 
 > * Ensure that the emulator or the device that you are using has Internet connectivity when running the sample.
 > * Image uploading only works on physical devices. It does not work in the AppBuilder simulator or in emulators.
-
