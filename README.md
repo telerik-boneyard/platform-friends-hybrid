@@ -53,7 +53,7 @@ Ensure that you can log in to a Telerik Platform account. This can be a free tri
 
 # Configuration
 
-To set up Friends in your Telerik Platform account, click the **Run in the Platform** button.
+To set up Friends in your Telerik Platform account, click the **Run in Telerik Platform** button.
 
 This creates a new Telerik Platform app for you and clones the repository in AppBuilder. All required content types with data, users, and files are also automatically created.
 
